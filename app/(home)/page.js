@@ -1,18 +1,15 @@
 "use client"
 
 import Image from 'next/image';
-import { campusServices } from '@/LocalDatabase/campusComputer/campusItServices';
-import Navbar from '@/components/Navbar';
+import { campusServices } from '@/LocalDatabase/campusComputer/campusItServices'; 
 import { Hero } from '@/components/Hero';
 import { FaqSection } from '@/components/Faq';
-import { Contact } from '@/components/Contact';
-import { Footer } from '@/components/Footer';
+import { Contact } from '@/components/Contact'; 
 
 
 const CampusComputerPage = () => {
     return (
-        <div>
-            <Navbar />
+        <div> 
 
             <main>
                 {/* Hero Section */}
@@ -103,9 +100,7 @@ const CampusComputerPage = () => {
                 {/* Contact Section */}
                 <Contact />
             </main>
-
-            {/* Footer */}
-            <Footer />
+ 
         </div>
     );
 };
