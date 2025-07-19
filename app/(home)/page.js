@@ -1,15 +1,15 @@
-"use client"
-
+// "use client"
+ 
 import Image from 'next/image';
-import { campusServices } from '@/LocalDatabase/campusComputer/campusItServices'; 
+import { campusServices } from '@/LocalDatabase/campusComputer/campusItServices';
 import { Hero } from '@/components/Hero';
 import { FaqSection } from '@/components/Faq';
-import { Contact } from '@/components/Contact'; 
+import { Contact } from '@/components/Contact';
 
+const CampusComputerPage = async () => {
 
-const CampusComputerPage = () => {
     return (
-        <div> 
+        <div>
 
             <main>
                 {/* Hero Section */}
@@ -100,7 +100,7 @@ const CampusComputerPage = () => {
                 {/* Contact Section */}
                 <Contact />
             </main>
- 
+
         </div>
     );
 };

@@ -1,20 +1,23 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Link from "next/link";
+import { globalContext } from "@/contextApi/ContextApi";
 
 export default function AccountBtn() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isToken, setIsToken] = useState('')
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token);
-  }, []);
+  // const { showToast, token, loginSignal, setLoginSignal } = useContext(globalContext);
+  const { token } = useContext(globalContext);
+
+  // useEffect(() => {
+  //   setIsToken(token)
+  // }, [loginSignal]);
 
 
 
   return (
     <>
-      {isLoggedIn ? (
+      {token ? (
         <Link
           href="/profile"
           className="text-gray-700 hover:text-blue-600 font-medium"

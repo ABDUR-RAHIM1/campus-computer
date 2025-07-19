@@ -5,17 +5,14 @@ import InputField from "@/utilities/InputField";
 import { PostAction } from "@/actions/students/PostAction";
 import { studentLogin, studentRegister } from "@/constans";
 import { globalContext } from "@/contextApi/ContextApi";
+import { studentAuthFormState } from "@/formStats/StudentAuthState";
 
 export default function StudentLogin() {
   const router = useRouter();
   const [loading, setLoading] = useState(false)
-  const { showToast } = useContext(globalContext);
+  const { showToast, loginSignal, setLoginSignal } = useContext(globalContext);
   const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-  });
+  const [formData, setFormData] = useState(studentAuthFormState);
 
 
 
@@ -37,8 +34,9 @@ export default function StudentLogin() {
       const { status, data } = await PostAction(payload);
 
       showToast(status, data)
-console.log(status , data)
+
       if (data && data.token) {
+        setLoginSignal(!loginSignal)
         router.push("/profile")
       }
 
@@ -87,12 +85,12 @@ console.log(status , data)
 
 
           <InputField
-            label="ইমেইল"
-            type="email"
-            name="email"
-            value={formData.email}
+            label="ফোন"
+            type="phone"
+            name="phone"
+            value={formData.phone}
             onChange={handleChange}
-            placeholder="আপনার ইমেইল লিখুন"
+            placeholder="আপনার ফোন নাম্বার লিখুন"
           />
 
           <InputField

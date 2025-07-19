@@ -1,0 +1,6 @@
+
+{
+    1=>  student profile a je services gulo dekhabe segulo student er profile a dewa deaparment er nam onujayi total price ta show korbe ba sei card ta show  korbe , ar jodi student er profile a deparment ba etc dewa na thake tahole sob guloi dekhabe . ekhane price etc sob kichu admin add korbe.
+
+    2=> jekono services newar somoy student chaile alaa vabe abar nijer info gulo dite pare , onek somoy dekha jay je karo 1/2 subject imporve jay . se jonno
+}

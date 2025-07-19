@@ -1,21 +1,30 @@
 "use client"
 
-import { useRouter } from "next/navigation";
-import { createContext, useState } from "react"
+import { StudentToken } from "@/getToken";
+import { createContext, useEffect, useState } from "react"
 import { toast } from "sonner";
 
 export const globalContext = createContext();
 
 export default function ContextApiState({ children }) {
-    const router = useRouter();
 
-    const x = 10;  // এটা ঠিক আছে, যদি দরকার হয়
-
+    const [studentToken, setStudentToken] = useState()
+    const [loginSignal, setLoginSignal] = useState(false)
     const [imgUrl, setImgUrl] = useState("");
     const [uploadResponse, setUploadResponse] = useState({
         message: "",
         status: 0,
     });
+
+
+    useEffect(() => {
+        const getToken = async () => {
+            const token = StudentToken();
+            setStudentToken(token)
+        };
+        getToken;
+    }, [loginSignal])
+
 
     const showToast = (status, data, autoClose) => {
         const message = data.message || data;
@@ -24,7 +33,7 @@ export default function ContextApiState({ children }) {
 
         if (status === 200 || status === 201) {
             toast.success(message, {
-                duration: finalAutoClose ? 3000 : Infinity, 
+                duration: finalAutoClose ? 3000 : Infinity,
                 style: {
                     border: '1px solid #4caf50',
                     padding: '12px 16px',
@@ -72,9 +81,10 @@ export default function ContextApiState({ children }) {
     };
 
     const value = {
-        x,
-        imgUrl, 
-        uploadResponse, 
+        studentToken,
+        loginSignal, setLoginSignal,
+        imgUrl,
+        uploadResponse,
         showToast,
     };
 

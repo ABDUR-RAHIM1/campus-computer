@@ -1,24 +1,24 @@
+
 import { API_URL } from "@/constans";
 import { StudentToken } from "@/getToken";
 
-export const PostAction = async (payload) => {
-    const token = StudentToken()
+export const GetAction = async (endpoint) => {
+    const token = await StudentToken()
 
     try {
-        const { method, endpoint, body } = payload;
- 
+
+        console.log("Token", token)
 
         const res = await fetch(API_URL + endpoint, {
-            method: method,
+            method: "GET",
             headers: {
                 "Content-type": "application/json",
                 "Authorization": `Bearer ${token}`,
-            },
-            body: JSON.stringify(body),
+            }, 
         });
 
         const result = await res.json();
-
+      
         return { status: res.status, data: result };
     } catch (error) {
         console.error("Fetch Error:", error);

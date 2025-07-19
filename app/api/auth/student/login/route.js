@@ -10,19 +10,19 @@ export const POST = async (req) => {
         await connectDb(); // DB Connection
 
         const body = await req.json();
-        const { email, password } = body;
+        const { phone, password } = body;
 
-        if (!email || !password) {
+        if (!phone || !password) {
             return NextResponse.json(
-                { message: "ইমেইল এবং পাসওয়ার্ড দিন।" },
+                { message: "ফোন নাম্বার এবং পাসওয়ার্ড দিন।" },
                 { status: 400 }
             );
         }
 
-        const user = await StudentAuthModel.findOne({ email });
+        const user = await StudentAuthModel.findOne({ phone });
         if (!user) {
             return NextResponse.json(
-                { message: "এই ইমেইলের কোনো একাউন্ট খুঁজে পাওয়া যায়নি।" },
+                { message: "ভুল তথ্য দেওয়া হয়েছে।" },
                 { status: 404 }
             );
         }
@@ -30,13 +30,13 @@ export const POST = async (req) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return NextResponse.json(
-                { message: "ভুল পাসওয়ার্ড দেওয়া হয়েছে।" },
+                { message: "ভুল তথ্য দেওয়া হয়েছে।" },
                 { status: 401 }
             );
         }
 
         const token = jwt.sign(
-            { id: user._id, email: user.email },
+            { id: user._id, phone: user.phone },
             JWT_SECRET,
             { expiresIn: "7d" }
         );
