@@ -1,10 +1,11 @@
 
 import React from "react";
-import Link from "next/link";
 import Image from "next/image";
 import DataNotFound from "@/components/DataNotFound";
 import EditProfileButton from "./components/EditProfileButton";
 import { getMyProfileInfo } from "@/handlers/studentProfile";
+import Services from "./components/Services";
+import MyServices from "./components/myServices/MyServices";
 
 export default async function StudentProfile() {
     const { status, data } = await getMyProfileInfo();
@@ -30,7 +31,7 @@ export default async function StudentProfile() {
 
     return (
         <div className="min-h-screen bg-gray-100 py-10 px-4">
-            <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 items-start gap-6">
                 {/* Left Sidebar - Profile Summary */}
                 <div className="bg-white shadow rounded-lg p-6 text-center">
                     <Image
@@ -74,7 +75,7 @@ export default async function StudentProfile() {
                             {/* ✅ মানোন্নয়ন তথ্য */}
                             {data.hasImprovement && Array.isArray(data.improvementSubjects) && data.improvementSubjects.length > 0 && (
                                 <li>
-                                     <span className=" text-red-800 font-bold ">মানোন্নয়নের বিষয়সমূহ:</span>
+                                    <span className=" text-red-800 font-bold ">মানোন্নয়নের বিষয়সমূহ:</span>
                                     <ul className="list-disc list-inside ml-4">
                                         {data.improvementSubjects.map((s, i) => (
                                             <li key={i}>{s}</li>
@@ -99,39 +100,23 @@ export default async function StudentProfile() {
                     <h3 className="text-2xl font-bold text-gray-800 mb-6">
                         👋 স্বাগতম, {data.username || "শিক্ষার্থী"}!
                     </h3>
-                    <p className="text-gray-700 mb-6">
-                        নিচের লিঙ্কগুলো থেকে আপনি আপনার প্রয়োজনীয় অনলাইন আবেদন ফরম পূরণ করতে
-                        পারেন। প্রতিটি সেবার জন্য আলাদা তথ্য, ফাইল আপলোড এবং পেমেন্ট প্রয়োজন
-                        হতে পারে।
+                    <p className="text-gray-700 mb-6 leading-relaxed">
+                        নিচে তালিকাভুক্ত সেবাগুলোর মাধ্যমে আপনি ঘরে বসেই কলেজের বিভিন্ন কাজ সম্পন্ন করতে পারবেন। প্রতিটি সেবার জন্য নির্দিষ্ট কিছু তথ্য প্রদান, প্রয়োজনীয় ডকুমেন্ট আপলোড এবং ফি পরিশোধের প্রয়োজন হতে পারে। <br /><br />
+
+                        🛎️ আমাদের প্রতিটি সেবা আপনি অনলাইনে ঘরে বসেই নিতে পারবেন — আপনাকে আর কলেজ বা অফিসে এসে লম্বা লাইনে দাঁড়াতে হবে না। <br />
+                        📤 আবেদন বাটনে ক্লিক করলেই আপনার নির্দিষ্ট ফি দেখাবে এবং ফী প্রদানের মাধ্যমে আমরা আপনার পক্ষ থেকে সকল আবেদন, ফরম পূরণ, ডকুমেন্ট প্রসেসিং ও সাবমিশন সম্পূর্ণ করে দিব। <br />
+                        📱 আপনি আপনার প্রোফাইল থেকেই প্রতিটি আবেদনের আপডেট, অবস্থা (Status), ও কনফার্মেশন দেখতে পারবেন — ফলে সবকিছু থাকবে সম্পূর্ণ আপনার নিয়ন্ত্রণে। <br />
+                        🧾 এটি একটি নিরাপদ ও নির্ভরযোগ্য ডিজিটাল সেবা, যেখানে আপনার সময় ও ঝামেলা দুটোই কমবে।
                     </p>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <Link href="/campus-computer/services/honours" className="block bg-blue-50 p-4 border rounded hover:shadow-lg transition cursor-pointer">
-                            <h4 className="font-semibold text-blue-700">🎓 অনার্স আবেদন</h4>
-                            <p className="text-blue-600 text-sm mt-1">
-                                ভর্তি ফরম, পেমেন্ট ও কনফার্মেশন সহ
-                            </p>
-                        </Link>
+                    <Services />
 
-                        <Link href="/campus-computer/services/degree" className="block bg-green-50 p-4 border rounded hover:shadow-lg transition cursor-pointer">
-                            <h4 className="font-semibold text-green-700">🏫 ডিগ্রী রেজিস্ট্রেশন</h4>
-                            <p className="text-green-600 text-sm mt-1">
-                                ডিগ্রী ১ম বর্ষ ও অন্যান্য আবেদন
-                            </p>
-                        </Link>
+                    <MyServices />
 
-                        <Link href="/campus-computer/services/intermediate" className="block bg-yellow-50 p-4 border rounded hover:shadow-lg transition cursor-pointer">
-                            <h4 className="font-semibold text-yellow-700">🧑‍🎓 ইন্টারমিডিয়েট সংশোধন</h4>
-                            <p className="text-yellow-600 text-sm mt-1">নতুন রেজিস্ট্রেশন বা তথ্য আপডেট</p>
-                        </Link>
-
-                        <Link href="/campus-computer/services/confirmation" className="block bg-purple-50 p-4 border rounded hover:shadow-lg transition cursor-pointer">
-                            <h4 className="font-semibold text-purple-700">✅ ভর্তি কনফার্মেশন</h4>
-                            <p className="text-purple-600 text-sm mt-1">অফলাইনে পেমেন্ট জমা ও ট্র্যাকিং</p>
-                        </Link>
-                    </div>
                 </div>
             </div>
+
+
         </div>
     );
 }

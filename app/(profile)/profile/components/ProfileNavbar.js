@@ -1,7 +1,9 @@
-"use client"
-import React, { useState } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+"use client";
+
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Menu as MenuIcon } from 'lucide-react'; 
 
 export default function ProfileNavbar() {
   const pathname = usePathname();
@@ -9,13 +11,10 @@ export default function ProfileNavbar() {
 
   const navItems = [
     { name: 'প্রোফাইল ওভারভিউ', href: '/profile' },
-    { name: 'অনার্স আবেদন', href: '/profile/honours' },
-    { name: 'ডিগ্রী আবেদন', href: '/profile/degree' },
-    { name: 'ইন্টারমিডিয়েট আবেদন', href: '/profile/intermediate' },
     { name: 'অর্ডারসমূহ', href: '/profile/orders' },
   ];
 
-return (
+  return (
     <header className="w-full bg-white shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
@@ -42,10 +41,12 @@ return (
 
         {/* Mobile menu toggle */}
         <div className="md:hidden">
-          <button onClick={() => setMenuOpen(!menuOpen)} className="p-2 cursor-pointer border rounded-md">
-            {/* <Menu className="h-6 w-6 text-gray-700" />
-             */}
-              Menu
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="p-2 cursor-pointer border rounded-md"
+            aria-label="Toggle Menu"
+          >
+            <MenuIcon className="h-6 w-6 text-gray-700" />
           </button>
         </div>
       </div>

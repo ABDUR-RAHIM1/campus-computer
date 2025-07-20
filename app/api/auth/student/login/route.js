@@ -51,7 +51,7 @@ export const POST = async (req) => {
         );
 
         // Set HTTPOnly cookie with token
-        response.cookies.set("token", token, {
+        response.cookies.set("student_token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             maxAge: 7 * 24 * 60 * 60, // 7 days in seconds

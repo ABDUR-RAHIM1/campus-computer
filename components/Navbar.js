@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import AccountBtn from "./AccountBtn";
+import { Menu as MenuIcon } from 'lucide-react';
 
 export default function Navbar() {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -38,8 +39,10 @@ export default function Navbar() {
 
                 {/* Mobile Menu Button */}
                 <div className="md:hidden">
-                    <button onClick={toggleMenu} className="p-2 text-gray-700 text-3xl cursor-pointer ">
-                        {menuOpen ? "x" : "="}
+                    <button onClick={toggleMenu} className="p-2 text-3xl cursor-pointer border rounded-md "
+                        aria-label="Toggle Menu"
+                    >
+                        <MenuIcon className="h-6 w-6 text-gray-700" />
                     </button>
                 </div>
             </div>
