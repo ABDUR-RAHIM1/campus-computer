@@ -10,6 +10,7 @@ import { getMyProfileInfo } from "@/handlers/studentProfile";
 import { PostAction } from "@/actions/students/PostAction";
 import { studentProfileUpdateDelete } from "@/constans";
 import { globalContext } from "@/contextApi/ContextApi";
+import SelectField from "@/utilities/SelectFiled";
 
 export default function EditProfile() {
     const { showToast } = useContext(globalContext);
@@ -69,7 +70,7 @@ export default function EditProfile() {
                 body: updateData
             }
             const { status, data } = await PostAction(payload)
-    
+
             showToast(status, data)
 
         } catch (error) {
@@ -89,6 +90,7 @@ export default function EditProfile() {
                 সঠিক ও সম্পূর্ণ তথ্য প্রদান করলে আপনার কাজগুলো আরো দ্রুত ও নির্ভুলভাবে সম্পন্ন করা সম্ভব হবে।
             </p>
 
+
             {loading ? (
                 <div className="text-center text-blue-600 font-semibold my-6">লোড হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...</div>
             ) : (
@@ -98,6 +100,24 @@ export default function EditProfile() {
                     <InputField label="📧 ইমেইল" name="email" value={formData.email} onChange={handleChange} />
 
                     <InputField label="🏛️ ইনস্টিটিউটের নাম" name="instituteName" value={formData.instituteName} required onChange={handleChange} />
+
+                    {/* <InputField label="🏛️ প্রোগ্রাম (অনার্স/ডিগ্রি/ইন্টারমেডিয়েট)" name="program" value={formData.program} required onChange={handleChange} /> */}
+
+                    <SelectField
+                        label="🏛️ প্রোগ্রাম (অনার্স/ডিগ্রি/ইন্টারমেডিয়েট)"
+                        name="program"
+                        value={formData.program}
+                        onChange={handleChange}
+                        required
+                        options={[
+                            { label: "অনার্স", value: "honors" },
+                            { label: "ডিগ্রি", value: "degree" },
+                            { label: "ইন্টারমেডিয়েট", value: "intermediate" },
+                        ]}
+                    />
+
+
+
                     <InputField label="📚 বিভাগ" name="department" value={formData.department} required onChange={handleChange} />
                     <InputField label="🏫 ক্লাস" name="class" value={formData.class} required onChange={handleChange} />
                     <InputField label="📅 সেশন" name="session" value={formData.session} onChange={handleChange} />
@@ -193,7 +213,7 @@ export default function EditProfile() {
                     <div className="col-span-full mt-4">
                         <Button type="submit" className="w-full">
                             {
-                                submiting ? "আপডেট করা হচ্ছে..."  :
+                                submiting ? "আপডেট করা হচ্ছে..." :
                                     "✅ প্রোফাইল আপডেট করুন"
                             }
                         </Button>

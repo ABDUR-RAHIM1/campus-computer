@@ -21,6 +21,7 @@ export const studentAuthFormState = {
     gender: "",            // "Male" | "Female" | "Other"
     bloodGroup: "",        // "A+", "O+", etc.
     instituteName: "",     // if needed for multiple institutes
+    program: "",
     hasImprovement: false,
     improvementSubjects: [],
     profilePicture: ""

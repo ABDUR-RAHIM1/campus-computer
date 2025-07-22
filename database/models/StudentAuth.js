@@ -23,6 +23,10 @@ const studentAuthSchema = mongoose.Schema({
     // ✅ Optional Fields for profile
     email: String,
     instituteName: String,
+    program: {
+        type: String,
+        enum: ["honors", "degree", "intermediate"]
+    },
     department: String,
     class: String,
     session: String,

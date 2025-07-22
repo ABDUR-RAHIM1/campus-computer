@@ -1,6 +1,5 @@
 import DataNotFound from '@/components/DataNotFound';
 import { getAllServices } from '@/handlers/services';
-import Link from 'next/link';
 import React from 'react';
 import ApplyButton from './myServices/ApplyButton';
 
@@ -20,8 +19,10 @@ export default async function Services() {
         { bg: 'bg-indigo-50', text: 'text-indigo-700', desc: 'text-indigo-600' },
     ];
 
+
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            
             {data.map((service, index) => {
                 const color = colors[index % colors.length];
 
@@ -46,7 +47,7 @@ export default async function Services() {
                                 ))}
                             </ul>
                         )}
-                        <ApplyButton />
+                        <ApplyButton serviceId={service._id} />
                     </div>
                 );
             })}

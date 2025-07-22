@@ -10,6 +10,7 @@ import MyServices from "./components/myServices/MyServices";
 export default async function StudentProfile() {
     const { status, data } = await getMyProfileInfo();
 
+    console.log({data})
 
     if (status !== 200) {
         return <DataNotFound text={data?.message || "ডাটা পাওয়া যায়নি"} />;
@@ -58,8 +59,9 @@ export default async function StudentProfile() {
                             <li>নাম: {data.username || "__"}</li>
                             <li>ফোন: {data.phone || "__"}</li>
                             <li>রেজিস্ট্রেশন নম্বর: {data.registrationNumber || "__"}</li>
-                            <li>ক্লাস: {data.class || "__"}</li>
                             <li>বিভাগ: {data.department || "__"}</li>
+                            <li> প্রোগ্রাম : {data.program || "__"}</li>
+                            <li>ক্লাস: {data.class || "__"}</li>
                             <li>সেশন: {data.session || "__"}</li>
                             <li>ক্লাস রোল: {data.classRoll || "__"}</li>
                             <li>বোর্ড রোল: {data.boardRoll || "__"}</li>

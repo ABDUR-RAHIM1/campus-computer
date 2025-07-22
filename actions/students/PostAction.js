@@ -2,7 +2,7 @@ import { API_URL } from "@/constans";
 import { StudentToken } from "@/getToken";
 
 export const PostAction = async (payload) => {
-    const token = StudentToken()
+    const token = await StudentToken()
 
     try {
         const { method, endpoint, body } = payload;

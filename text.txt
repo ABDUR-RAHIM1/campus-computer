@@ -4,3 +4,7 @@
 
     2=> jekono services newar somoy student chaile alaa vabe abar nijer info gulo dite pare , onek somoy dekha jay je karo 1/2 subject imporve jay . se jonno
 }
+
+{
+    student profile a program name field add korlam (model a ). akhn seta forntend er update profile a input nite hobe ar profile overview te dekhabe 
+}

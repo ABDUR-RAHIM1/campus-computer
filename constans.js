@@ -16,7 +16,17 @@ export const studentProfileUpdateDelete = "/auth/student/action/"
 
 
 //  ----------------- Services ---------------------------
-  export const servicesPostGetAll = "/services/postGet"
+export const servicesPostGetAll = "/services/postGet"
 //  ----------------- Services ---------------------------
+
+
+// ------------------ Order ------------------------------
+export const orderPostGetall = "/order/postGet"
+export const orderGetMe = "/order/myOrder"
+
+// ------------------ Order ------------------------------
+
+
+
 
 //  frontend End here

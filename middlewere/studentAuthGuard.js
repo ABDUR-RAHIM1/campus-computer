@@ -6,8 +6,8 @@ import { JWT_SECRET } from "@/constans";
 
 export const studentAuthGuard = async (req) => {
   try {
-    const authHeader = req.headers.get("authorization");
-
+    const authHeader = await req.headers.get("authorization");
+ 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return {
         error: true,

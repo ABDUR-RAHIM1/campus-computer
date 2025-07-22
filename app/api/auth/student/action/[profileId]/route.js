@@ -3,6 +3,8 @@ import StudentAuthModel from "@/database/models/StudentAuth";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 
+
+//  profile update 
 export const PUT = async (req, { params }) => {
     const { profileId } = params;
 
@@ -50,6 +52,7 @@ export const PUT = async (req, { params }) => {
 };
 
 
+//  delete Profile
 export const DELETE = async (req, { params }) => {
     const { profileId } = await params;
 
