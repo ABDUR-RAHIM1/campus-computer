@@ -19,7 +19,8 @@ export default function ContextApiState({ children }) {
 
     useEffect(() => {
         const getToken = async () => {
-            const token = StudentToken();
+            const token = await StudentToken();
+            console.log({token})
             setStudentToken(token)
         };
         getToken;

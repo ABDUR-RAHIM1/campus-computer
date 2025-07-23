@@ -13,7 +13,7 @@ export default function AccountBtn() {
   //   setIsToken(token)
   // }, [loginSignal]);
 
-
+  console.log(token)
 
   return (
     <>

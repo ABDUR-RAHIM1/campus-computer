@@ -8,3 +8,7 @@
 {
     student profile a program name field add korlam (model a ). akhn seta forntend er update profile a input nite hobe ar profile overview te dekhabe 
 }
+
+{
+    protita order model a isCheck name field rakhte hobe , je seta check kora ba dekha hoyeche kina .dashboard theke click hole ba dekha hole isCheck filed ti update hobe
+}

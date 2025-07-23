@@ -36,6 +36,7 @@ export default function StudentLogin() {
       showToast(status, data)
 
       if (data && data.token) {
+        
         setLoginSignal(!loginSignal)
         router.push("/profile")
       }

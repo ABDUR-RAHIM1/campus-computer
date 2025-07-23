@@ -24,6 +24,7 @@ export const servicesGetMy = "/services/matchWithMe"
 // ------------------ Order ------------------------------
 export const orderPostGetall = "/order/postGet"
 export const orderGetMe = "/order/myOrder"
+export const orderDetails = "/order/details/"
 
 // ------------------ Order ------------------------------
 

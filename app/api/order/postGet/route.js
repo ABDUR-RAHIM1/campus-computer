@@ -2,7 +2,7 @@ import { connectDb } from "@/database/connectDb";
 import { Order } from "@/database/models/Order";
 import { studentAuthGuard } from "@/middlewere/studentAuthGuard";
 import { NextResponse } from "next/server";
- 
+
 import ServiceModel from "@/database/models/Services";
 import StudentAuthModel from "@/database/models/StudentAuth";
 
