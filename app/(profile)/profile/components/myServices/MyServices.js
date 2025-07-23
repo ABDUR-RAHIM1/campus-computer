@@ -3,41 +3,9 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import ApplyButton from './ApplyButton';
+import { getMyServices } from '@/handlers/services';
 
-const demoServices = [
-  {
-    _id: '1',
-    title: 'Honors Admission',
-    description: 'Honors ভর্তি ফরম, পেমেন্ট ও কনফার্মেশন সহ',
-    program: 'honors',
-    session: '2020-2021',
-    fee: '3560',
-    requiredDocuments: ['Registration card', 'College ID', 'Phone number'],
-  },
-  {
-    _id: '2',
-    title: 'Degree Registration',
-    description: 'ডিগ্রী ১ম বর্ষ ও অন্যান্য আবেদন',
-    program: 'degree',
-    session: '2020-2021',
-    fee: '4000',
-    requiredDocuments: ['Admission card', 'SSC certificate', 'Phone number'],
-  },
-  {
-    _id: '3',
-    title: 'Intermediate Update',
-    description: 'নতুন রেজিস্ট্রেশন বা তথ্য আপডেট',
-    program: 'intermediate',
-    session: '2020-2021',
-    fee: '2500',
-    requiredDocuments: ['Registration card', 'Previous mark sheet'],
-  },
-];
-
-const demoProfile = {
-  program: 'honors',
-  session: '2020-2021',
-};
+ 
 
 const colors = [
   { bg: 'bg-blue-50', text: 'text-blue-700', desc: 'text-blue-600' },
@@ -49,18 +17,26 @@ const colors = [
 ];
 
 export default function MyServices() {
+  const [isLoading, setIsLoading] = useState(false);
   const [matchedServices, setMatchedServices] = useState([]);
   const [hasClicked, setHasClicked] = useState(false); // ✅ নতুন state
 
-  const handleClick = () => {
-    setHasClicked(true);
-    const matched = demoServices.filter(
-      (service) =>
-        service.program === demoProfile.program &&
-        service.session === demoProfile.session
-    );
-    setMatchedServices(matched);
-  };
+ const handleClick = async () => {
+  setHasClicked(true);
+  setIsLoading(true);
+
+  try {
+    const { status, data } = await getMyServices();
+    if (status === 200) {
+      setMatchedServices(data);
+    }
+  } catch (error) {
+    console.log(error);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   return (
     <div className="my-10">
@@ -73,7 +49,7 @@ export default function MyServices() {
           আমার সার্ভিস গুলো
         </Button>
         <p className="mt-3 text-gray-600 text-sm">
-          আপনার প্রোফাইলের তথ্য অনুযায়ী নিচে মেলে এমন সার্ভিসগুলো প্রদর্শিত হবে। আপনি উপযুক্ত সার্ভিস নির্বাচন করে আবেদন করতে পারবেন।
+          আপনার প্রোফাইলের তথ্য অনুযায়ী  মেলে নিচে এমন সার্ভিসগুলো প্রদর্শিত হবে। আপনি উপযুক্ত সার্ভিস নির্বাচন করে আবেদন করতে পারবেন।
         </p>
       </div>
 
@@ -106,11 +82,15 @@ export default function MyServices() {
           })}
         </div>
       ) : (
-        hasClicked && (
-          <p className="mt-4 text-gray-500 text-center">
-            আপনার প্রোফাইল অনুযায়ী কোনো সার্ভিস পাওয়া যায়নি।
+        isLoading ?
+          <p className="mt-4 text-red-500 text-center">
+            আপনার প্রোফাইলের সাথে মিলানো হচ্ছে, একটু অপেক্ষা করুন।
           </p>
-        )
+          : hasClicked && (
+            <p className="mt-4 text-gray-500 text-center">
+              আপনার প্রোফাইল অনুযায়ী কোনো সার্ভিস পাওয়া যায়নি।
+            </p>
+          )
       )}
     </div>
   );

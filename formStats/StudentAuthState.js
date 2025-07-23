@@ -5,7 +5,7 @@ export const studentAuthFormState = {
     phone: "",
     password: "",
     registrationNumber: "",
-    class: "",
+    classYear: "",
     department: "",
     session: "",
 

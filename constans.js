@@ -17,6 +17,7 @@ export const studentProfileUpdateDelete = "/auth/student/action/"
 
 //  ----------------- Services ---------------------------
 export const servicesPostGetAll = "/services/postGet"
+export const servicesGetMy = "/services/matchWithMe"
 //  ----------------- Services ---------------------------
 
 

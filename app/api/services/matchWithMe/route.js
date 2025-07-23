@@ -33,6 +33,14 @@ export async function GET(req) {
             classYear,
             session,
             active: true, // optional
+            // $or: [
+            //     { $and: [{ program }, { department }] },
+            //     { $and: [{ program }, { session }] },
+            //     { $and: [{ program }, { classYear }] },
+            //     { $and: [{ department }, { session }] },
+            //     { $and: [{ department }, { classYear }] },
+            //     { $and: [{ session }, { classYear }] }
+            // ]
         });
 
         return NextResponse.json(matchedServices, { status: 200 });

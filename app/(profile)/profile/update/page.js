@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useLayoutEffect, useState } from "react";
+import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import InputField from "@/utilities/InputField";
 import { studentAuthFormState } from "@/formStats/StudentAuthState";
@@ -11,12 +11,16 @@ import { PostAction } from "@/actions/students/PostAction";
 import { studentProfileUpdateDelete } from "@/constans";
 import { globalContext } from "@/contextApi/ContextApi";
 import SelectField from "@/utilities/SelectFiled";
+import { getDepartmentsByProgram } from "@/LocalDatabase/departments";
+
+
 
 export default function EditProfile() {
     const { showToast } = useContext(globalContext);
     const [loading, setLoading] = useState(false)
     const [submiting, setSubmiting] = useState(false)
     const [formData, setFormData] = useState(studentAuthFormState)
+    const [departments, setDepartments] = useState([]);
 
     //  get login student profile info's
     useLayoutEffect(() => {
@@ -46,6 +50,20 @@ export default function EditProfile() {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
+
+
+    // deparment filter using Program
+    // ekhane formData.program er name ar departments.json er program nam same thakte hobe , tobei ata kaj korbe.
+    useEffect(() => {
+        if (formData.program) {
+            const filterdDeparment = getDepartmentsByProgram(formData.program);
+            setDepartments(filterdDeparment);
+            console.log("Filtered Departments:", filterdDeparment);
+        }
+    }, [formData.program])
+
+
+
 
 
     // 📌 এটাকে component এর উপরে বা ফাইলের উপরে রাখো
@@ -118,8 +136,33 @@ export default function EditProfile() {
 
 
 
-                    <InputField label="📚 বিভাগ" name="department" value={formData.department} required onChange={handleChange} />
-                    <InputField label="🏫 ক্লাস" name="class" value={formData.class} required onChange={handleChange} />
+                    {/* <InputField label="📚 বিভাগ" name="department" value={formData.department} required onChange={handleChange} /> */}
+
+                    <SelectField
+                        label="📚 বিভাগ"
+                        name="department"
+                        value={formData.department}
+                        onChange={handleChange}
+                        required
+                        options={departments}
+                    />
+
+
+
+
+                    <SelectField
+                        label="🏛️ প্রোগ্রাম (অনার্স/ডিগ্রি/ইন্টারমেডিয়েট)"
+                        name="classYear"
+                        value={formData.classYear}
+                        onChange={handleChange}
+                        required
+                        options={[
+                            { label: " প্রথম বর্ষ ", value: "1" },
+                            { label: " দ্বিতীয় বর্ষ", value: "2" },
+                            { label: " তৃতীয় বর্ষ", value: "3" },
+                            { label: " চতুর্থ বর্ষ", value: "4" },
+                        ]}
+                    />
                     <InputField label="📅 সেশন" name="session" value={formData.session} onChange={handleChange} />
                     <InputField label="🎟️ ক্লাস রোল" name="classRoll" value={formData.classRoll} onChange={handleChange} />
 
@@ -131,7 +174,22 @@ export default function EditProfile() {
                     <InputField label="📱 অভিভাবকের মোবাইল" name="guardianPhone" value={formData.guardianPhone} onChange={handleChange} />
                     <InputField label="🏠 ঠিকানা" name="address" value={formData.address} onChange={handleChange} />
                     <InputField label="🎂 জন্ম তারিখ" name="birthDate" value={formData.birthDate} type="date" onChange={handleChange} />
-                    <InputField label="⚧️ লিঙ্গ" name="gender" value={formData.gender} onChange={handleChange} placeholder="Male / Female / Other" />
+
+                    {/* <InputField label="⚧️ লিঙ্গ" name="gender" value={formData.gender} onChange={handleChange} placeholder="Male / Female / Other" /> */}
+
+
+                    <SelectField
+                        label="⚧️ লিঙ্গ"
+                        name="gender"
+                        value={formData.gender}
+                        onChange={handleChange}
+                        required
+                        options={[
+                            { label: "পুরুষ", value: "পুরুষ" },
+                            { label: "মহিলা", value: "মহিলা" },
+                            { label: "অন্যান্য", value: "অন্যান্য" },
+                        ]}
+                    />
                     <InputField label="🩸 রক্ত গ্রুপ" name="bloodGroup" value={formData.bloodGroup} onChange={handleChange} placeholder="A+ / O+ etc." />
 
 

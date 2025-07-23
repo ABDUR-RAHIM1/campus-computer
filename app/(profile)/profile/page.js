@@ -10,7 +10,6 @@ import MyServices from "./components/myServices/MyServices";
 export default async function StudentProfile() {
     const { status, data } = await getMyProfileInfo();
 
-    console.log({data})
 
     if (status !== 200) {
         return <DataNotFound text={data?.message || "ডাটা পাওয়া যায়নি"} />;
@@ -19,7 +18,7 @@ export default async function StudentProfile() {
     const requiredFields = [
         "username",
         "registrationNumber",
-        "class",
+        "classYear",
         "department",
         "session",
         "phone",
@@ -27,8 +26,22 @@ export default async function StudentProfile() {
     ];
 
     const isProfileComplete = requiredFields.every(
-        (field) => data[field] && data[field].trim() !== ""
+        (field) => {
+            const value = data[field];
+            return value !== undefined && value !== null && value.toString().trim() !== "";
+        }
     );
+    const getClassYearInBangla = (year) => {
+        const yearMap = {
+            1: "প্রথম বর্ষ",
+            2: "দ্বিতীয় বর্ষ",
+            3: "তৃতীয় বর্ষ",
+            4: "চতুর্থ বর্ষ",
+        };
+        return yearMap[year] || "অজানা বর্ষ";
+    };
+
+    // const isProfileComplete = true
 
     return (
         <div className="min-h-screen bg-gray-100 py-10 px-4">
@@ -61,7 +74,7 @@ export default async function StudentProfile() {
                             <li>রেজিস্ট্রেশন নম্বর: {data.registrationNumber || "__"}</li>
                             <li>বিভাগ: {data.department || "__"}</li>
                             <li> প্রোগ্রাম : {data.program || "__"}</li>
-                            <li>ক্লাস: {data.class || "__"}</li>
+                            <li>ক্লাস: {getClassYearInBangla(data.classYear)}</li>
                             <li>সেশন: {data.session || "__"}</li>
                             <li>ক্লাস রোল: {data.classRoll || "__"}</li>
                             <li>বোর্ড রোল: {data.boardRoll || "__"}</li>

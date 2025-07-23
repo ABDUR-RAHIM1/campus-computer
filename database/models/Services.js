@@ -23,9 +23,8 @@ const ServiceSchema = new mongoose.Schema(
             trim: true,
         },
         classYear: {
-            type: String, // 1st Year, 2nd Year ইত্যাদি
-            required: true,
-            trim: true,
+            type: Number,
+            enum: [1, 2, 3, 4]
         },
         session: {
             type: String,

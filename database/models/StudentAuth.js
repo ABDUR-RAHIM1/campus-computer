@@ -28,7 +28,11 @@ const studentAuthSchema = mongoose.Schema({
         enum: ["honors", "degree", "intermediate"]
     },
     department: String,
-    class: String,
+    classYear: {
+        type: Number,
+        enum: [1, 2, 3, 4],
+        trim: true,
+    },
     session: String,
     registrationNumber: String,
     boardRoll: String,
