@@ -1,5 +1,8 @@
 
 
+
+export const demoProfilePicture = "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+
 export const JWT_SECRET = process.env.NEXT_PUBLIC_JWT_SECRET;
 
 //  frontend Start here

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import ApplyButton from './ApplyButton';
 import { getMyServices } from '@/handlers/services';
 
- 
+
 
 const colors = [
   { bg: 'bg-blue-50', text: 'text-blue-700', desc: 'text-blue-600' },
@@ -21,21 +21,21 @@ export default function MyServices() {
   const [matchedServices, setMatchedServices] = useState([]);
   const [hasClicked, setHasClicked] = useState(false); // ✅ নতুন state
 
- const handleClick = async () => {
-  setHasClicked(true);
-  setIsLoading(true);
+  const handleClick = async () => {
+    setHasClicked(true);
+    setIsLoading(true);
 
-  try {
-    const { status, data } = await getMyServices();
-    if (status === 200) {
-      setMatchedServices(data);
+    try {
+      const { status, data } = await getMyServices();
+      if (status === 200) {
+        setMatchedServices(data);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
     }
-  } catch (error) {
-    console.log(error);
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
 
   return (
@@ -76,7 +76,7 @@ export default function MyServices() {
                   </ul>
                 )}
 
-                <ApplyButton />
+                <ApplyButton serviceId={service._id} />
               </div>
             );
           })}

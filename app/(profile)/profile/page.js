@@ -6,6 +6,8 @@ import EditProfileButton from "./components/EditProfileButton";
 import { getMyProfileInfo } from "@/handlers/studentProfile";
 import Services from "./components/Services";
 import MyServices from "./components/myServices/MyServices";
+import { demoProfilePicture } from "@/constans";
+import AdditionalFileUploadButton from "./components/AdditionalFileUploadButton";
 
 export default async function StudentProfile() {
     const { status, data } = await getMyProfileInfo();
@@ -49,11 +51,11 @@ export default async function StudentProfile() {
                 {/* Left Sidebar - Profile Summary */}
                 <div className="bg-white shadow rounded-lg p-6 text-center">
                     <Image
-                        src={data.photo || "/images/about.png"}
-                        alt="Profile Picture"
-                        width={140}
-                        height={140}
-                        className="rounded-full mx-auto mb-4 border border-gray-300 object-cover"
+                        src={data.profilePicture || demoProfilePicture}
+                        alt=" Campus Computer Student Profile Picture"
+                        width={150}
+                        height={150}
+                        className=" w-[150px] h-[150px] rounded-md mx-auto mb-4 border border-gray-300"
                     />
                     <h2 className="text-xl font-bold text-gray-800 mb-1">
                         {data.username || "--"}
@@ -63,6 +65,7 @@ export default async function StudentProfile() {
 
                     {/* Update Profile Button */}
                     <EditProfileButton />
+                    <AdditionalFileUploadButton profileId={data._id} />
 
                     <div className="text-left mt-6">
                         <h3 className="font-semibold text-gray-800 mb-2">

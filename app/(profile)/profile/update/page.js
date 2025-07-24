@@ -12,15 +12,19 @@ import { studentProfileUpdateDelete } from "@/constans";
 import { globalContext } from "@/contextApi/ContextApi";
 import SelectField from "@/utilities/SelectFiled";
 import { getDepartmentsByProgram } from "@/LocalDatabase/departments";
+import { getStatusColor } from "@/utilities/getStatusColor";
 
 
 
 export default function EditProfile() {
-    const { showToast } = useContext(globalContext);
+    const { showToast, imgUrl, uploadResponse, uploader } = useContext(globalContext);
     const [loading, setLoading] = useState(false)
     const [submiting, setSubmiting] = useState(false)
     const [formData, setFormData] = useState(studentAuthFormState)
     const [departments, setDepartments] = useState([]);
+
+    const { status, message } = uploadResponse;
+
 
     //  get login student profile info's
     useLayoutEffect(() => {
@@ -47,9 +51,26 @@ export default function EditProfile() {
 
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+        const { type, name, value, files } = e.target;
+
+        if (type === "file") {
+            const file = files[0]
+            uploader(file)
+        } else {
+            setFormData((prev) => ({ ...prev, [name]: value }));
+        }
+
     };
+
+    // setImage Url In the form State
+    useEffect(() => {
+        setFormData((prev) => ({
+            ...prev,
+            profilePicture: imgUrl
+        }))
+    }, [imgUrl])
+
+
 
 
     // deparment filter using Program
@@ -58,7 +79,6 @@ export default function EditProfile() {
         if (formData.program) {
             const filterdDeparment = getDepartmentsByProgram(formData.program);
             setDepartments(filterdDeparment);
-            console.log("Filtered Departments:", filterdDeparment);
         }
     }, [formData.program])
 
@@ -134,10 +154,6 @@ export default function EditProfile() {
                         ]}
                     />
 
-
-
-                    {/* <InputField label="📚 বিভাগ" name="department" value={formData.department} required onChange={handleChange} /> */}
-
                     <SelectField
                         label="📚 বিভাগ"
                         name="department"
@@ -147,11 +163,8 @@ export default function EditProfile() {
                         options={departments}
                     />
 
-
-
-
                     <SelectField
-                        label="🏛️ প্রোগ্রাম (অনার্স/ডিগ্রি/ইন্টারমেডিয়েট)"
+                        label="🏛️ বর্ষ"
                         name="classYear"
                         value={formData.classYear}
                         onChange={handleChange}
@@ -175,7 +188,6 @@ export default function EditProfile() {
                     <InputField label="🏠 ঠিকানা" name="address" value={formData.address} onChange={handleChange} />
                     <InputField label="🎂 জন্ম তারিখ" name="birthDate" value={formData.birthDate} type="date" onChange={handleChange} />
 
-                    {/* <InputField label="⚧️ লিঙ্গ" name="gender" value={formData.gender} onChange={handleChange} placeholder="Male / Female / Other" /> */}
 
 
                     <SelectField
@@ -260,16 +272,16 @@ export default function EditProfile() {
                             id="profilePicture"
                             accept="image/*"
                             // required
-                            onChange={(e) =>
-                                setFormData((prev) => ({
-                                    ...prev,
-                                    profilePicture: e.target.files[0],
-                                }))
-                            }
+                            onChange={handleChange}
                         />
+                        <p className={getStatusColor(status)}>
+                            {
+                                message
+                            }
+                        </p>
                     </div>
                     <div className="col-span-full mt-4">
-                        <Button type="submit" className="w-full">
+                        <Button disabled={status === 102} type="submit" className="w-full">
                             {
                                 submiting ? "আপডেট করা হচ্ছে..." :
                                     "✅ প্রোফাইল আপডেট করুন"

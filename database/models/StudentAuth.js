@@ -46,6 +46,10 @@ const studentAuthSchema = mongoose.Schema({
     hasImprovement: Boolean,
     improvementSubjects: { type: [String] },
     profilePicture: String,
+    documents: {
+        type: [String], 
+        default: [],
+    }
 
 }, { timestamps: true });
 

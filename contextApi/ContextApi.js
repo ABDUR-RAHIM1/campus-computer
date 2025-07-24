@@ -20,7 +20,7 @@ export default function ContextApiState({ children }) {
     useEffect(() => {
         const getToken = async () => {
             const token = await StudentToken();
-            console.log({token})
+            console.log({ token })
             setStudentToken(token)
         };
         getToken;
@@ -80,12 +80,73 @@ export default function ContextApiState({ children }) {
             ), { duration: 15000 });
         }
     };
+ 
+    // 🔹 Multiple File Upload Function
+    const uploader = async (files) => {
+        if (!files || files.length === 0) {
+            setUploadResponse({
+                message: "❌ কোনো ফাইল পাওয়া যায়নি",
+                status: 400,
+            });
+            return;
+        }
+
+        setUploadResponse({
+            message: "📤 আপলোড হচ্ছে... দয়া করে অপেক্ষা করুন",
+            status: 102,
+        });
+
+        const uploadedUrls = [];
+
+        for (const file of files) {
+            const form = new FormData();
+            form.append("image", file);
+
+            try {
+                const response = await fetch(
+                    "https://api.imgbb.com/1/upload?key=862850e874b9b92bba3bbba84383b4dd",
+                    {
+                        method: "POST",
+                        body: form,
+                    }
+                );
+
+                const data = await response.json();
+
+                if (data.success) {
+                    uploadedUrls.push(data.data.url);
+                } else {
+                    console.error("❌ একটি ফাইল আপলোড হয়নি:", data);
+                }
+            } catch (error) {
+                console.error("🚫 আপলোড ত্রুটি:", error);
+            }
+        }
+
+        if (uploadedUrls.length > 0) {
+            setImgUrl(uploadedUrls); // যদি preview বা db তে পাঠাতে হয়
+            setUploadResponse({
+                message: "✅ সফলভাবে সব ফাইল আপলোড হয়েছে",
+                status: 200,
+            });
+        } else {
+            setUploadResponse({
+                message: "❌ কোনো ফাইলই আপলোড হয়নি",
+                status: 500,
+            });
+        }
+    };
+
+
+
+
+
 
     const value = {
         studentToken,
         loginSignal, setLoginSignal,
         imgUrl,
-        uploadResponse,
+        imgUrl, uploadResponse, uploader,
         showToast,
     };
 
