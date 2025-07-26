@@ -1,10 +1,10 @@
 
 import DataNotFound from '@/components/DataNotFound';
 import { getMyProfileInfo } from '@/handlers/studentProfile';
-import React from 'react';
-import DocumentImage from './DocumentImage';
+import React from 'react'; 
 import Image from 'next/image';
 import { demoProfilePicture } from '@/constans';
+import DocumentImage from '@/components/DocumentImage';
 
 export default async function Details() {
     const { status, data } = await getMyProfileInfo();

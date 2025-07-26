@@ -1,7 +1,10 @@
 import DataNotFound from '@/components/DataNotFound'
+import DocumentImage from '@/components/DocumentImage'
+import { demoProfilePicture } from '@/constans'
 import { GetOrderDetails } from '@/handlers/order'
 import DownloadButton from '@/utilities/DownloadButton'
-import React from 'react'
+import Image from 'next/image'
+import React from 'react' 
 
 export default async function OrderDetails({ params }) {
     const { orderId } = await params
@@ -9,7 +12,7 @@ export default async function OrderDetails({ params }) {
 
     if (!data) return <DataNotFound text={data?.message} />
 
-    const { studentId, serviceId, paymentStatus, status: orderStatus, createdAt } = data
+    const {  studentId, serviceId, paymentStatus, status: orderStatus, createdAt } = data
 
     return (
         <div className="max-w-4xl my-20 mx-auto bg-white p-6 mt-10 rounded-lg shadow-md border border-gray-200">
@@ -41,7 +44,21 @@ export default async function OrderDetails({ params }) {
 
             {/* Student Info */}
             <div className="border-t border-gray-200 pt-4">
-                <h3 className="text-xl font-semibold text-gray-700 mb-2">👨‍🎓 শিক্ষার্থীর তথ্য</h3>
+                <div className=' flex items-center justify-between flex-wrap'>
+                    <h3 className="text-xl font-semibold text-gray-700 mb-2">👨‍🎓 শিক্ষার্থীর তথ্য</h3>
+                   
+                </div>
+
+                <div className=' my-10  flex justify-center items-center'>
+                    <Image
+                        src={studentId.profilePicture || demoProfilePicture}
+                        width={200}
+                        height={200}
+                        alt='campus computer profile pciture'
+                        className=' w-[200px] h-[200px] rounded-md'
+                    />
+                </div>
+
                 <div className="grid grid-cols-2 gap-4 text-sm">
                     <p><strong>নাম:</strong> {studentId.username}</p>
                     <p><strong>ফোন:</strong> {studentId.phone}</p>
@@ -68,6 +85,19 @@ export default async function OrderDetails({ params }) {
                     <p><strong>প্রয়োজনীয় ডকুমেন্ট:</strong> {serviceId.requiredDocuments?.join(', ')}</p>
                 </div>
             </div>
+
+            {/* 📎 ডকুমেন্ট সেকশন */}
+            {studentId.documents?.length > 0 && (
+                <div className="mt-8">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-3">📎 আপলোডকৃত ডকুমেন্টসমূহ:</h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                        {studentId.documents.map((docUrl, index) => (
+                            <DocumentImage key={index} images={docUrl} index={index} />
+                        ))}
+                    </div>
+                </div>
+            )}
+
         </div>
     )
 }

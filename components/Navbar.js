@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import AccountBtn from "./AccountBtn";
 import { Menu as MenuIcon } from 'lucide-react';
+import Logo from "@/utilities/Logo";
 
 export default function Navbar() {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -19,19 +20,21 @@ export default function Navbar() {
         <nav className="bg-white shadow-md sticky top-0 z-50">
             <div className="container mx-auto px-4 py-3 flex items-center justify-between">
                 {/* Logo & Name */}
-                <div className="flex items-center space-x-3">
-                    <span className="text-xl font-bold text-gray-800">Campus Computer</span>
-                </div>
+                <Logo />
+
 
                 {/* Desktop Links */}
                 <div className="hidden md:flex space-x-6 items-center">
                     <Link href="/" className="text-gray-700 hover:text-blue-600 font-medium">
                         হোম
                     </Link>
-                    <Link href="#services-list" className="text-gray-700 hover:text-blue-600 font-medium">
+                    <Link href="/jobs" className="text-gray-700 hover:text-blue-600 font-medium">
+                         জবস
+                    </Link>
+                    <Link href="/#services-list" className="text-gray-700 hover:text-blue-600 font-medium">
                         সেবা সমূহ
                     </Link>
-                    <Link href="#contact" className="text-gray-700 hover:text-blue-600 font-medium">
+                    <Link href="/#contact" className="text-gray-700 hover:text-blue-600 font-medium">
                         যোগাযোগ
                     </Link>
                     <AccountBtn />

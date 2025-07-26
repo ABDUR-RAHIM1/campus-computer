@@ -11,10 +11,9 @@ export default function DashboardNavbar() {
 
     const navItems = [
         { name: 'ড্যাশবোর্ড', href: '/dashboard' },
-        { name: 'অর্ডারসমূহ', href: '/dashboard/orders' },
+        { name: 'অর্ডারসমূহ', href: '/dashboard/orders' }, 
         { name: 'পেমেন্ট ইতিহাস', href: '/dashboard/payments' },
-        { name: 'স্টুডেন্ট তালিকা', href: '/dashboard/students' },
-        { name: 'ডকুমেন্টস', href: '/dashboard/documents' },
+        { name: 'স্টুডেন্ট তালিকা', href: '/dashboard/student-list' },
         { name: 'নোটিশ বোর্ড', href: '/dashboard/notices' },
         { name: 'সেটিংস', href: '/dashboard/settings' },
     ];

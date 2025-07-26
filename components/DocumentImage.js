@@ -20,9 +20,9 @@ export default function DocumentImage({ images, index }) {
                 height={500}
                 src={images}
                 alt={`ডকুমেন্ট ${index + 1}`} className="w-full h-auto object-cover rounded" />
-
-
+            
             <ImagePreviewModal open={isOpen} setOpen={setIsOpen} imageUrl={openedImg} />
+
         </div>
     )
 }

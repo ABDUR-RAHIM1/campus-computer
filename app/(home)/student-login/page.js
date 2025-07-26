@@ -17,7 +17,6 @@ export default function StudentLogin() {
 
 
   const handleChange = (e) => {
-    console.log(e.target.value)
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
@@ -36,7 +35,7 @@ export default function StudentLogin() {
       showToast(status, data)
 
       if (data && data.token) {
-        
+
         setLoginSignal(!loginSignal)
         router.push("/profile")
       }

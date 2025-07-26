@@ -74,8 +74,8 @@ export default async function StudentProfile() {
                             <h3 className="font-semibold text-gray-800 mb-2">
                                 📚 গুরুত্বপূর্ণ তথ্যসমূহ
                             </h3>
-                            <Link href={"/profile/details"} className=" inline-block py-2 px-3 rounded-md bg-blue-500 text-white font-semibold">
-                                Details
+                            <Link href={"/profile/details"} className=" inline-block text-sm py-2 px-3 rounded-md bg-blue-500 text-white font-semibold">
+                                বিস্তারিত
                             </Link>
                         </div>
 

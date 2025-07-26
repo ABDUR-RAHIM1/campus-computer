@@ -18,11 +18,10 @@ export function middleware(request) {
 
     // 🔐 Admin Protection
     if (isAdminRoute) {
-        // const adminToken = request.cookies.get('admin_token')?.value;
-        const adminToken = true;
+        const adminToken = request.cookies.get('campus_computer_access')?.value;
 
         if (!adminToken) {
-            const loginUrl = new URL('/admin-login', request.url);
+            const loginUrl = new URL('/admin-auth', request.url);
             return NextResponse.redirect(loginUrl);
         }
     }

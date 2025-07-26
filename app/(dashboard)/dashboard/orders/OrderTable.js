@@ -1,11 +1,15 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import DataTable from "react-data-table-component";
-import { format } from "date-fns"; 
+import { format } from "date-fns";
 import DownloadButton from "@/utilities/DownloadButton";
+import { PostActionAdmin } from "@/actions/admins/PostAction";
+import { orderStatusUpdate } from "@/constans";
+import { globalContext } from "@/contextApi/ContextApi";
 
 export default function OrderTable({ orders }) {
+  const { showToast } = useContext(globalContext);
   const [orderList, setOrderList] = useState([]);
 
   useEffect(() => {
@@ -13,6 +17,34 @@ export default function OrderTable({ orders }) {
       setOrderList(orders);
     }
   }, [orders]);
+
+  //  order stutus update handler
+  const handleStatusChange = async (orderId, newStatus) => {
+    try {
+      const payload = {
+        method: "PUT",
+        endpoint: orderStatusUpdate + orderId,
+        body: { orderStatus: newStatus },
+      };
+      const { status, data } = await PostActionAdmin(payload);
+      showToast(status, data)
+  
+      if (status === 200) {
+        // ✅ অর্ডার লিস্ট আপডেট (লোকালি UI তে পরিবর্তন)
+        setOrderList((prev) =>
+          prev.map((order) =>
+            order._id === orderId ? { ...order, status: newStatus } : order
+          )
+        );
+      }
+    } catch (error) {
+      console.log("🛑 Failed to update order status", error);
+    }
+  };
+
+
+
+
 
   const columns = [
     {
@@ -41,27 +73,34 @@ export default function OrderTable({ orders }) {
       name: "স্ট্যাটাস",
       selector: (row) => row.status,
       cell: (row) => {
-        let bgColor = "bg-gray-500";
-        let label = "অজানা";
+        let bgClass = "";
+        let textClass = "";
 
         if (row.status === "pending") {
-          bgColor = "bg-yellow-500";
-          label = "প্রক্রিয়াধীন";
+          bgClass = "bg-yellow-100";
+          textClass = "text-yellow-800";
         } else if (row.status === "active") {
-          bgColor = "bg-blue-500";
-          label = "চলমান";
+          bgClass = "bg-blue-100";
+          textClass = "text-blue-800";
         } else if (row.status === "success") {
-          bgColor = "bg-green-600";
-          label = "সম্পন্ন";
+          bgClass = "bg-green-100";
+          textClass = "text-green-800";
         }
 
         return (
-          <span className={`px-2 py-1 rounded text-xs font-medium text-white ${bgColor}`}>
-            {label}
-          </span>
+          <select
+            value={row.status}
+            onChange={(e) => handleStatusChange(row._id, e.target.value)}
+            className={`text-xs px-2 py-1 rounded border font-medium ${bgClass} ${textClass}`}
+          >
+            <option value="pending">প্রক্রিয়াধীন</option>
+            <option value="active">চলমান</option>
+            <option value="success">সম্পন্ন</option>
+          </select>
         );
       },
     },
+
     {
       name: "পেমেন্ট",
       selector: (row) => row.paymentStatus,

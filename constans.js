@@ -5,6 +5,13 @@ export const demoProfilePicture = "https://cdn-icons-png.flaticon.com/512/149/14
 
 export const JWT_SECRET = process.env.NEXT_PUBLIC_JWT_SECRET;
 
+// ---------------------  admin -------------
+export const adminRegister = "/auth/admin/register"
+export const adminLogin = "/auth/admin/login"
+// ---------------------  admin -------------
+
+
+
 //  frontend Start here
 
 export const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -28,6 +35,7 @@ export const servicesGetMy = "/services/matchWithMe"
 export const orderPostGetall = "/order/postGet"
 export const orderGetMe = "/order/myOrder"
 export const orderDetails = "/order/details/"
+export const orderStatusUpdate = "/order/update/status/" // only admin can do this 
 
 // ------------------ Order ------------------------------
 

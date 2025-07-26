@@ -33,6 +33,10 @@ const studentAuthSchema = mongoose.Schema({
         enum: [1, 2, 3, 4],
         trim: true,
     },
+    role: {
+        type: String,
+        default: "user",
+    },
     session: String,
     registrationNumber: String,
     boardRoll: String,
@@ -47,7 +51,7 @@ const studentAuthSchema = mongoose.Schema({
     improvementSubjects: { type: [String] },
     profilePicture: String,
     documents: {
-        type: [String], 
+        type: [String],
         default: [],
     }
 
