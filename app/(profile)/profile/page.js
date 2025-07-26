@@ -8,6 +8,7 @@ import Services from "./components/Services";
 import MyServices from "./components/myServices/MyServices";
 import { demoProfilePicture } from "@/constans";
 import AdditionalFileUploadButton from "./components/AdditionalFileUploadButton";
+import Link from "next/link";
 
 export default async function StudentProfile() {
     const { status, data } = await getMyProfileInfo();
@@ -68,9 +69,16 @@ export default async function StudentProfile() {
                     <AdditionalFileUploadButton profileId={data._id} />
 
                     <div className="text-left mt-6">
-                        <h3 className="font-semibold text-gray-800 mb-2">
-                            📚 গুরুত্বপূর্ণ তথ্যসমূহ
-                        </h3>
+
+                        <div className=" flex items-center justify-between flex-wrap my-4">
+                            <h3 className="font-semibold text-gray-800 mb-2">
+                                📚 গুরুত্বপূর্ণ তথ্যসমূহ
+                            </h3>
+                            <Link href={"/profile/details"} className=" inline-block py-2 px-3 rounded-md bg-blue-500 text-white font-semibold">
+                                Details
+                            </Link>
+                        </div>
+
                         <ul className="space-y-1 list-disc list-inside text-gray-700 text-sm">
                             <li>নাম: {data.username || "__"}</li>
                             <li>ফোন: {data.phone || "__"}</li>

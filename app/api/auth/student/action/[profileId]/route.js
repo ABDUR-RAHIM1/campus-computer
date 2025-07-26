@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
 
 //  profile update 
 export const PUT = async (req, { params }) => {
-    const { profileId } = params;
+    const { profileId } = await params;
 
     try {
         await connectDb();
