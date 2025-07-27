@@ -12,7 +12,7 @@ export const PUT = async (req, { params }) => {
         if (error) return response;
 
         const { orderStatus } = await req.json();
-        const { orderId } = params;
+        const { orderId } = await params;
 
         const isOrder = await Order.findById(orderId);
 

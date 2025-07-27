@@ -1,10 +1,11 @@
 // "use client"
- 
+
 import Image from 'next/image';
 import { campusServices } from '@/LocalDatabase/campusComputer/campusItServices';
 import { Hero } from '@/components/Hero';
 import { FaqSection } from '@/components/Faq';
 import { Contact } from '@/components/Contact';
+import AutomationOverview from '@/components/Overview';
 
 const CampusComputerPage = async () => {
 
@@ -14,48 +15,6 @@ const CampusComputerPage = async () => {
             <main>
                 {/* Hero Section */}
                 <Hero />
-
-                {/* CampusIt Services Section */}
-                <section id="services-list" className='py-16 bg-gradient-to-br from-gray-100 to-gray-200'>
-                    <div className="container mx-auto px-4">
-                        <h2 className="text-4xl font-extrabold text-center text-gray-900 mb-6 leading-tight">
-                            আমাদের CampusIt এ সেবাসমূহ
-                        </h2>
-                        <p className="text-xl text-center text-gray-700 mb-12 max-w-4xl mx-auto">
-                            CampusIt কম্পিউটার সেন্টার থেকে আপনি পাবেন বহুমুখী ডিজিটাল সেবা। প্রতিটি সেবাই নির্ভুলতা ও দ্রুততার সাথে প্রদান করা হয়।
-                        </p>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
-                            {campusServices.map((service) => (
-                                <div
-                                    key={service.id}
-                                    className={`relative ${service.bgColor} rounded-lg shadow-xl overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl w-full max-w-sm`}
-                                >
-                                    <div className="p-5 flex flex-col items-center text-center">
-                                        {service.icon && (
-                                            <div className="w-full my-2">
-                                                <Image
-                                                    src={service.icon}
-                                                    alt={service.title}
-                                                    width={200}
-                                                    height={200}
-                                                    className="w-full h-[220px] rounded-md"
-                                                />
-                                            </div>
-                                        )}
-                                        <h3 className={`text-2xl font-bold ${service.textColor} mb-3`}>
-                                            {service.title}
-                                        </h3>
-                                        <p className="text-gray-700 leading-relaxed">
-                                            {service.description}
-                                        </p>
-                                    </div>
-                                    <div className={`absolute bottom-0 left-0 w-full h-2 ${service.textColor.replace('text', 'bg')}`}></div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
 
                 {/* Automation System Info Section */}
                 <section className="py-16 bg-white border-t border-gray-300">
@@ -95,6 +54,51 @@ const CampusComputerPage = async () => {
                         </div>
                     </div>
                 </section>
+
+                <AutomationOverview />
+
+                {/* CampusIt Services Section */}
+                <section id="services-list" className='py-16 bg-gradient-to-br from-gray-100 to-gray-200'>
+                    <div className="container mx-auto px-4">
+                        <h2 className="text-4xl font-extrabold text-center text-gray-900 mb-6 leading-tight">
+                            আমাদের Campus Computer এ সেবাসমূহ
+                        </h2>
+                        <p className="text-xl text-center text-gray-700 mb-12 max-w-4xl mx-auto">
+                            CampusIt কম্পিউটার সেন্টার থেকে আপনি পাবেন বহুমুখী ডিজিটাল সেবা। প্রতিটি সেবাই নির্ভুলতা ও দ্রুততার সাথে প্রদান করা হয়।
+                        </p>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
+                            {campusServices.map((service) => (
+                                <div
+                                    key={service.id}
+                                    className={`relative ${service.bgColor} rounded-lg shadow-xl overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl w-full max-w-sm`}
+                                >
+                                    <div className="p-5 flex flex-col items-center text-center">
+                                        {service.icon && (
+                                            <div className="w-full my-2">
+                                                <Image
+                                                    src={service.icon}
+                                                    alt={service.title}
+                                                    width={200}
+                                                    height={200}
+                                                    className="w-full h-[220px] rounded-md"
+                                                />
+                                            </div>
+                                        )}
+                                        <h3 className={`text-2xl font-bold ${service.textColor} mb-3`}>
+                                            {service.title}
+                                        </h3>
+                                        <p className="text-gray-700 leading-relaxed">
+                                            {service.description}
+                                        </p>
+                                    </div>
+                                    <div className={`absolute bottom-0 left-0 w-full h-2 ${service.textColor.replace('text', 'bg')}`}></div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
 
                 <FaqSection />
                 {/* Contact Section */}

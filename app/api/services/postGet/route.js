@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 
 
 //  Creaet services for Admin
+ // api => /api/services/postGet
 export const POST = async (req) => {
     try {
         await connectDb();

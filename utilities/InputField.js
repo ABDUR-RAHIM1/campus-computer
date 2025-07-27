@@ -6,7 +6,7 @@ import React from "react";
 
 export default function InputField({ label, name, type = "text", placeholder, value, onChange, error, required = false }) {
     return (
-        <div className="w-full max-w-md mb-4">
+        <div className="w-full mb-4">
             <Label htmlFor={name} className="font-medium mb-1">
                 {label} {required && <span className="text-red-500">*</span>}
             </Label>
@@ -18,7 +18,7 @@ export default function InputField({ label, name, type = "text", placeholder, va
                 value={value}
                 onChange={onChange}
                 required={required}
-                className={error ? "border-red-500" : ""}
+                className={error ? " border-red-500" : ""}
             />
             {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
         </div>

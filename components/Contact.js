@@ -89,10 +89,11 @@ export function Contact() {
             <p className="mb-6 text-lg">
               📧 ইমেইল: <br />
               <a
-                href="mailto:info@campuscomputer.com"
+                href="mailto:lgccampuscomputer@gmail.com"
+                target='_blank'
                 className="text-blue-600 hover:underline"
               >
-                info@campuscomputer.com
+                lgccampuscomputer@gmail.com
               </a>
             </p>
           </div>
