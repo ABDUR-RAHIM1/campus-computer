@@ -7,10 +7,10 @@ import React, { useContext, useEffect, useState } from "react";
 import { getDepartmentsByProgram } from "@/LocalDatabase/departments";
 import { sessionList } from "@/LocalDatabase/seasion";
 import { getYearsByProgram } from "@/LocalDatabase/year";
+import { PostAction } from "@/actions/students/PostAction";
 import { servicesPostGetAll } from "@/constans";
 import { globalContext } from "@/contextApi/ContextApi";
 import Spinner from "@/utilities/Spinner";
-import { PostActionAdmin } from "@/actions/admins/PostAction";
 
 export default function AddServicePage() {
     const { showToast } = useContext(globalContext)
@@ -18,10 +18,6 @@ export default function AddServicePage() {
     const [year, setYear] = useState([]);
     const [isLoading, setIsLoading] = useState(false)
 
-    const [deparmentData, setDepartmentData] = useState({
-        department: "",
-        fee: ""
-    })
     const [formData, setFormData] = useState({
         title: "",
         description: "",
@@ -41,16 +37,6 @@ export default function AddServicePage() {
         }));
     };
 
-    //  departmentChange
-    const handleDepartmentChange = (e) => {
-        const { name, value } = e.target;
-
-        setDepartmentData((prev) => ({
-            ...prev,
-            [name]: value
-        }))
-    }
-
 
     // deparment filter using Program
     // ekhane formData.program er name ar departments.json er program nam same thakte hobe , tobei ata kaj korbe.
@@ -68,12 +54,7 @@ export default function AddServicePage() {
         value: s,
     }));
 
-    const handleAddMultipleDepartmentDataInformState = () => {
-        setFormData((prev) => ({
-            ...prev,
-            departmentFees: [...prev.departmentFees, deparmentData]
-        }))
-    }
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -92,7 +73,7 @@ export default function AddServicePage() {
                 endpoint: servicesPostGetAll,
                 body: finalData
             }
-            const { status, data } = await PostActionAdmin(payload);
+            const { status, data } = await PostAction(payload);
             showToast(status, data)
             console.log(data)
 
@@ -142,32 +123,14 @@ export default function AddServicePage() {
                     />
 
 
-                    <div className=" border my-5 py-4 px-1">
-                        <div className=" flex items-center justify-between gap-2">
-                            <SelectField
-                                label="📚 বিভাগ"
-                                name="department"
-                                value={deparmentData.department}
-                                onChange={handleDepartmentChange}
-                                required
-                                options={departments}
-                            />
-                            <InputField
-                                label="ফি (৳)"
-                                name="fee"
-                                type="number"
-                                value={deparmentData.fee}
-                                onChange={handleDepartmentChange}
-                                required
-                            />
-                        </div>
-
-                        <div className=" text-center">
-                            <Button onClick={handleAddMultipleDepartmentDataInformState} type={"button"} className={" text-sm my-3 cursor-pointer"}>
-                                যুক্ত করুন
-                            </Button>
-                        </div>
-                    </div>
+                    <SelectField
+                        label="📚 বিভাগ"
+                        name="department"
+                        value={formData.department}
+                        onChange={handleChange}
+                        required
+                        options={departments}
+                    />
 
 
                     <SelectField
@@ -188,7 +151,14 @@ export default function AddServicePage() {
                         options={sessionOptions}
                     />
 
-
+                    <InputField
+                        label="ফি (৳)"
+                        name="fee"
+                        type="number"
+                        value={formData.fee}
+                        onChange={handleChange}
+                        required
+                    />
                     <InputField
                         label="প্রয়োজনীয় ডকুমেন্ট (কমা দিয়ে আলাদা করুন)"
                         name="requiredDocuments"
@@ -200,7 +170,7 @@ export default function AddServicePage() {
 
                     <Button
                         type="submit"
-                        className={`w-full  my-20 bg-green-600 text-white font-semibold rounded hover:bg-green-700 ${isLoading ? " cursor-progress" : " cursor-pointer"}`}
+                        className="w-full  my-20 bg-green-600 text-white font-semibold rounded hover:bg-green-700"
                     >
                         {
                             isLoading ? <Spinner /> : "✅ সাবমিট করুন"

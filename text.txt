@@ -5,10 +5,14 @@
     2=> jekono services newar somoy student chaile alaa vabe abar nijer info gulo dite pare , onek somoy dekha jay je karo 1/2 subject imporve jay . se jonno
 }
 
-{
+studentProfile: {
     student profile a program name field add korlam (model a ). akhn seta forntend er update profile a input nite hobe ar profile overview te dekhabe 
 }
 
-{
+order: {
     protita order model a isCheck name field rakhte hobe , je seta check kora ba dekha hoyeche kina .dashboard theke click hole ba dekha hole isCheck filed ti update hobe
+}
+
+services: {
+    ami services add korar somoy mone hoy akta kaj booring kortechi , seta holo je dhoro honors er kono kaj suru holo koleje , seta to sob department er jonnoi hocce . kintu protiar jonno alada alada vabe services add korte hocce , karon holo protia department er fee aktu kom beshi 50/60/100 taka amon difference ,  jeta onek booring kaj . er theke services a sob gulo department akshathe add kore dile kmn hoy jekhane protia department er jonno alada alada price age theke set kora thakbe ba oi form a set kore dibo age . student er samne jokhn oi services ti show korbe tokhn payment korar somoy student profile e je department dewa ace services theke filter kore sei deparment er price ta add kore dibe ai to holo naki ?
 }

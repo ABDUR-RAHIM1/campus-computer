@@ -1,18 +1,33 @@
 import { connectDb } from "@/database/connectDb";
 import ServiceModel from "@/database/models/Services";
+import { adminAuthGuard } from "@/middlewere/adminAuthGuard";
 import { NextResponse } from "next/server";
 
 
 //  Creaet services for Admin
- // api => /api/services/postGet
+// api => /api/services/postGet
 export const POST = async (req) => {
     try {
+
+
+        // 🔐 Auth Guard: শুধুমাত্র অ্যাডমিনের অনুমতি
+        const { error, admin, response } = await adminAuthGuard(req);
+        if (error) return response;
+
+
         await connectDb();
 
         const body = await req.json();
 
         // Simple validation example, তুমি চাইলে Joi বা Zod দিয়ে করো
-        if (!body.title || !body.program || !body.classYear || !body.fee) {
+        if (
+            !body.title ||
+            !body.program ||
+            !body.classYear ||
+            !body.departmentFees ||
+            !Array.isArray(body.departmentFees) ||
+            body.departmentFees.length === 0
+        ) {
             return NextResponse.json(
                 { message: "title, program, classYear এবং fee অবশ্যই দিতে হবে।" },
                 { status: 400 }
@@ -26,7 +41,7 @@ export const POST = async (req) => {
             department: body.department || null,
             classYear: body.classYear,
             session: body.session || null,
-            fee: body.fee,
+            departmentFees: body.departmentFees || [],
             requiredDocuments: body.requiredDocuments || [],
             active: body.active !== undefined ? body.active : true,
         });

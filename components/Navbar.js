@@ -1,12 +1,25 @@
 "use client";
-import React, { useState } from "react";
+import React, {useState } from "react";
 import Link from "next/link";
 import AccountBtn from "./AccountBtn";
 import { Menu as MenuIcon } from 'lucide-react';
 import Logo from "@/utilities/Logo";
+import { usePathname } from "next/navigation"; 
+
+
+const items = [
+    { item: "হোম", path: "/" },
+    { item: "কলেজ সেবা", path: "/services" },
+    { item: "জবস", path: "/jobs" },
+    { item: "সেবা সমূহ", path: "/#services-list" },
+    { item: "যোগাযোগ", path: "/#contact" },
+]
+
 
 export default function Navbar() {
+    const path = usePathname();
     const [menuOpen, setMenuOpen] = useState(false);
+
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
@@ -25,18 +38,16 @@ export default function Navbar() {
 
                 {/* Desktop Links */}
                 <div className="hidden md:flex space-x-6 items-center">
-                    <Link href="/" className="text-gray-700 hover:text-blue-600 font-medium">
-                        হোম
-                    </Link>
-                    <Link href="/jobs" className="text-gray-700 hover:text-blue-600 font-medium">
-                         জবস
-                    </Link>
-                    <Link href="/#services-list" className="text-gray-700 hover:text-blue-600 font-medium">
-                        সেবা সমূহ
-                    </Link>
-                    <Link href="/#contact" className="text-gray-700 hover:text-blue-600 font-medium">
-                        যোগাযোগ
-                    </Link>
+
+                    {
+                        items.map((item, index) => (
+                            <Link key={index} href={item.path} className={` ${item.path === path ? "text-blue-500" : "text-gray-700"} hover:text-blue-600 font-medium`}>
+                                {item.item}
+                            </Link>
+                        ))
+                    }
+
+
                     <AccountBtn />
                 </div>
 

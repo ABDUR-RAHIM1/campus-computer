@@ -1,6 +1,6 @@
 "use client"
 
-import { StudentToken } from "@/getToken";
+import { getMyProfileInfo } from "@/handlers/studentProfile";
 import { createContext, useEffect, useState } from "react"
 import { toast } from "sonner";
 
@@ -8,24 +8,29 @@ export const globalContext = createContext();
 
 export default function ContextApiState({ children }) {
 
-    const [studentToken, setStudentToken] = useState()
-    const [loginSignal, setLoginSignal] = useState(false)
+    const [studentIsLogin, setStudnetIsLogin] = useState(false);
+    const [studentInfo, setStudentInfo] = useState(null)
+    const [loginSignal, setLoginSignal] = useState(false);
+
     const [imgUrl, setImgUrl] = useState("");
     const [uploadResponse, setUploadResponse] = useState({
         message: "",
         status: 0,
     });
 
-
     useEffect(() => {
-        const getToken = async () => {
-            const token = await StudentToken();
-            console.log({ token })
-            setStudentToken(token)
-        };
-        getToken;
-    }, [loginSignal])
+        const getStudentProfile = async () => {
+            const { status, data } = await getMyProfileInfo();;
 
+            if (status === 200 || status === 201) {
+                setStudnetIsLogin(true);
+                setStudentInfo(data)
+            } else {
+                setStudnetIsLogin(false)
+            }
+        };
+        getStudentProfile(0)
+    }, [])
 
     const showToast = (status, data, autoClose) => {
         const message = data.message || data;
@@ -80,7 +85,7 @@ export default function ContextApiState({ children }) {
             ), { duration: 15000 });
         }
     };
- 
+
     // 🔹 Multiple File Upload Function
     const uploader = async (files) => {
         if (!files || files.length === 0) {
@@ -143,7 +148,7 @@ export default function ContextApiState({ children }) {
 
 
     const value = {
-        studentToken,
+        studentIsLogin, studentInfo,
         loginSignal, setLoginSignal,
         imgUrl,
         imgUrl, uploadResponse, uploader,

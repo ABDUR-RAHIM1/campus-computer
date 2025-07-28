@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import ApplyButton from './ApplyButton';
+import { Button } from '@/components/ui/button'; 
 import { getMyServices } from '@/handlers/services';
+import ApplyButton from '@/components/services/ApplyButton';
 
 
 

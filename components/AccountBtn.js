@@ -1,34 +1,29 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
+
+import React, { useContext } from "react";
 import Link from "next/link";
 import { globalContext } from "@/contextApi/ContextApi";
+import { User } from "lucide-react"; // ইউজার আইকন
 
 export default function AccountBtn() {
-  const [isToken, setIsToken] = useState('')
-
-  // const { showToast, token, loginSignal, setLoginSignal } = useContext(globalContext);
-  const { token } = useContext(globalContext);
-
-  // useEffect(() => {
-  //   setIsToken(token)
-  // }, [loginSignal]);
-
-  console.log(token)
+  const { studentIsLogin: loginStatus, studentInfo } = useContext(globalContext);
 
   return (
     <>
-      {token ? (
+      {loginStatus ? (
         <Link
           href="/profile"
-          className="text-gray-700 hover:text-blue-600 font-medium"
+          className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-blue-100 hover:text-blue-600 rounded-full transition"
         >
-          প্রোফাইল
+          <User className="w-4 h-4" />
+          {studentInfo?.username || "প্রোফাইল"}
         </Link>
       ) : (
         <Link
           href="/student-login"
-          className="text-gray-700 hover:text-blue-600 font-medium"
+          className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-blue-100 hover:text-blue-600 rounded-full transition"
         >
+          <User className="w-4 h-4" />
           একাউন্ট
         </Link>
       )}
