@@ -19,41 +19,10 @@ const studentAuthSchema = mongoose.Schema({
         required: [true, "পাসওয়ার্ড আবশ্যক"],
         minlength: [6, "পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।"]
     },
-
-    // ✅ Optional Fields for profile
-    email: String,
-    instituteName: String,
-    program: {
-        type: String,
-        enum: ["honors", "degree", "intermediate"]
-    },
-    department: String,
-    classYear: {
-        type: Number,
-        enum: [1, 2, 3, 4],
-        trim: true,
-    },
     role: {
         type: String,
         default: "user",
     },
-    session: String,
-    registrationNumber: String,
-    boardRoll: String,
-    classRoll: String,
-    pin: String,
-    guardianPhone: String,
-    address: String,
-    birthDate: String,
-    bloodGroup: String,
-    gender: String,
-    hasImprovement: Boolean,
-    improvementSubjects: { type: [String] },
-    profilePicture: String,
-    documents: {
-        type: [String],
-        default: [],
-    }
 
 }, { timestamps: true });
 

@@ -1,0 +1,58 @@
+import React from "react";
+import DataNotFound from "@/components/DataNotFound";
+import { getMyAllProfile } from "@/handlers/profile";
+import Link from "next/link";
+import ProfileUpdateButton from "../actions/ProfileUpdateButton";
+
+export default async function ProfileList() {
+    const { status, data } = await getMyAllProfile();
+
+    if (status !== 200 || !data?.length) {
+        return <DataNotFound text={data?.message || "কোনো প্রোফাইল পাওয়া যায়নি।"} />;
+    }
+
+    return (
+        <div className="my-20">
+            <h2 className=" font-semibold text-2xl text-center my-5"> আপনার সমস্ত প্রোফাইল </h2>
+            <div className="  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
+                {data.map((profile) => (
+                    <div
+                        key={profile._id}
+                        className="bg-white shadow-md rounded-xl p-5 border border-gray-200"
+                    >
+                        <div className="mb-2">
+                            <div className=" flex items-center justify-between">
+                                <h2 className="text-lg font-semibold mb-3 text-gray-800">
+                                    👤 নাম: {profile?.studentId.username}
+                                </h2>
+
+                                <ProfileUpdateButton data={profile} />
+
+                            </div>
+                            <p className="text-sm text-gray-500">
+                                ⚧️ কার জন্য: {profile.isOtherStudent ? "অন্যের" : "নিজের"}
+                            </p>
+                        </div>
+
+                        <div className="space-y-1 text-sm text-gray-700">
+                            <p>🎓 শ্রেণি: {profile.department}</p>
+                            <p>🏫 প্রতিষ্ঠান: {profile.instituteName}</p>
+                            <p>📞 মোবাইল: {profile?.studentId.phone}</p>
+                            <p>📍 ঠিকানা: {profile.address}</p>
+                            <p>🎂 জন্ম তারিখ: {profile.birthDate}</p>
+                            <p>🔖 রোল নম্বর: {profile.classRoll}</p>
+                            <p>📝 রেজিস্ট্রেশন নম্বর: {profile.registrationNumber}</p>
+                            <p>📅 শিক্ষাবর্ষ: {profile.session}</p>
+                        </div>
+
+                        <Link href={"/profile/details"} className=" w-full my-4 text-center inline-block text-sm py-2 px-3 rounded-md bg-blue-500 text-white font-semibold">
+                            বিস্তারিত
+                        </Link>
+
+                    </div>
+                ))}
+            </div>
+        </div>
+
+    );
+}

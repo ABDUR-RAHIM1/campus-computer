@@ -2,35 +2,42 @@
 import React from "react";
 import Image from "next/image";
 import DataNotFound from "@/components/DataNotFound";
-import EditProfileButton from "./components/EditProfileButton";
-import { getMyProfileInfo } from "@/handlers/studentProfile";
 import Services from "./components/Services";
 import MyServices from "./components/myServices/MyServices";
 import { demoProfilePicture } from "@/constans";
 import AdditionalFileUploadButton from "./components/AdditionalFileUploadButton";
 import Link from "next/link";
+import { getMyProfile } from "@/handlers/profile";
+import { getMyProfileInfo } from "@/handlers/studentAuth";
 
 export default async function StudentProfile() {
-    const { status, data } = await getMyProfileInfo();
 
+    const [authAccount, profileAccount] = await Promise.all([
+        getMyProfileInfo(),
+        getMyProfile()
+    ]);
 
-    if (status !== 200) {
-        return <DataNotFound text={data?.message || "ডাটা পাওয়া যায়নি"} />;
+    const { status: authStatus, data: authData } = authAccount;
+    const { status: profileStatus, data: profileData } = profileAccount;
+
+    if (authStatus !== 200 || profileStatus !== 200) {
+        return <DataNotFound text={"ডাটা পাওয়া যায়নি"} />;
     }
 
+
+    const { username, phone } = authData; 
+
     const requiredFields = [
-        "username",
         "registrationNumber",
         "classYear",
         "department",
         "session",
-        "phone",
         "email",
     ];
 
     const isProfileComplete = requiredFields.every(
         (field) => {
-            const value = data[field];
+            const value = profileData[field];
             return value !== undefined && value !== null && value.toString().trim() !== "";
         }
     );
@@ -52,21 +59,22 @@ export default async function StudentProfile() {
                 {/* Left Sidebar - Profile Summary */}
                 <div className="bg-white shadow rounded-lg p-6 text-center">
                     <Image
-                        src={data.profilePicture || demoProfilePicture}
+                        src={profileData.studentId?.profilePicture || demoProfilePicture}
                         alt=" Campus Computer Student Profile Picture"
                         width={150}
                         height={150}
                         className=" w-[150px] h-[150px] rounded-md mx-auto mb-4 border border-gray-300"
                     />
                     <h2 className="text-xl font-bold text-gray-800 mb-1">
-                        {data.username || "--"}
+                        {username || "--"}
                     </h2>
-                    <p className="text-gray-600 mb-1">📞 {data.phone || "--"}</p>
-                    <p className="text-gray-600 mb-4">{data.email || "--"}</p>
+                    <p className="text-gray-600 mb-1">📞 {phone || "--"}</p>
+                    <p className="text-gray-600 mb-4">{profileData.email || "--"}</p>
 
                     {/* Update Profile Button */}
-                    <EditProfileButton />
-                    <AdditionalFileUploadButton profileId={data._id} />
+                    <Link href="/profile/actions" className=" text-sm inline-block bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition">
+                        প্রোফাইল তৈরি করুন
+                    </Link>                    <AdditionalFileUploadButton profileId={profileData._id} />
 
                     <div className="text-left mt-6">
 
@@ -74,36 +82,36 @@ export default async function StudentProfile() {
                             <h3 className="font-semibold text-gray-800 mb-2">
                                 📚 গুরুত্বপূর্ণ তথ্যসমূহ
                             </h3>
-                            <Link href={"/profile/details"} className=" inline-block text-sm py-2 px-3 rounded-md bg-blue-500 text-white font-semibold">
-                                বিস্তারিত
+                            <Link href={"/profile/profile-list"} className=" inline-block text-sm text-blue-500 underline">
+                                প্রোফাইল তালিকা
                             </Link>
+                           
                         </div>
 
                         <ul className="space-y-1 list-disc list-inside text-gray-700 text-sm">
-                            <li>নাম: {data.username || "__"}</li>
-                            <li>ফোন: {data.phone || "__"}</li>
-                            <li>রেজিস্ট্রেশন নম্বর: {data.registrationNumber || "__"}</li>
-                            <li>বিভাগ: {data.department || "__"}</li>
-                            <li> প্রোগ্রাম : {data.program || "__"}</li>
-                            <li>ক্লাস: {getClassYearInBangla(data.classYear)}</li>
-                            <li>সেশন: {data.session || "__"}</li>
-                            <li>ক্লাস রোল: {data.classRoll || "__"}</li>
-                            <li>বোর্ড রোল: {data.boardRoll || "__"}</li>
-                            <li>পিন: {data.pin || "__"}</li>
-                            <li>ইমেইল: {data.email || "__"}</li>
-                            <li>অভিভাবকের ফোন: {data.guardianPhone || "__"}</li>
-                            <li>ঠিকানা: {data.address || "__"}</li>
-                            <li>জন্ম তারিখ: {data.birthDate || "__"}</li>
-                            <li>লিঙ্গ: {data.gender || "__"}</li>
-                            <li>রক্ত গ্রুপ: {data.bloodGroup || "__"}</li>
-                            <li>ইনস্টিটিউটের নাম: {data.instituteName || "__"}</li>
+                         
+                            <li>রেজিস্ট্রেশন নম্বর: {profileData.registrationNumber || "__"}</li>
+                            <li>বিভাগ: {profileData.department || "__"}</li>
+                            <li> প্রোগ্রাম : {profileData.program || "__"}</li>
+                            <li>ক্লাস: {getClassYearInBangla(profileData.classYear)}</li>
+                            <li>সেশন: {profileData.session || "__"}</li>
+                            <li>ক্লাস রোল: {profileData.classRoll || "__"}</li>
+                            <li>বোর্ড রোল: {profileData.boardRoll || "__"}</li>
+                            <li>পিন: {profileData.pin || "__"}</li>
+                            <li>ইমেইল: {profileData.email || "__"}</li>
+                            <li>অভিভাবকের ফোন: {profileData.guardianPhone || "__"}</li>
+                            <li>ঠিকানা: {profileData.address || "__"}</li>
+                            <li>জন্ম তারিখ: {profileData.birthDate || "__"}</li>
+                            <li>লিঙ্গ: {profileData.gender || "__"}</li>
+                            <li>রক্ত গ্রুপ: {profileData.bloodGroup || "__"}</li>
+                            <li>ইনস্টিটিউটের নাম: {profileData.instituteName || "__"}</li>
 
                             {/* ✅ মানোন্নয়ন তথ্য */}
-                            {data.hasImprovement && Array.isArray(data.improvementSubjects) && data.improvementSubjects.length > 0 && (
+                            {profileData.hasImprovement && Array.isArray(profileData.improvementSubjects) && profileData.improvementSubjects.length > 0 && (
                                 <li>
                                     <span className=" text-red-800 font-bold ">মানোন্নয়নের বিষয়সমূহ:</span>
                                     <ul className="list-disc list-inside ml-4">
-                                        {data.improvementSubjects.map((s, i) => (
+                                        {profileData.improvementSubjects.map((s, i) => (
                                             <li key={i}>{s}</li>
                                         ))}
                                     </ul>
@@ -124,7 +132,7 @@ export default async function StudentProfile() {
                 {/* Right Side - Main Content */}
                 <div className="md:col-span-2 bg-white shadow rounded-lg p-6">
                     <h3 className="text-2xl font-bold text-gray-800 mb-6">
-                        👋 স্বাগতম, {data.username || "শিক্ষার্থী"}!
+                        👋 স্বাগতম, {profileData.username || "শিক্ষার্থী"}!
                     </h3>
                     <p className="text-gray-700 mb-6 leading-relaxed">
                         নিচে তালিকাভুক্ত সেবাগুলোর মাধ্যমে আপনি ঘরে বসেই কলেজের বিভিন্ন কাজ সম্পন্ন করতে পারবেন। প্রতিটি সেবার জন্য নির্দিষ্ট কিছু তথ্য প্রদান, প্রয়োজনীয় ডকুমেন্ট আপলোড এবং ফি পরিশোধের প্রয়োজন হতে পারে। <br /><br />

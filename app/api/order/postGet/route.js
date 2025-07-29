@@ -18,7 +18,7 @@ export async function POST(req) {
 
         const { id } = auth.student;
 
-        const { serviceId } = body;
+        const { serviceId, department, fee } = body;
 
         if (!id || !serviceId) {
             return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
@@ -38,6 +38,8 @@ export async function POST(req) {
         const newOrder = await Order.create({
             studentId: id,
             serviceId,
+            department,
+            amount: fee,
             status: "active",
             paymentStatus: "paid",
         });

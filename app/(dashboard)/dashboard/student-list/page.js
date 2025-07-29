@@ -1,6 +1,6 @@
 import React from 'react';
 import StudentListTable from './StudentListTable';
-import { getAllProfileInfo } from '@/handlers/studentProfile';
+import { getAllProfileInfo } from '@/handlers/studentAuth';
 import DataNotFound from '@/components/DataNotFound';
 
 export default async function StudentList() {

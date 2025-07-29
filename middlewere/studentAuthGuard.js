@@ -29,7 +29,7 @@ export const studentAuthGuard = async (req) => {
     };
 
   } catch (error) {
-    console.error("JWT Verify Error:", error);
+    // console.error("JWT Verify Error:", error);
     return {
       error: true,
       response: NextResponse.json(

@@ -55,7 +55,7 @@ export default async function ServicesCard({ data }) {
                             </ul>
                         )}
 
-                        <ApplyButton serviceId={service._id} />
+                        <ApplyButton serviceData={service} />
                     </div>
                 );
             })}

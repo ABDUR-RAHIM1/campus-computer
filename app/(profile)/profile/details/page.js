@@ -1,6 +1,6 @@
 
 import DataNotFound from '@/components/DataNotFound';
-import { getMyProfileInfo } from '@/handlers/studentProfile';
+import { getMyProfileInfo } from '@/handlers/studentAuth';
 import React from 'react'; 
 import Image from 'next/image';
 import { demoProfilePicture } from '@/constans';

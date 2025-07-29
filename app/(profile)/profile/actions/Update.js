@@ -6,9 +6,9 @@ import InputField from "@/utilities/InputField";
 import { studentAuthFormState } from "@/formStats/StudentAuthState";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { getMyProfileInfo } from "@/handlers/studentProfile";
+import { getMyProfileInfo } from "@/handlers/studentAuth";
 import { PostAction } from "@/actions/students/PostAction";
-import { studentProfileUpdateDelete } from "@/constans";
+// import { studentProfileUpdateDelete } from "@/constans";
 import { globalContext } from "@/contextApi/ContextApi";
 import SelectField from "@/utilities/SelectFiled";
 import { getDepartmentsByProgram } from "@/LocalDatabase/departments";
@@ -16,7 +16,7 @@ import { getStatusColor } from "@/utilities/getStatusColor";
 
 
 
-export default function EditProfile() {
+export default function ProfileUpdate() {
     const { showToast, imgUrl, uploadResponse, uploader } = useContext(globalContext);
     const [loading, setLoading] = useState(false)
     const [submiting, setSubmiting] = useState(false)
@@ -133,13 +133,11 @@ export default function EditProfile() {
                 <div className="text-center text-blue-600 font-semibold my-6">লোড হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...</div>
             ) : (
                 <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <InputField label="👤 নাম" name="username" value={formData.username} onChange={handleChange} required />
-                    <InputField label="📞 মোবাইল" name="phone" value={formData.phone} onChange={handleChange} required />
+
                     <InputField label="📧 ইমেইল" name="email" value={formData.email} onChange={handleChange} />
 
                     <InputField label="🏛️ ইনস্টিটিউটের নাম" name="instituteName" value={formData.instituteName} required onChange={handleChange} />
 
-                    {/* <InputField label="🏛️ প্রোগ্রাম (অনার্স/ডিগ্রি/ইন্টারমেডিয়েট)" name="program" value={formData.program} required onChange={handleChange} /> */}
 
                     <SelectField
                         label="🏛️ প্রোগ্রাম (অনার্স/ডিগ্রি/ইন্টারমেডিয়েট)"

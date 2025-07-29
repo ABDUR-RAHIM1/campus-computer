@@ -1,6 +1,6 @@
 "use client"
 
-import { getMyProfileInfo } from "@/handlers/studentProfile";
+import { getMyProfileInfo } from "@/handlers/studentAuth";
 import { createContext, useEffect, useState } from "react"
 import { toast } from "sonner";
 
@@ -8,6 +8,7 @@ export const globalContext = createContext();
 
 export default function ContextApiState({ children }) {
 
+    const [editData, setEditData] = useState(null)
     const [studentIsLogin, setStudnetIsLogin] = useState(false);
     const [studentInfo, setStudentInfo] = useState(null)
     const [loginSignal, setLoginSignal] = useState(false);
@@ -148,6 +149,7 @@ export default function ContextApiState({ children }) {
 
 
     const value = {
+        editData, setEditData,
         studentIsLogin, studentInfo,
         loginSignal, setLoginSignal,
         imgUrl,

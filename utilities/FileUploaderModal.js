@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { studentProfileUpdateDelete } from "@/constans";
+// import { studentProfileUpdateDelete } from "@/constans";
 import { globalContext } from "@/contextApi/ContextApi";
 import { useContext, useEffect, useState } from "react";
 import { getStatusColor } from "./getStatusColor";

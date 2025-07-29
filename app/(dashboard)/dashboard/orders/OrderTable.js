@@ -28,7 +28,7 @@ export default function OrderTable({ orders }) {
       };
       const { status, data } = await PostActionAdmin(payload);
       showToast(status, data)
-  
+
       if (status === 200) {
         // ✅ অর্ডার লিস্ট আপডেট (লোকালি UI তে পরিবর্তন)
         setOrderList((prev) =>
@@ -63,6 +63,20 @@ export default function OrderTable({ orders }) {
       selector: (row) => <p className="my-2">{row.serviceId?.title || "N/A"}</p>,
       sortable: true,
       width: "250px",
+      wrap: true,
+    },
+    {
+      name: "বিভাগ ",
+      selector: (row) => <p className="my-2">{row.department || "N/A"}</p>,
+      sortable: true,
+      width: "250px",
+      wrap: true,
+    },
+    {
+      name: "দাম ",
+      selector: (row) => <p className="my-2">{row.amount || "N/A"}</p>,
+      sortable: true,
+      width: "100px",
       wrap: true,
     },
     {
@@ -143,9 +157,7 @@ export default function OrderTable({ orders }) {
     <div className="p-4 bg-gray-50 border rounded mt-2 text-sm text-gray-700 space-y-1">
       <p><strong>📘 বর্ণনা:</strong> {data.serviceId?.description || "N/A"}</p>
       <p><strong>📅 সেশন:</strong> {data.serviceId?.session}</p>
-      <p><strong>📚 বিভাগ:</strong> {data.serviceId?.department}</p>
       <p><strong>🎓 প্রোগ্রাম:</strong> {data.serviceId?.program}</p>
-      <p><strong>💰 ফি:</strong> {data.serviceId?.fee}৳</p>
       {data.serviceId?.requiredDocuments?.length > 0 && (
         <div>
           <strong>📎 প্রয়োজনীয় ডকুমেন্ট:</strong>

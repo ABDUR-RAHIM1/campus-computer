@@ -1,10 +1,10 @@
 "use client";
-import React, {useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import AccountBtn from "./AccountBtn";
 import { Menu as MenuIcon } from 'lucide-react';
 import Logo from "@/utilities/Logo";
-import { usePathname } from "next/navigation"; 
+import { usePathname } from "next/navigation";
 
 
 const items = [
@@ -64,27 +64,20 @@ export default function Navbar() {
             {/* Mobile Menu */}
             {menuOpen && (
                 <div className="md:hidden bg-white border-t px-4 pb-4 space-y-2">
-                    <Link
-                        href="/"
-                        className="block text-gray-700 hover:text-blue-600 font-medium"
-                        onClick={handleClose}
-                    >
-                        হোম
-                    </Link>
-                    <Link
-                        href="#services-list"
-                        className="block text-gray-700 hover:text-blue-600 font-medium"
-                        onClick={handleClose}
-                    >
-                        সেবা সমূহ
-                    </Link>
-                    <Link
-                        href="#contact"
-                        className="block text-gray-700 hover:text-blue-600 font-medium"
-                        onClick={handleClose}
-                    >
-                        যোগাযোগ
-                    </Link>
+                    
+
+                    <div className=" my-5">
+                        {
+                            items.map((item, index) => (
+                                <Link
+                                    onClick={handleClose}
+                                    key={index} href={item.path} className={` ${item.path === path ? "text-blue-500" : "text-gray-700"} hover:text-blue-600 font-medium block my-3`}>
+                                    {item.item}
+                                </Link>
+                            ))
+                        }
+                    </div>
+
                     <div onClick={handleClose}>
                         <AccountBtn />
                     </div>
