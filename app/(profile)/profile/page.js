@@ -5,7 +5,6 @@ import DataNotFound from "@/components/DataNotFound";
 import Services from "./components/Services";
 import MyServices from "./components/myServices/MyServices";
 import { demoProfilePicture } from "@/constans";
-import AdditionalFileUploadButton from "./components/AdditionalFileUploadButton";
 import Link from "next/link";
 import { getMyProfile } from "@/handlers/profile";
 import { getMyProfileInfo } from "@/handlers/studentAuth";
@@ -20,12 +19,14 @@ export default async function StudentProfile() {
     const { status: authStatus, data: authData } = authAccount;
     const { status: profileStatus, data: profileData } = profileAccount;
 
+   
+
     if (authStatus !== 200 || profileStatus !== 200) {
         return <DataNotFound text={"ডাটা পাওয়া যায়নি"} />;
     }
 
 
-    const { username, phone } = authData; 
+    const { username, phone } = authData;
 
     const requiredFields = [
         "registrationNumber",
@@ -74,7 +75,7 @@ export default async function StudentProfile() {
                     {/* Update Profile Button */}
                     <Link href="/profile/actions" className=" text-sm inline-block bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition">
                         প্রোফাইল তৈরি করুন
-                    </Link>                    <AdditionalFileUploadButton profileId={profileData._id} />
+                    </Link>
 
                     <div className="text-left mt-6">
 
@@ -85,11 +86,11 @@ export default async function StudentProfile() {
                             <Link href={"/profile/profile-list"} className=" inline-block text-sm text-blue-500 underline">
                                 প্রোফাইল তালিকা
                             </Link>
-                           
+
                         </div>
 
                         <ul className="space-y-1 list-disc list-inside text-gray-700 text-sm">
-                         
+
                             <li>রেজিস্ট্রেশন নম্বর: {profileData.registrationNumber || "__"}</li>
                             <li>বিভাগ: {profileData.department || "__"}</li>
                             <li> প্রোগ্রাম : {profileData.program || "__"}</li>

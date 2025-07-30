@@ -1,6 +1,6 @@
 
 export const studentProfileFormState = {
-
+    studentName: "",
     registrationNumber: "",
     classYear: "",
     department: "",

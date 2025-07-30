@@ -1,6 +1,6 @@
 import { GetAction } from "@/actions/students/GetAction";
 
-//  get all student list for admin or public
+//  get all student list for admin
 export const getAllProfileInfo = async () => {
     const students = await GetAction("/auth/student/all");
     return students

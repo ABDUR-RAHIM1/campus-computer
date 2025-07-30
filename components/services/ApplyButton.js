@@ -4,16 +4,26 @@ import { Button } from "@/components/ui/button";
 import { orderPostGetall } from "@/constans";
 import { globalContext } from "@/contextApi/ContextApi";
 import Spinner from "@/utilities/Spinner";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
+import { getMyAllProfile } from "@/handlers/profile";
 
 export default function ApplyButton({ serviceData }) {
     const { showToast } = useContext(globalContext);
@@ -22,7 +32,23 @@ export default function ApplyButton({ serviceData }) {
     const [isOthersStudent, setIsOthersStudent] = useState(false)
     const [selectedDepartment, setSelectedDepartment] = useState(null);
 
+    const [profileList, setProfileList] = useState([]);
 
+    useEffect(() => {
+        const getMyProfileList = async () => {
+            try {
+                const { status, data } = await getMyAllProfile();
+
+                if (status === 200) {
+                    setProfileList(data)
+                }
+
+            } catch (error) {
+                console.log(error)
+            }
+        };
+        getMyProfileList()
+    }, [])
 
     const handleSubmit = async () => {
         if (!selectedDepartment) {
@@ -98,7 +124,26 @@ export default function ApplyButton({ serviceData }) {
                 {
                     isOthersStudent &&
                     <div className=" my-4">
-                        others student
+                        <SelectGroup>
+                            <SelectLabel>
+                                প্রোফাইল নির্বাচন করুন
+                            </SelectLabel>
+                            <Select>
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Theme" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {
+                                        profileList && profileList.map((profile) => (
+                                            <SelectItem value={profile._id}>
+                                                {profile.studentName}
+                                            </SelectItem>
+                                        ))
+                                    }
+                                </SelectContent>
+                            </Select>
+
+                        </SelectGroup>
                     </div>
                 }
 

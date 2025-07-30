@@ -3,6 +3,7 @@ import DataNotFound from "@/components/DataNotFound";
 import { getMyAllProfile } from "@/handlers/profile";
 import Link from "next/link";
 import ProfileUpdateButton from "../actions/ProfileUpdateButton";
+import AdditionalFileUploadButton from "../components/AdditionalFileUploadButton";
 
 export default async function ProfileList() {
     const { status, data } = await getMyAllProfile();
@@ -10,6 +11,8 @@ export default async function ProfileList() {
     if (status !== 200 || !data?.length) {
         return <DataNotFound text={data?.message || "কোনো প্রোফাইল পাওয়া যায়নি।"} />;
     }
+
+
 
     return (
         <div className="my-20">
@@ -23,7 +26,7 @@ export default async function ProfileList() {
                         <div className="mb-2">
                             <div className=" flex items-center justify-between">
                                 <h2 className="text-lg font-semibold mb-3 text-gray-800">
-                                    👤 নাম: {profile?.studentId.username}
+                                    👤 নাম: {profile?.studentName || profile?.studentId?.username}
                                 </h2>
 
                                 <ProfileUpdateButton data={profile} />
@@ -45,7 +48,9 @@ export default async function ProfileList() {
                             <p>📅 শিক্ষাবর্ষ: {profile.session}</p>
                         </div>
 
-                        <Link href={"/profile/details"} className=" w-full my-4 text-center inline-block text-sm py-2 px-3 rounded-md bg-blue-500 text-white font-semibold">
+                        <AdditionalFileUploadButton profileId={profile._id} />
+
+                        <Link href={`/profile/details/${profile._id}`} className=" w-full my-4 text-center inline-block text-sm py-2 px-3 rounded-md bg-blue-500 text-white font-semibold">
                             বিস্তারিত
                         </Link>
 

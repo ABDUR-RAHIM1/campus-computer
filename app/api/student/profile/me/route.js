@@ -22,7 +22,7 @@ export async function GET(req) {
         return NextResponse.json(student || [], { status: 200 });
 
     } catch (error) {
-        console.error("প্রোফাইল আনতে করতে ব্যর্থ হয়েছে:", error);
+        console.error("প্রোফাইল আনতে ব্যর্থ হয়েছে:", error);
         return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
     }
 }

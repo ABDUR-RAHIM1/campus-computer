@@ -11,23 +11,35 @@ import SelectField from "@/utilities/SelectFiled";
 import { getDepartmentsByProgram } from "@/LocalDatabase/departments";
 import { getStatusColor } from "@/utilities/getStatusColor";
 import { studentProfileCreate } from "@/constans";
-import { studentProfileFormState } from "@/formStats/StudentProfileState";
-import ProfileUpdate from "./Update";
+import { studentProfileFormState } from "@/formStats/StudentProfileState"; 
+import { Checkbox } from "@/components/ui/checkbox";
 
 
 
 export default function AddProfile() {
-    const { showToast, imgUrl, uploadResponse, uploader, editData } = useContext(globalContext);
+    const { showToast, imgUrl, uploadResponse, uploader, editData, studentInfo } = useContext(globalContext);
     const [submiting, setSubmiting] = useState(false)
-    const [formData, setFormData] = useState(studentProfileFormState)
-    const [departments, setDepartments] = useState([]);
-
     const { status, message } = uploadResponse;
-
-    const isEditable = Object.keys(editData)?.length > 0
-
+    const isEditable = editData && Object.keys(editData)?.length > 0
     const conditionaltext = isEditable ? "আপডেট" : "তৈরি"
 
+
+    const [departments, setDepartments] = useState([]);
+
+
+    const [formData, setFormData] = useState({
+        ...studentProfileFormState,
+        studentName: "",
+    });
+
+    useEffect(() => {
+        if (!studentProfileFormState.isOtherStudent && studentInfo?.username) {
+            setFormData(prev => ({
+                ...prev,
+                studentName: studentInfo.username
+            }));
+        }
+    }, [studentInfo, studentProfileFormState.isOtherStudent]);
     useEffect(() => {
         if (isEditable) {
             setFormData(editData)
@@ -46,23 +58,7 @@ export default function AddProfile() {
 
     };
 
-    const handlePersonChange = (e) => {
-        const { value } = e.target;
 
-        if (value === "নিজের") {
-            setFormData((prev) => ({
-                ...prev,
-                isOtherStudent: false
-            }))
-        } else {
-            setFormData((prev) => ({
-                ...prev,
-                isOtherStudent: true
-            }))
-        }
-    }
-
-    // setImage Url In the form State
     useEffect(() => {
         setFormData((prev) => ({
             ...prev,
@@ -115,6 +111,8 @@ export default function AddProfile() {
 
     };
 
+
+
     return (
         <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow my-20 border">
             <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">📝 প্রোফাইল {conditionaltext} করুন</h2>
@@ -125,9 +123,40 @@ export default function AddProfile() {
             </p>
 
 
+            <div className=" my-8">
+                <Label className="hover:bg-accent/50 flex items-start gap-3 rounded-lg border p-3 has-[[aria-checked=true]]:border-blue-600 has-[[aria-checked=true]]:bg-blue-50 dark:has-[[aria-checked=true]]:border-blue-900 dark:has-[[aria-checked=true]]:bg-blue-950">
+                    <Checkbox
+                        onCheckedChange={(checked) => setFormData((prev) => ({
+                            ...prev,
+                            isOtherStudent: !!checked
+                        }))}
+                        checked={formData.isOtherStudent}
+                        id="toggle-2"
+                        defaultChecked
+                        className="data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700"
+                    />
+                    <div className="grid gap-1.5 font-normal">
+                        <p className="text-sm leading-none font-medium">
+                            অন্য শিক্ষার্থীর জন্য প্রোফাইল বানাবেন ?
+                        </p>
+                        <p className="text-muted-foreground text-sm">
+                            যদি আপনার নিজের জন্য হয় তাহলে টিক দেওয়ার দরকার নেই।
+                        </p>
+                    </div>
+                </Label>
 
+            </div>
 
             <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+
+                {
+                    formData.isOtherStudent ?
+                        < InputField label="📧অন্য শিক্ষার্থীর নাম" name="studentName" value={formData.studentName} onChange={handleChange} />
+                        :
+                        < InputField disabled={true} label="📧আপনার নাম" name="studentName" value={formData.studentName} onChange={handleChange} />
+
+                }
 
                 <InputField label="📧 ইমেইল" name="email" value={formData.email} onChange={handleChange} />
 
@@ -196,18 +225,6 @@ export default function AddProfile() {
                     ]}
                 />
                 <InputField label="🩸 রক্ত গ্রুপ" name="bloodGroup" value={formData.bloodGroup} onChange={handleChange} placeholder="A+ / O+ etc." />
-
-                <SelectField
-                    label="⚧️ কার জন্য"
-                    name="isOtherStudent"
-                    value={formData.isOtherStudent ? "অন্যের" : "নিজের"}
-                    onChange={handlePersonChange}
-                    required
-                    options={[
-                        { label: "নিজের", value: "নিজের" },
-                        { label: "অন্যের", value: "অন্যের" },
-                    ]}
-                />
 
                 {/* 🔘 মানোন্নয়ন সেকশন */}
                 <div className="sm:col-span-2">
@@ -279,6 +296,8 @@ export default function AddProfile() {
                             message
                         }
                     </p>
+
+                    
                 </div>
                 <div className="col-span-full mt-4">
                     <Button disabled={status === 102} type="submit" className="w-full">

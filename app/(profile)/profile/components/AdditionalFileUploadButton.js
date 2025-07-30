@@ -13,7 +13,7 @@ export default function AdditionalFileUploadButton({ profileId }) {
 
     return (
         <>
-            <Button onClick={handleShowModal} className=" text-sm inline-block bg-green-600 hover:bg-green-700 text-white my-3 py-2 px-4 rounded cursor-pointer transition">
+            <Button onClick={handleShowModal} className=" w-full text-sm inline-block bg-green-600 hover:bg-green-700 text-white mt-3 py-2 px-4 rounded cursor-pointer transition">
                 প্রয়োজনীয় ডকুমেন্ট আপলোড করুন
             </Button>
 

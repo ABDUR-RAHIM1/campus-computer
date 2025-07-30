@@ -23,9 +23,12 @@ export const studentGetAll = "/auth/student/all"
 export const studentGetMy = "/auth/student/myAccount"
 // export const studentProfileUpdateDelete = "/auth/student/action/"
 
+//  profile
 export const studentProfileCreate = "/student/profile"
 export const studentProfileGetMe = "/student/profile/me"
 export const studentProfileGetMeAll = "/student/profile/meAll"
+export const studentProfileById = "/student/profile/byId/"
+//  profile end
 // -----------------  student login------------------------
 
 

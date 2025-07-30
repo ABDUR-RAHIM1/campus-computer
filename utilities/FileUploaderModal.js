@@ -74,7 +74,8 @@ export function FileUploaderModal({ showModal, setShowModal, profileId }) {
 
     return (
         <Dialog open={showModal} onOpenChange={setShowModal}>
-            <DialogContent className="sm:max-w-lg">
+            <DialogContent
+            className="sm:max-w-lg">
                 <DialogHeader>
                     <DialogTitle>📎 প্রয়োজনীয় ডকুমেন্ট আপলোড</DialogTitle>
                     <DialogDescription>

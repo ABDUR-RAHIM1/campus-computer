@@ -6,7 +6,14 @@ const studentProfileSchema = mongoose.Schema({
         ref: "studentAuth",
         required: true,
     },
-    email: String,
+    studentName: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: false
+    },
     instituteName: {
         type: String,
         required: true,

@@ -17,6 +17,7 @@ export async function POST(req) {
         const body = await req.json();
 
         const {
+            studentName,
             email,
             instituteName,
             program,
@@ -41,6 +42,7 @@ export async function POST(req) {
 
         await StudentProfileModel.create({
             studentId: studentId,
+            studentName,
             email,
             instituteName,
             program,

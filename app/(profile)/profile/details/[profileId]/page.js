@@ -1,21 +1,24 @@
 
 import DataNotFound from '@/components/DataNotFound';
 import { getMyProfileInfo } from '@/handlers/studentAuth';
-import React from 'react'; 
+import React from 'react';
 import Image from 'next/image';
 import { demoProfilePicture } from '@/constans';
 import DocumentImage from '@/components/DocumentImage';
+import { getStudentProfileById } from '@/handlers/profile';
 
-export default async function Details() {
-    const { status, data } = await getMyProfileInfo();
+export default async function Details({ params }) {
+    const { profileId } = await params
+    const { status, data } = await getStudentProfileById(profileId);
 
 
     if (status !== 200) {
         return <DataNotFound text={data?.message || "ডাটা পাওয়া যায়নি"} />;
     }
     const {
-        username,
-        phone,
+        isOtherStudent,
+        studentName,
+        studentId,
         registrationNumber,
         department,
         program,
@@ -50,8 +53,9 @@ export default async function Details() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
-                <p><strong>নাম:</strong> {username}</p>
-                <p><strong>মোবাইল:</strong> {phone}</p>
+                <p><strong>প্রোফাইল মালিক:</strong> {isOtherStudent ? "অন্যের" : "আমি নিজে"}</p>
+                <p><strong>নাম:</strong> {studentName || studentId?.username}</p>
+                <p><strong>মোবাইল:</strong> {studentId?.phone}</p>
                 <p><strong>ইমেইল:</strong> {email}</p>
                 <p><strong>রেজিঃ নম্বর:</strong> {registrationNumber}</p>
                 <p><strong>বোর্ড রোল:</strong> {boardRoll}</p>
@@ -69,8 +73,9 @@ export default async function Details() {
                 <p><strong>রক্ত গ্রুপ:</strong> {bloodGroup}</p>
             </div>
 
+            <hr className=' mt-5' />
             {/* 📎 ডকুমেন্ট সেকশন */}
-            {documents?.length > 0 && (
+            {documents?.length > 0 ? (
                 <div className="mt-8">
                     <h3 className="text-lg font-semibold text-gray-800 mb-3">📎 আপলোডকৃত ডকুমেন্টসমূহ:</h3>
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
@@ -79,7 +84,11 @@ export default async function Details() {
                         ))}
                     </div>
                 </div>
-            )}
+            ) :
+                <p className=' my-5 text-red-500 font-bold text-xl'>
+                    কোন ডকুমেন্ট নেই!
+                </p>
+            }
 
 
         </div>
