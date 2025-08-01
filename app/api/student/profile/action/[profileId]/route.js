@@ -1,7 +1,7 @@
-import { connectDb } from "@/database/connectDb";
-import StudentAuthModel from "@/database/models/StudentAuth";
+import { connectDb } from "@/database/connectDb"; 
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import StudentProfileModel from "@/database/models/Profile";
 
 
 //  profile update 
@@ -19,7 +19,7 @@ export const PUT = async (req, { params }) => {
             body.password = await bcrypt.hash(body.password, salt);
         }
 
-        const updatedUser = await StudentAuthModel.findByIdAndUpdate(
+        const updatedUser = await StudentProfileModel.findByIdAndUpdate(
             profileId,
             { $set: body },
             { new: true }
@@ -59,7 +59,7 @@ export const DELETE = async (req, { params }) => {
     try {
         await connectDb();
 
-        const deletedUser = await StudentAuthModel.findByIdAndDelete(profileId);
+        const deletedUser = await StudentProfileModel.findByIdAndDelete(profileId);
 
         if (!deletedUser) {
             return NextResponse.json(

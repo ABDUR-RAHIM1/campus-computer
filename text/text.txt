@@ -1,3 +1,14 @@
+problems:{
+   student login howar por profile a gele data  not found dekhay , reload dewar age porjonto
+}
+
+
+// features addedd letter 
+cancel order{
+    => order list theke order update kora
+    => order list theke order cancel korar , filed hisebe thakbe cancel er karon , bkash number etc
+}
+
 
 {
     1=>  student profile a je services gulo dekhabe segulo student er profile a dewa deaparment er nam onujayi total price ta show korbe ba sei card ta show  korbe , ar jodi student er profile a deparment ba etc dewa na thake tahole sob guloi dekhabe . ekhane price etc sob kichu admin add korbe.

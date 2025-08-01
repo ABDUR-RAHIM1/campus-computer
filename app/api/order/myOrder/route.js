@@ -1,10 +1,11 @@
 
 import { connectDb } from "@/database/connectDb";
 import { Order } from "@/database/models/Order";
+import StudentProfileModel from "@/database/models/Profile";
 import ServiceModel from "@/database/models/Services";
+import StudentAuthModel from "@/database/models/StudentAuth";
 import { studentAuthGuard } from "@/middlewere/studentAuthGuard";
 import { NextResponse } from "next/server";
-
 
 
 //  Create Order by Student
@@ -20,8 +21,11 @@ export async function GET(req) {
         const { id } = auth.student;
 
         //  check same services is Available or not
-        const myOrder = await Order.find({ studentId: id, })
-            .populate("serviceId");
+        const myOrder = await Order.find({ reference: id, })
+            // .populate("reference", "username")
+            .populate("serviceId", "title")
+            .populate("profileId", "studentName")
+            .lean();
 
         if (!myOrder) {
             return NextResponse.json({

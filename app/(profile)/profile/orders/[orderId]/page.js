@@ -2,15 +2,17 @@ import DataNotFound from '@/components/DataNotFound'
 import DocumentImage from '@/components/DocumentImage'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { demoProfilePicture } from '@/constans'
-import { GetOrderDetails } from '@/handlers/order'
+import { GetOrderDetailsByStudent } from '@/handlers/order'
 import DownloadButton from '@/utilities/DownloadButton'
 import { Badge } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
 
+
+// for student
 export default async function OrderDetails({ params }) {
     const { orderId } = await params
-    const { status, data } = await GetOrderDetails(orderId)
+    const { status, data } = await GetOrderDetailsByStudent(orderId)
 
     if (!data) return <DataNotFound text={data?.message} />
 

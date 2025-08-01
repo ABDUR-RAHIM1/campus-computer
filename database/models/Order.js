@@ -7,12 +7,17 @@ const orderSchema = new mongoose.Schema({
         required: true
     },
     otherStudentInfo: {
-        type: Object,  
+        type: Object,
     },
-    studentId: {
+    profileId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "studentProfile",
+        required: true,
+    },
+    reference: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "studentAuth",
-        required: true,
+        required: true
     },
     serviceId: {
         type: mongoose.Schema.Types.ObjectId,

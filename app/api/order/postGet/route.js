@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 
 import ServiceModel from "@/database/models/Services";
 import StudentAuthModel from "@/database/models/StudentAuth";
+import StudentProfileModel from "@/database/models/Profile";
 
 //  Create Order by Student
 // api => /api/order/postGet  (create , getAll)
@@ -18,7 +19,7 @@ export async function POST(req) {
 
         const { id } = auth.student;
 
-        const { serviceId, department, fee } = body;
+        const { isOthersStudent, profileId, serviceId, department, fee } = body;
 
         if (!id || !serviceId) {
             return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
@@ -36,7 +37,9 @@ export async function POST(req) {
         }
 
         const newOrder = await Order.create({
-            studentId: id,
+            isOthersStudent,
+            profileId,
+            reference: id,
             serviceId,
             department,
             amount: fee,
@@ -44,7 +47,7 @@ export async function POST(req) {
             paymentStatus: "paid",
         });
 
-        return NextResponse.json({ message: "Order created" }, { status: 201 });
+        return NextResponse.json({ message: "Order created", newOrder }, { status: 201 });
     } catch (error) {
         console.error("Error creating order:", error);
         return NextResponse.json({ message: "Server Error" }, { status: 500 });
@@ -58,8 +61,10 @@ export async function GET(req) {
         await connectDb();
 
         const orders = await Order.find()
-            .populate("studentId", '-password')
-            .populate("serviceId");
+            .populate("reference", "username")
+            .populate("serviceId", "title")
+            .populate("profileId", "studentName")
+            .lean();
 
         return NextResponse.json(
             orders,

@@ -14,8 +14,10 @@ export const GET = async (req, { params }) => {
         await connectDb();
 
         const orders = await Order.findOne({ _id: orderId })
-            .populate("studentId", '-password')
-            .populate("serviceId");
+            .populate("reference", "-password")
+            .populate("serviceId", "-departmentFees") // এই লাইন
+            .populate("profileId")
+            .lean();
 
         return NextResponse.json(
             orders,

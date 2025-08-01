@@ -11,13 +11,15 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-// import { studentProfileUpdateDelete } from "@/constans";
 import { globalContext } from "@/contextApi/ContextApi";
 import { useContext, useEffect, useState } from "react";
 import { getStatusColor } from "./getStatusColor";
+import { studentProfileUpdateDelete } from "@/constans";
+import Spinner from "./Spinner";
 
 export function FileUploaderModal({ showModal, setShowModal, profileId }) {
     const { uploadResponse, uploader, imgUrl, showToast } = useContext(globalContext);
+    const [isLoading, setIsLoading] = useState(false)
     const [files, setFiles] = useState([]);
     const [formData, setFormData] = useState({
         documents: []
@@ -48,6 +50,7 @@ export function FileUploaderModal({ showModal, setShowModal, profileId }) {
             return;
         }
 
+        setIsLoading(true)
         try {
             const payload = {
                 method: "PUT",
@@ -68,6 +71,8 @@ export function FileUploaderModal({ showModal, setShowModal, profileId }) {
         } catch (error) {
             console.error("Update error:", error);
             showToast(500, { message: "ডকুমেন্ট সংরক্ষণে সমস্যা হয়েছে।" });
+        } finally {
+            setIsLoading(false)
         }
     };
 
@@ -75,7 +80,7 @@ export function FileUploaderModal({ showModal, setShowModal, profileId }) {
     return (
         <Dialog open={showModal} onOpenChange={setShowModal}>
             <DialogContent
-            className="sm:max-w-lg">
+                className="sm:max-w-lg">
                 <DialogHeader>
                     <DialogTitle>📎 প্রয়োজনীয় ডকুমেন্ট আপলোড</DialogTitle>
                     <DialogDescription>
@@ -98,7 +103,7 @@ export function FileUploaderModal({ showModal, setShowModal, profileId }) {
                         />
                         <p className={`${getStatusColor(uploadResponse.status)} text-sm`}>
                             {
-                               uploadResponse.message
+                                uploadResponse.message
                             }
                         </p>
                         {files.length > 0 && (
@@ -112,7 +117,9 @@ export function FileUploaderModal({ showModal, setShowModal, profileId }) {
 
                     <DialogFooter className="sm:justify-start">
                         <Button disabled={uploadResponse.status === 102} type="submit" className="text-sm bg-blue-600 text-white">
-                            📤 আপলোড করুন
+                            {
+                                isLoading ? <Spinner/> : "📤 আপলোড করুন"
+                            }
                         </Button>
                     </DialogFooter>
                 </form>

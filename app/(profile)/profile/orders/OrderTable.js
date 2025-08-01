@@ -14,39 +14,76 @@ export default function OrderTable({ orders }) {
   }, [orders]);
 
   const columns = [
+
+    {
+      name: "অর্ডার প্রোফাইল",
+      selector: (row) => (
+        <p className="my-2">{row.profileId?.studentName || "N/A"}</p>
+      ),
+      sortable: true,
+      width: "200px",
+      wrap: true,
+    },
     {
       name: "সেবার নাম",
-      selector: (row) => <p className="my-2">{row.serviceId?.title || "N/A"}</p>,
+      selector: (row) => (
+        <p className="my-2">{row.serviceId?.title || "N/A"}</p>
+      ),
       sortable: true,
       width: "250px",
       wrap: true,
     },
     {
+      name: "বিভাগ ",
+      selector: (row) => (
+        <p className="my-2">{row.department || "N/A"}</p>
+      ),
+      sortable: true,
+      width: "150px",
+      wrap: true,
+    },
+    {
+      name: "দাম ",
+      selector: (row) => (
+        <p className="my-2">{row.amount || "N/A"}</p>
+      ),
+      sortable: true,
+      width: "100px",
+      wrap: true,
+    },
+    {
       name: "তারিখ",
-      selector: (row) => format(new Date(row.createdAt), "dd/MM/yyyy") || "N/A",
+      selector: (row) =>
+        format(new Date(row.createdAt), "dd/MM/yyyy") || "N/A",
     },
     {
       name: "স্ট্যাটাস",
       selector: (row) => row.status,
       cell: (row) => {
-        let bgColor = "bg-gray-500";
-        let label = "অজানা";
+        let bgClass = "";
+        let textClass = "";
+        let statusText = "";
 
         if (row.status === "pending") {
-          bgColor = "bg-yellow-500";
-          label = "প্রক্রিয়াধীন";
+          bgClass = "bg-yellow-100";
+          textClass = "text-yellow-800";
+          statusText = "প্রক্রিয়াধীন";
         } else if (row.status === "active") {
-          bgColor = "bg-blue-500";
-          label = "চলমান";
+          bgClass = "bg-blue-100";
+          textClass = "text-blue-800";
+          statusText = "চলমান";
         } else if (row.status === "success") {
-          bgColor = "bg-green-600";
-          label = "সম্পন্ন";
+          bgClass = "bg-green-100";
+          textClass = "text-green-800";
+          statusText = "সম্পন্ন";
         }
 
         return (
-          <span className={`px-2 py-1 rounded text-xs font-medium text-white ${bgColor}`}>
-            {label}
-          </span>
+          <p
+            className={`text-xs px-2 py-1 rounded border font-medium ${bgClass} ${textClass}`}
+          >
+            {statusText}
+          </p>
         );
       },
     },
@@ -70,37 +107,33 @@ export default function OrderTable({ orders }) {
         </span>
       ),
     },
+    {
+      name: "বিস্তারিত",
+      selector: (row) => (
+        <Link
+          href={`/profile/orders/${row._id}`}
+          className={
+            " inline-block py-2 px-3 rounded-md bg-green-600 text-white cursor-pointer text-sm"
+          }
+        >
+          ক্লিক করো
+        </Link>
+      ),
+      width: "120px",
+    },
   ];
 
-  // 🔽 Collapsible Row Content
-  const ExpandedComponent = ({ data }) => (
-    <div className="p-4 bg-gray-50 border rounded mt-2 text-sm text-gray-700 space-y-1">
-      <p><strong>📘 বর্ণনা:</strong> {data.serviceId?.description || "N/A"}</p>
-      <p><strong>📅 সেশন:</strong> {data.serviceId?.session}</p>
-      <p><strong>📚 বিভাগ:</strong> {data.serviceId?.department}</p>
-      <p><strong>🎓 প্রোগ্রাম:</strong> {data.serviceId?.program}</p>
-      <p><strong>💰 ফি:</strong> {data.serviceId?.fee}৳</p>
-      {data.serviceId?.requiredDocuments?.length > 0 && (
-        <div>
-          <strong>📎 প্রয়োজনীয় ডকুমেন্ট:</strong>
-          <ul className="list-disc list-inside ml-4 mt-1">
-            {data.serviceId.requiredDocuments.map((doc, i) => (
-              <li key={i}>{doc}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
-  );
+
+
 
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4">
       <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">
-          📋 আমার অর্ডারসমূহ
+          📋 অর্ডারসমূহ
         </h2>
         <p className="text-gray-700 mb-6">
-          নিচে আপনার সব কার্যক্রমের অর্ডার তালিকা দেওয়া হলো। প্রতিটি সার্ভিসের বিস্তারিত দেখতে সারির উপরে ক্লিক করুন।
+          নিচে সব কার্যক্রমের অর্ডার তালিকা দেওয়া হলো। প্রতিটি সার্ভিসের বিস্তারিত দেখতে সারির উপরে ক্লিক করুন।
         </p>
 
         <DataTable
@@ -109,8 +142,6 @@ export default function OrderTable({ orders }) {
           pagination
           highlightOnHover
           responsive
-          expandableRows
-          expandableRowsComponent={ExpandedComponent}
           customStyles={{
             headCells: {
               style: {

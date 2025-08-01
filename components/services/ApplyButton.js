@@ -29,7 +29,10 @@ export default function ApplyButton({ serviceData }) {
     const { showToast } = useContext(globalContext);
     const [open, setOpen] = useState(false);
     const [waiting, setWaiting] = useState(false);
-    const [isOthersStudent, setIsOthersStudent] = useState(false)
+    const [formData, setFormData] = useState({
+        isOthersStudent: false,
+        profile: null
+    })
     const [selectedDepartment, setSelectedDepartment] = useState(null);
 
     const [profileList, setProfileList] = useState([]);
@@ -50,6 +53,7 @@ export default function ApplyButton({ serviceData }) {
         getMyProfileList()
     }, [])
 
+
     const handleSubmit = async () => {
         if (!selectedDepartment) {
             showToast("error", "দয়া করে একটি বিভাগ নির্বাচন করুন।");
@@ -65,7 +69,8 @@ export default function ApplyButton({ serviceData }) {
                     serviceId: serviceData._id,
                     department: selectedDepartment.department,
                     fee: selectedDepartment.fee,
-                    isOthersStudent: isOthersStudent
+                    isOthersStudent: formData.isOthersStudent,
+                    profileId: formData.profile._id
                 },
             };
             const { status, data } = await PostAction(payload);
@@ -83,14 +88,15 @@ export default function ApplyButton({ serviceData }) {
         <Dialog open={open} onOpenChange={(val) => {
             setOpen(val);
             if (!val) setSelectedDepartment(null); // Reset when modal closes
-        }}>
+        }}
+        >
             <DialogTrigger asChild>
                 <Button className="min-w-[130px] mt-4 bg-blue-600 text-white text-sm font-semibold rounded hover:bg-blue-700 transition cursor-pointer">
                     আবেদন করুন
                 </Button>
             </DialogTrigger>
 
-            <DialogContent className="max-w-md"
+            <DialogContent className="w-[90vw] max-w-3xl h-[80vh] overflow-y-auto"
                 onInteractOutside={(event) => {
                     event.preventDefault(); // বাইরে ক্লিক করলে modal বন্ধ হবে না
                 }}
@@ -103,8 +109,11 @@ export default function ApplyButton({ serviceData }) {
                 <div className=" my-5">
                     <Label className="hover:bg-accent/50 flex items-start gap-3 rounded-lg border p-3 has-[[aria-checked=true]]:border-blue-600 has-[[aria-checked=true]]:bg-blue-50 dark:has-[[aria-checked=true]]:border-blue-900 dark:has-[[aria-checked=true]]:bg-blue-950">
                         <Checkbox
-                            onCheckedChange={(checked) => setIsOthersStudent(!!checked)}
-                            checked={isOthersStudent}
+                            onCheckedChange={(checked) => setFormData((prev) => ({
+                                ...prev,
+                                isOthersStudent: !!checked
+                            }))}
+                            checked={formData.isOthersStudent}
                             id="toggle-2"
                             defaultChecked
                             className="data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700"
@@ -122,21 +131,28 @@ export default function ApplyButton({ serviceData }) {
                 </div>
 
                 {
-                    isOthersStudent &&
+                    formData.isOthersStudent &&
                     <div className=" my-4">
                         <SelectGroup>
                             <SelectLabel>
                                 প্রোফাইল নির্বাচন করুন
                             </SelectLabel>
-                            <Select>
+                            <Select
+
+                                onValueChange={(value) => setFormData((prev) => ({
+                                    ...prev,
+                                    profile: value
+                                }))}
+                            >
                                 <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="Theme" />
+                                    <SelectValue placeholder="এখান থেকে প্রোফাইল বাছাই করুন" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {
                                         profileList && profileList.map((profile) => (
-                                            <SelectItem value={profile._id}>
-                                                {profile.studentName}
+                                            <SelectItem
+                                                key={profile._id} value={profile}>
+                                                {profile.studentName || "N/A"}
                                             </SelectItem>
                                         ))
                                     }
@@ -146,6 +162,21 @@ export default function ApplyButton({ serviceData }) {
                         </SelectGroup>
                     </div>
                 }
+
+                <div className=" mb-3 rounded-md w-full border border-green-400 bg-green-100 text-green-900 p-3 ">
+                    {
+                        formData.profile?._id ?
+                            <>
+                                <p>নাম: {formData.profile?.studentName}</p>
+                                <p>বিভাগ: {formData.profile?.department}</p>
+                            </>
+                            :
+                            <p>
+                                প্রোফাইল নির্বাচন করলে এখানে নাম ও বিভাগ দেখাবে , সে অনুযায়ী নিচের দেওয়া বিভাগ গুলো থেকে বাছাই করুন 
+                            </p>
+
+                    }
+                </div>
 
                 <div className="space-y-4">
                     {selectedDepartment ? (
