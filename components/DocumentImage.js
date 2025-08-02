@@ -3,7 +3,7 @@ import ImagePreviewModal from '@/utilities/ImagePreviewModal'
 import Image from 'next/image'
 import React, { useState } from 'react'
 
-export default function DocumentImage({ key, images, alt }) {
+export default function DocumentImage({ key, images, alt= "documents file" }) {
 
     const [isOpen, setIsOpen] = useState(false)
     const [openedImg, setOpenedImg] = useState("")

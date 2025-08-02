@@ -6,6 +6,7 @@ import { Hero } from '@/components/Hero';
 import { FaqSection } from '@/components/Faq';
 import { Contact } from '@/components/Contact';
 import AutomationOverview from '@/components/Overview';
+import HeroSlider from '@/components/HeroSilder';
 
 const CampusComputerPage = async () => {
 
@@ -14,7 +15,8 @@ const CampusComputerPage = async () => {
 
             <main>
                 {/* Hero Section */}
-                <Hero />
+                {/* <Hero /> */}
+                <HeroSlider/>
 
                 {/* Automation System Info Section */}
                 <section className="py-16 bg-white border-t border-gray-300">

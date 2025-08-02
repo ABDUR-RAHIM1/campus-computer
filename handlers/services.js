@@ -9,11 +9,4 @@ export const getAllServices = async () => {
 }
 
 
-
-//  only my services whice is matching with my profile information
-export const getMyServices = async () => {
-    const myServices = await GetAction(servicesGetMy);
-
-    return myServices;
-}
-
+ 

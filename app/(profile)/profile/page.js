@@ -3,7 +3,6 @@ import React from "react";
 import Image from "next/image";
 import DataNotFound from "@/components/DataNotFound";
 import Services from "./components/Services";
-import MyServices from "./components/myServices/MyServices";
 import { demoProfilePicture } from "@/constans";
 import Link from "next/link";
 import { getMyProfile } from "@/handlers/profile";
@@ -146,7 +145,6 @@ export default async function StudentProfile() {
 
                     <Services />
 
-                    <MyServices />
 
                 </div>
             </div>

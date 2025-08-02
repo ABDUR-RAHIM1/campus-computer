@@ -130,8 +130,7 @@ export default function ApplyButton({ serviceData }) {
 
                 </div>
 
-                {
-                    formData.isOthersStudent &&
+            
                     <div className=" my-4">
                         <SelectGroup>
                             <SelectLabel>
@@ -155,13 +154,14 @@ export default function ApplyButton({ serviceData }) {
                                                 {profile.studentName || "N/A"}
                                             </SelectItem>
                                         ))
+            
                                     }
                                 </SelectContent>
                             </Select>
 
                         </SelectGroup>
                     </div>
-                }
+            
 
                 <div className=" mb-3 rounded-md w-full border border-green-400 bg-green-100 text-green-900 p-3 ">
                     {

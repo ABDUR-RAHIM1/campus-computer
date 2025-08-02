@@ -11,8 +11,9 @@ import SelectField from "@/utilities/SelectFiled";
 import { getDepartmentsByProgram } from "@/LocalDatabase/departments";
 import { getStatusColor } from "@/utilities/getStatusColor";
 import { studentProfileCreate } from "@/constans";
-import { studentProfileFormState } from "@/formStats/StudentProfileState"; 
+import { studentProfileFormState } from "@/formStats/StudentProfileState";
 import { Checkbox } from "@/components/ui/checkbox";
+import { sessionList } from "@/LocalDatabase/seasion";
 
 
 
@@ -40,17 +41,27 @@ export default function AddProfile() {
             }));
         }
     }, [studentInfo, studentProfileFormState.isOtherStudent]);
+
     useEffect(() => {
         if (isEditable) {
-            setFormData(editData)
+            setFormData((prev) => ({
+                ...prev,
+                ...editData
+            }))
         }
+        // ✅ Program অনুযায়ী department সেট করা
+        // if (editData.program) {
+        //     const filterdDeparment = getDepartmentsByProgram(editData.program);
+        //     setDepartments(filterdDeparment);
+        // }
     }, [editData])
+
 
     const handleChange = (e) => {
         const { type, name, value, files } = e.target;
 
         if (type === "file") {
-            const file = files[0]
+            const file = files
             uploader(file)
         } else {
             setFormData((prev) => ({ ...prev, [name]: value }));
@@ -62,7 +73,7 @@ export default function AddProfile() {
     useEffect(() => {
         setFormData((prev) => ({
             ...prev,
-            profilePicture: imgUrl
+            profilePicture: imgUrl[0]
         }))
     }, [imgUrl])
 
@@ -88,6 +99,11 @@ export default function AddProfile() {
             .filter((item) => item !== "");
     };
 
+
+    const sessionOptions = sessionList.map((s) => ({
+        label: s,
+        value: s,
+    }));
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -198,7 +214,15 @@ export default function AddProfile() {
                         { label: " চতুর্থ বর্ষ", value: "4" },
                     ]}
                 />
-                <InputField label="📅 সেশন" name="session" value={formData.session} onChange={handleChange} />
+                <SelectField
+                    label="📚 সেশন"
+                    name="session"
+                    value={formData.session}
+                    onChange={handleChange}
+                    required
+                    options={sessionOptions}
+                />
+
                 <InputField label="🎟️ ক্লাস রোল" name="classRoll" value={formData.classRoll} onChange={handleChange} />
 
                 <InputField label="🎓 রেজিস্ট্রেশন নম্বর" name="registrationNumber" value={formData.registrationNumber} onChange={handleChange} required />
@@ -297,7 +321,7 @@ export default function AddProfile() {
                         }
                     </p>
 
-                    
+
                 </div>
                 <div className="col-span-full mt-4">
                     <Button disabled={status === 102} type="submit" className="w-full">
