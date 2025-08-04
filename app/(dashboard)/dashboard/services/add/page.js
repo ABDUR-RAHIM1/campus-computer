@@ -20,7 +20,9 @@ export default function AddServicePage() {
 
     const [deparmentData, setDepartmentData] = useState({
         department: "",
-        fee: ""
+        collegeFee: 0,
+        chargeFee: 0,
+        totalFee: 0,
     })
     const [formData, setFormData] = useState({
         title: "",
@@ -41,14 +43,21 @@ export default function AddServicePage() {
         }));
     };
 
+    console.log({
+        deparmentData , formData
+    })
     //  departmentChange
     const handleDepartmentChange = (e) => {
         const { name, value } = e.target;
 
-        setDepartmentData((prev) => ({
-            ...prev,
+        const newData = {
+            ...deparmentData,
             [name]: value
-        }))
+        }
+
+        newData.totalFee = Number(newData.collegeFee) + Number(newData.chargeFee);
+        setDepartmentData(newData)
+     
     }
 
 
@@ -142,6 +151,8 @@ export default function AddServicePage() {
                     />
 
 
+                    {/*  depertment and fees */}
+
                     <div className=" border my-5 py-4 px-1">
                         <div className=" flex items-center justify-between gap-2">
                             <SelectField
@@ -153,10 +164,18 @@ export default function AddServicePage() {
                                 options={departments}
                             />
                             <InputField
-                                label="ফি (৳)"
-                                name="fee"
+                                label=" কলেজ ফি (৳)"
+                                name="collegeFee"
                                 type="number"
-                                value={deparmentData.fee}
+                                value={deparmentData.collegeFee}
+                                onChange={handleDepartmentChange}
+                                required
+                            />
+                            <InputField
+                                label="চার্জ ফি (৳)"
+                                name="chargeFee"
+                                type="number"
+                                value={deparmentData.chargeFee}
                                 onChange={handleDepartmentChange}
                                 required
                             />

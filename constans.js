@@ -9,6 +9,14 @@ export const getStudentTokenFormApi = "/token"
 // ---------------------  admin -------------
 export const adminRegister = "/auth/admin/register"
 export const adminLogin = "/auth/admin/login"
+
+
+//  qucikLink Start
+export const quickLinkCreateGet = "/quickLink"
+//  qucikLink End
+
+
+
 // ---------------------  admin -------------
 
 
@@ -21,6 +29,7 @@ export const studentRegister = "/auth/student/register"
 export const studentLogin = "/auth/student/login"
 export const studentGetAll = "/auth/student/all"
 export const studentGetMy = "/auth/student/myAccount"
+export const studentAccountDelete = "/auth/student/action/" // update / delete
 
 //  profile
 export const studentProfileCreate = "/student/profile"

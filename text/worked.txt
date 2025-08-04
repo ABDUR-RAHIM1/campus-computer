@@ -4,6 +4,16 @@ problem : {
 }
 
 {
+    => services, order button , model , UI te collegeFee , chargeFee etc add kora holo
+}
+
+{
+    => koyekta api student / admin authGuard add kora holo
+    => student o adminer jonno akoi authGuard add kora holo , je kew (admin/ student) access pabe
+    => delete student account in dashboard
+}
+
+{
     => apply button  a profile select o model , controller a change kora
     => dashbaord order table a se onujayi UI update
     => order details page a update kora holo new order data onujayi 

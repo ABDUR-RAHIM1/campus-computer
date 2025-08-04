@@ -26,7 +26,7 @@ import { Label } from "@/components/ui/label"
 import { getMyAllProfile } from "@/handlers/profile";
 
 export default function ApplyButton({ serviceData }) {
-    const { showToast } = useContext(globalContext);
+    const { showToast, studentIsLogin: loginStatus, studentInfo } = useContext(globalContext);
     const [open, setOpen] = useState(false);
     const [waiting, setWaiting] = useState(false);
     const [formData, setFormData] = useState({
@@ -68,7 +68,8 @@ export default function ApplyButton({ serviceData }) {
                 body: {
                     serviceId: serviceData._id,
                     department: selectedDepartment.department,
-                    fee: selectedDepartment.fee,
+                    collegeFee: selectedDepartment.collegeFee,
+                    chargeFee: selectedDepartment.chargeFee,
                     isOthersStudent: formData.isOthersStudent,
                     profileId: formData.profile._id
                 },
@@ -84,6 +85,10 @@ export default function ApplyButton({ serviceData }) {
         }
     };
 
+
+
+
+
     return (
         <Dialog open={open} onOpenChange={(val) => {
             setOpen(val);
@@ -91,7 +96,17 @@ export default function ApplyButton({ serviceData }) {
         }}
         >
             <DialogTrigger asChild>
-                <Button className="min-w-[130px] mt-4 bg-blue-600 text-white text-sm font-semibold rounded hover:bg-blue-700 transition cursor-pointer">
+                <Button
+                    onClick={(e) => {
+                        if (!loginStatus) {
+                            e.preventDefault(); // modal open বন্ধ করে দিবে
+                            showToast(401, "দয়া করে আগে লগইন করুন");
+                            return;
+                        }
+                        setOpen(true);
+                    }}
+                    className="min-w-[130px] mt-4 bg-blue-600 text-white text-sm font-semibold rounded hover:bg-blue-700 transition cursor-pointer"
+                >
                     আবেদন করুন
                 </Button>
             </DialogTrigger>
@@ -130,38 +145,46 @@ export default function ApplyButton({ serviceData }) {
 
                 </div>
 
-            
-                    <div className=" my-4">
-                        <SelectGroup>
-                            <SelectLabel>
-                                প্রোফাইল নির্বাচন করুন
-                            </SelectLabel>
-                            <Select
 
-                                onValueChange={(value) => setFormData((prev) => ({
-                                    ...prev,
-                                    profile: value
-                                }))}
-                            >
-                                <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="এখান থেকে প্রোফাইল বাছাই করুন" />
-                                </SelectTrigger>
-                                <SelectContent>
+                <div className=" my-4">
+                    <SelectGroup>
+                        <SelectLabel>
+                            প্রোফাইল নির্বাচন করুন
+                        </SelectLabel>
+                        <Select
+
+                            onValueChange={(value) => setFormData((prev) => ({
+                                ...prev,
+                                profile: value
+                            }))}
+                        >
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="এখান থেকে প্রোফাইল বাছাই করুন" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectLabel>
                                     {
-                                        profileList && profileList.map((profile) => (
-                                            <SelectItem
-                                                key={profile._id} value={profile}>
-                                                {profile.studentName || "N/A"}
-                                            </SelectItem>
-                                        ))
-            
+                                        profileList && profileList?.length > 0 ?
+                                            "আপনার প্রোফাইল তালিকা"
+                                            :
+                                            " আপনি এখনো কোন প্রোফাইল তৈরি করেননি  "
                                     }
-                                </SelectContent>
-                            </Select>
+                                </SelectLabel>
+                                {
+                                    profileList && profileList.map((profile) => (
+                                        <SelectItem
+                                            key={profile._id} value={profile}>
+                                            {profile.studentName || "N/A"}
+                                        </SelectItem>
+                                    ))
 
-                        </SelectGroup>
-                    </div>
-            
+                                }
+                            </SelectContent>
+                        </Select>
+
+                    </SelectGroup>
+                </div>
+
 
                 <div className=" mb-3 rounded-md w-full border border-green-400 bg-green-100 text-green-900 p-3 ">
                     {
@@ -172,7 +195,7 @@ export default function ApplyButton({ serviceData }) {
                             </>
                             :
                             <p>
-                                প্রোফাইল নির্বাচন করলে এখানে নাম ও বিভাগ দেখাবে , সে অনুযায়ী নিচের দেওয়া বিভাগ গুলো থেকে বাছাই করুন 
+                                প্রোফাইল নির্বাচন করলে এখানে নাম ও বিভাগ দেখাবে , সে অনুযায়ী নিচের দেওয়া বিভাগ গুলো থেকে বাছাই করুন
                             </p>
 
                     }
@@ -186,7 +209,13 @@ export default function ApplyButton({ serviceData }) {
                         >
                             <p className="font-medium">{selectedDepartment.department}</p>
                             <p className="text-sm text-gray-600">
-                                ফি: {selectedDepartment.fee}৳
+                                কলেজ ফি: {selectedDepartment.collegeFee}৳
+                            </p>
+                            <p className="text-sm text-gray-600">
+                                চার্জ ফি: {selectedDepartment.chargeFee}৳
+                            </p>
+                            <p className="text-sm text-gray-600">
+                                মোট ফি: {selectedDepartment.totalFee}৳
                             </p>
                             <p className="text-xs text-blue-600 mt-1">
                                 ← পরিবর্তন করতে ক্লিক করুন
@@ -200,7 +229,15 @@ export default function ApplyButton({ serviceData }) {
                                 className="border p-3 rounded cursor-pointer hover:border-blue-400"
                             >
                                 <p className="font-medium">{dept.department}</p>
-                                <p className="text-sm text-gray-600">ফি: {dept.fee}৳</p>
+                                <p className="text-sm text-gray-600">
+                                    কলেজ ফি: {dept.collegeFee}৳
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                    চার্জ ফি: {dept.chargeFee}৳
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                    মোট ফি: {dept.totalFee}৳
+                                </p>
                             </div>
                         ))
                     )}
@@ -211,7 +248,7 @@ export default function ApplyButton({ serviceData }) {
                 <Button
                     onClick={handleSubmit}
                     className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white cursor-pointer"
-                    disabled={waiting}
+                    disabled={waiting || !formData.profile?._id}
                 >
                     {waiting ? <Spinner /> : "নিশ্চিত করুন"}
                 </Button>

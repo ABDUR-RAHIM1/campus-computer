@@ -28,9 +28,13 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    amount: {
+    collegeFee: {
         type: Number,
         required: true
+    },
+    chargeFee: {
+        type: Number,
+        default: 0,
     },
     status: {
         type: String,

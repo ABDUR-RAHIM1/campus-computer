@@ -17,8 +17,7 @@ export default async function StudentProfile() {
 
     const { status: authStatus, data: authData } = authAccount;
     const { status: profileStatus, data: profileData } = profileAccount;
-
-   
+ 
 
     if (authStatus !== 200 || profileStatus !== 200) {
         return <DataNotFound text={"ডাটা পাওয়া যায়নি"} />;
@@ -59,7 +58,7 @@ export default async function StudentProfile() {
                 {/* Left Sidebar - Profile Summary */}
                 <div className="bg-white shadow rounded-lg p-6 text-center">
                     <Image
-                        src={profileData.studentId?.profilePicture || demoProfilePicture}
+                        src={profileData?.profilePicture || demoProfilePicture}
                         alt=" Campus Computer Student Profile Picture"
                         width={150}
                         height={150}

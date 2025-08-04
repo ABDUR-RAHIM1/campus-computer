@@ -1,5 +1,25 @@
-problems:{
-   student login howar por profile a gele data  not found dekhay , reload dewar age porjonto
+
+{
+    studentAuthGuard : 
+     const auth = await studentAuthGuard(req);
+        if (auth.error) return auth.response;
+
+
+        adminAuthGuard; 
+            // 🔐 Auth Guard: শুধুমাত্র অ্যাডমিনের অনুমতি
+        const { error, admin, response } = await adminAuthGuard(req);
+        if (error) return response;
+}
+
+
+{
+    services a => 
+    1. regular price
+    2. charge
+    3. total price
+
+    => services gulo te asob dekhate hobe
+    => apply button a asob o dekhate hobe
 }
 
 

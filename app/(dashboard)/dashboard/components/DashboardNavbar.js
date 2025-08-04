@@ -15,6 +15,7 @@ export default function DashboardNavbar() {
         { name: 'পেমেন্ট ইতিহাস', href: '/dashboard/payments' },
         { name: 'স্টুডেন্ট তালিকা', href: '/dashboard/student-list' },
         { name: 'সার্ভিস', href: '/dashboard/services' },
+        { name: 'লিংক গুলো', href: '/dashboard/quickLink' },
         { name: 'নোটিশ বোর্ড', href: '/dashboard/notices' },
         { name: 'সেটিংস', href: '/dashboard/settings' },
     ];

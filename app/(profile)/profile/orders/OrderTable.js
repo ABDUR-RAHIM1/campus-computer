@@ -18,7 +18,7 @@ export default function OrderTable({ orders }) {
     {
       name: "অর্ডার প্রোফাইল",
       selector: (row) => (
-        <p className="my-2">{row.profileId?.studentName || "N/A"}</p>
+        <p className="my-4">{row.profileId?.studentName || "N/A"}</p>
       ),
       sortable: true,
       width: "200px",
@@ -45,7 +45,16 @@ export default function OrderTable({ orders }) {
     {
       name: "দাম ",
       selector: (row) => (
-        <p className="my-2">{row.amount || "N/A"}</p>
+        <p className="my-2">{row.collegeFee || "N/A"}</p>
+      ),
+      sortable: true,
+      width: "100px",
+      wrap: true,
+    },
+    {
+      name: "চার্জ",
+      selector: (row) => (
+        <p className="my-2">{row.chargeFee || "N/A"}</p>
       ),
       sortable: true,
       width: "100px",

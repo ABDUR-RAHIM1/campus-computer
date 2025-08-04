@@ -39,7 +39,7 @@ export default async function ServicesCard({ data }) {
                                 <ul className="list-disc list-inside space-y-1">
                                     {service.departmentFees.map((item, i) => (
                                         <li key={i}>
-                                            🏛️ {item.department} — <span className="font-semibold">{item.fee} ৳</span>
+                                            🏛️ {item.department} — <span className="font-semibold">{item.collegeFee} ৳</span>
                                         </li>
                                     ))}
                                 </ul>
@@ -48,11 +48,14 @@ export default async function ServicesCard({ data }) {
 
                         {/* Required Documents */}
                         {service.requiredDocuments?.length > 0 && (
-                            <ul className="mt-3 text-sm text-gray-700 list-disc list-inside">
-                                {service.requiredDocuments.map((doc, i) => (
-                                    <li key={i}>📎 {doc}</li>
-                                ))}
-                            </ul>
+                            <div className=' mt-3'>
+                                  <p className="font-medium">💰 ডকুমেন্ট লাগবে :</p> 
+                                <ul className="mt-3 text-sm text-gray-700 list-disc list-inside">
+                                    {service.requiredDocuments.map((doc, i) => (
+                                        <li key={i}>📎 {doc}</li>
+                                    ))}
+                                </ul>
+                            </div>
                         )}
 
                         <ApplyButton serviceData={service} />

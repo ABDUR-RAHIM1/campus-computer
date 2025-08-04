@@ -19,7 +19,7 @@ export async function POST(req) {
 
         const { id } = auth.student;
 
-        const { isOthersStudent, profileId, serviceId, department, fee } = body;
+        const { isOthersStudent, profileId, serviceId, department, collegeFee, chargeFee } = body;
 
         if (!id || !serviceId) {
             return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
@@ -42,7 +42,8 @@ export async function POST(req) {
             reference: id,
             serviceId,
             department,
-            amount: fee,
+            collegeFee,
+            chargeFee,
             status: "active",
             paymentStatus: "paid",
         });

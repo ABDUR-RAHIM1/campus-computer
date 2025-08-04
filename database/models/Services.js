@@ -35,7 +35,17 @@ const ServiceSchema = new mongoose.Schema(
                     required: true,
                     trim: true,
                 },
-                fee: {
+                collegeFee: {
+                    type: Number,
+                    required: true,
+                    min: 0,
+                },
+                chargeFee: {
+                    type: Number,
+                    required: true,
+                    min: 0,
+                },
+                totalFee: {
                     type: Number,
                     required: true,
                     min: 0,
