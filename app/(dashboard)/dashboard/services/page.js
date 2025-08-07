@@ -30,9 +30,6 @@ export default async function Services() {
             {/*  Services Table */}
             <ServicesTable data={data} />
 
-
-
-
         </div>
     )
 }

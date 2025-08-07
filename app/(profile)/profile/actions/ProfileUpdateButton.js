@@ -7,12 +7,12 @@ import { globalContext } from '@/contextApi/ContextApi';
 
 export default function ProfileUpdateButton({ data }) {
 
-    const { setEditData } = useContext(globalContext);
+    const {   setEditData } = useContext(globalContext);
 
     const router = useRouter();
     const handleEditDataManage = () => {
         setEditData(data)
-        router.push("/profile/actions")
+        router.push("/profile/actions/edit")
     }
 
     return (

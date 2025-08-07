@@ -18,11 +18,9 @@ import { sessionList } from "@/LocalDatabase/seasion";
 
 
 export default function AddProfile() {
-    const { showToast, imgUrl, uploadResponse, uploader, editData, studentInfo } = useContext(globalContext);
+    const { showToast, imgUrl, uploadResponse, uploader, studentInfo } = useContext(globalContext);
     const [submiting, setSubmiting] = useState(false)
-    const { status, message } = uploadResponse;
-    const isEditable = editData && Object.keys(editData)?.length > 0
-    const conditionaltext = isEditable ? "আপডেট" : "তৈরি"
+    const { status, message } = uploadResponse;  
 
 
     const [departments, setDepartments] = useState([]);
@@ -42,21 +40,7 @@ export default function AddProfile() {
         }
     }, [studentInfo, studentProfileFormState.isOtherStudent]);
 
-    useEffect(() => {
-        if (isEditable) {
-            setFormData((prev) => ({
-                ...prev,
-                ...editData
-            }))
-        }
-        // ✅ Program অনুযায়ী department সেট করা
-        // if (editData.program) {
-        //     const filterdDeparment = getDepartmentsByProgram(editData.program);
-        //     setDepartments(filterdDeparment);
-        // }
-    }, [editData])
-
-
+  
     const handleChange = (e) => {
         const { type, name, value, files } = e.target;
 
@@ -131,7 +115,7 @@ export default function AddProfile() {
 
     return (
         <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow my-20 border">
-            <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">📝 প্রোফাইল {conditionaltext} করুন</h2>
+            <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">📝 প্রোফাইল তৈরি করুন</h2>
             <p className="text-sm text-gray-600 my-5 border-b">
                 আপনি যে তথ্যগুলো পূরণ করবেন, তার উপর ভিত্তি করে আপনি কেবলমাত্র আপনার শ্রেণি ও বিভাগের জন্য প্রযোজ্য সেবা ও ফরমগুলো দেখতে পারবেন।
                 যেমন: অনার্স বা ডিগ্রী প্রোগ্রামের ফরম ফিলআপ, পেমেন্ট এবং ফলাফল সংক্রান্ত সেবা ইত্যাদি।
@@ -326,8 +310,8 @@ export default function AddProfile() {
                 <div className="col-span-full mt-4">
                     <Button disabled={status === 102} type="submit" className="w-full">
                         {
-                            submiting ? ` ${conditionaltext} করা হচ্ছে...` :
-                                `✅ প্রোফাইল ${conditionaltext} করুন`
+                            submiting ? `তৈরি করা হচ্ছে...` :
+                                `✅ প্রোফাইল তৈরি করুন`
                         }
                     </Button>
                 </div>

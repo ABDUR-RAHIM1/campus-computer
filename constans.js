@@ -52,6 +52,7 @@ export const orderPostGetall = "/order/postGet"
 export const orderGetMe = "/order/myOrder"
 export const orderDetails = "/order/details/"
 export const orderStatusUpdate = "/order/update/status/" // only admin can do this 
+export const orderCencel = "/order/cancel/" // [cancelOrderId] only admin can do this 
 
 // ------------------ Order ------------------------------
 

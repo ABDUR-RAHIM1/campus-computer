@@ -4,6 +4,8 @@ import { getMyAllProfile } from "@/handlers/profile";
 import Link from "next/link";
 import ProfileUpdateButton from "../actions/ProfileUpdateButton";
 import AdditionalFileUploadButton from "../components/AdditionalFileUploadButton";
+import Image from "next/image";
+import { demoProfilePicture } from "@/constans";
 
 export default async function ProfileList() {
     const { status, data } = await getMyAllProfile();
@@ -25,9 +27,20 @@ export default async function ProfileList() {
                     >
                         <div className="mb-2">
                             <div className=" flex items-center justify-between">
-                                <h2 className="text-lg font-semibold mb-3 text-gray-800">
-                                    👤 নাম: {profile?.studentName || profile?.studentId?.username}
-                                </h2>
+                                <div className="flex items-center gap-2 mb-2">
+                                    <Image
+                                        src={profile.profilePicture || demoProfilePicture}
+                                        width={50}
+                                        height={50}
+                                        alt="campus computer student photo"
+                                        className=" w-12 h-12 rounded-full"
+                                    />
+                                    <h2 className="text-lg font-semibold text-gray-800">
+
+                                        নাম: {profile?.studentName || profile?.studentId?.username}
+                                    </h2>
+                                </div>
+
 
                                 <ProfileUpdateButton data={profile} />
 

@@ -38,13 +38,17 @@ const orderSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["active", "pending", "success"],
-        default: "pending"
+        enum: ["active", "success", "cancel"],
+        default: "active"
     },
     paymentStatus: {
         type: String,
         enum: ["pending", "paid", "failed"],
         default: "pending",
+    },
+    cancelOrderInfo: {
+        recivedNumber: { type: String, required: true },
+        reason: { type: String, required: true },
     },
     createdAt: {
         type: Date,

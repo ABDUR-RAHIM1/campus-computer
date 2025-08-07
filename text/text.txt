@@ -12,15 +12,13 @@
 }
 
 
-{
-    services a => 
-    1. regular price
-    2. charge
-    3. total price
-
-    => services gulo te asob dekhate hobe
-    => apply button a asob o dekhate hobe
-}
+ korte hobe:{
+    dashboard er order table a cancel conditionaly korte hobe
+   => studentProfile Update - done
+   => order Update  - done
+   => profile / dashboard a order overivew card addedd
+   => order cancel
+   }
 
 
 // features addedd letter 

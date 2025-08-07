@@ -1,18 +1,20 @@
 import { Order } from "@/database/models/Order";
-import { adminAuthGuard } from "@/middlewere/adminAuthGuard";
+import { studentAuthGuard } from "@/middlewere/studentAuthGuard";
 import { NextResponse } from "next/server";
 
 
-//  only for admin
-//  api => /api/order/update/status/[orderId]
+//  only for student (cancel order)
+//  api => /api/order/cancel/[cancelOrderId]
 export const PUT = async (req, { params }) => {
     try {
         // 🔐 Auth Guard: শুধুমাত্র অ্যাডমিনের অনুমতি
-        const { error, admin, response } = await adminAuthGuard(req);
-        if (error) return response;
+        const auth = await studentAuthGuard(req);
+        if (auth.error) return auth.response;
 
-        const { orderStatus } = await req.json();
-        const { orderId } = await params;
+
+        const { cencelOrderId: orderId } = await params;
+        const { recivedNumber, reason } = await req.json();
+ 
 
         const isOrder = await Order.findById(orderId);
 
@@ -25,7 +27,11 @@ export const PUT = async (req, { params }) => {
 
         const isUpdated = await Order.findByIdAndUpdate(orderId, {
             $set: {
-                status: orderStatus,
+                cancelOrderInfo: {
+                    recivedNumber,
+                    reason
+                },
+                status: "cancel",
             },
         });
 

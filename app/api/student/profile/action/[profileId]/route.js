@@ -1,7 +1,7 @@
-import { connectDb } from "@/database/connectDb"; 
+import { connectDb } from "@/database/connectDb";
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
 import StudentProfileModel from "@/database/models/Profile";
+import { studentAuthGuard } from "@/middlewere/studentAuthGuard";
 
 
 //  profile update 
@@ -9,15 +9,13 @@ export const PUT = async (req, { params }) => {
     const { profileId } = await params;
 
     try {
+
+        const auth = await studentAuthGuard(req);
+        if (auth.error) return auth.response;
+
         await connectDb();
 
         const body = await req.json();
-
-        // ✅ যদি password ফিল্ড আসে তবে hash করে দাও
-        if (body.password) {
-            const salt = await bcrypt.genSalt(10);
-            body.password = await bcrypt.hash(body.password, salt);
-        }
 
         const updatedUser = await StudentProfileModel.findByIdAndUpdate(
             profileId,
@@ -50,7 +48,7 @@ export const PUT = async (req, { params }) => {
         );
     }
 };
- 
+
 
 
 //  delete Profile

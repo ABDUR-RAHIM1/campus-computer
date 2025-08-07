@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import { PostActionAdmin } from "@/actions/admins/PostAction";
 import { orderStatusUpdate } from "@/constans";
 import { globalContext } from "@/contextApi/ContextApi";
+import OrderOverViewCard from "@/components/overviewCards/OrderOverViewCard";
 
 export default function OrderTable({ orders }) {
   const { showToast } = useContext(globalContext);
@@ -112,16 +113,20 @@ export default function OrderTable({ orders }) {
       cell: (row) => {
         let bgClass = "";
         let textClass = "";
+        let statusText = "";
 
-        if (row.status === "pending") {
-          bgClass = "bg-yellow-100";
-          textClass = "text-yellow-800";
+        if (row.status === "cancel") {
+          bgClass = "bg-red-100";
+          textClass = "text-red-800";
+          statusText = "বাতিল";
         } else if (row.status === "active") {
           bgClass = "bg-blue-100";
           textClass = "text-blue-800";
+          statusText = "চলমান";
         } else if (row.status === "success") {
           bgClass = "bg-green-100";
           textClass = "text-green-800";
+          statusText = "সম্পন্ন";
         }
 
         return (
@@ -130,7 +135,7 @@ export default function OrderTable({ orders }) {
             onChange={(e) => handleStatusChange(row._id, e.target.value)}
             className={`text-xs px-2 py-1 rounded border font-medium ${bgClass} ${textClass}`}
           >
-            <option value="pending">প্রক্রিয়াধীন</option>
+            <option value="cancel">বাতিল</option>
             <option value="active">চলমান</option>
             <option value="success">সম্পন্ন</option>
           </select>
@@ -174,17 +179,53 @@ export default function OrderTable({ orders }) {
   ];
 
 
+  const ExpandableComponent = ({ data }) => {
+    return (
+      <>
+        {data.status === "cancel" && (
+          <div className="p-4 text-sm bg-red-100 rounded">
+            <p>
+              <span className="font-semibold">📱 ফেরতের নাম্বার:</span>{" "}
+              {data?.cancelOrderInfo?.recivedNumber || "N/A"}
+            </p>
+            <p className="mt-1">
+              <span className="font-semibold">📝 কারণ:</span>{" "}
+              {data?.cancelOrderInfo?.reason || "N/A"}
+            </p>
+          </div>
+        )}
+
+        {data.status === "active" && (
+          <div className="my-3 bg-blue-100 p-3 rounded">
+            <h2>🚚 অর্ডারটি চলমান রয়েছে</h2>
+            <p> অর্ডারটি প্রক্রিয়াধীন রয়েছে।</p>
+          </div>
+        )}
+
+        {data.status === "success" && (
+          <div className="my-3 bg-green-100 p-3 rounded">
+            <h2>✅ অর্ডারটি সফলভাবে সম্পন্ন হয়েছে</h2>
+            <p> অর্ডারটি ডেলিভারি সম্পন্ন হয়েছে!</p>
+          </div>
+        )}
+      </>
+    );
+  };
+
+
 
 
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4">
-      <div className=" mx-auto bg-white shadow-lg rounded-lg p-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">
-          📋 আমার অর্ডারসমূহ
+      <div className=" w-full mx-auto bg-white shadow-lg rounded-lg p-2 md:p-6">
+        <h2 className=" text-xl md:text-2xl font-bold text-gray-800 mb-4">
+          📋 অর্ডারসমূহ
         </h2>
-        <p className="text-gray-700 mb-6">
-          নিচে আপনার সব কার্যক্রমের অর্ডার তালিকা দেওয়া হলো। প্রতিটি সার্ভিসের বিস্তারিত দেখতে সারির উপরে ক্লিক করুন।
+        <p className=" text-sm md:text-xl text-gray-700 mb-6">
+          নিচে সব কার্যক্রমের অর্ডার তালিকা দেওয়া হলো। প্রতিটি সার্ভিসের বিস্তারিত দেখতে সারির উপরে ক্লিক করুন।
         </p>
+
+        <OrderOverViewCard total={50} success={45} cancel={5} />
 
         <DataTable
           columns={columns}
@@ -192,6 +233,8 @@ export default function OrderTable({ orders }) {
           pagination
           highlightOnHover
           responsive
+          expandableRows
+          expandableRowsComponent={ExpandableComponent}
           customStyles={{
             headCells: {
               style: {
