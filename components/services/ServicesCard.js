@@ -15,7 +15,8 @@ export default async function ServicesCard({ data }) {
 
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        // <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <>
             {data.map((service, index) => {
                 const color = colors[index % colors.length];
 
@@ -49,7 +50,7 @@ export default async function ServicesCard({ data }) {
                         {/* Required Documents */}
                         {service.requiredDocuments?.length > 0 && (
                             <div className=' mt-3'>
-                                  <p className="font-medium">💰 ডকুমেন্ট লাগবে :</p> 
+                                <p className="font-medium">💰 ডকুমেন্ট লাগবে :</p>
                                 <ul className="mt-3 text-sm text-gray-700 list-disc list-inside">
                                     {service.requiredDocuments.map((doc, i) => (
                                         <li key={i}>📎 {doc}</li>
@@ -62,7 +63,8 @@ export default async function ServicesCard({ data }) {
                     </div>
                 );
             })}
-        </div>
+        </>
+
 
     );
 }

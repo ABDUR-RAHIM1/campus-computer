@@ -1,5 +1,7 @@
 
-export const BASE_URL = "https://campuscomputer.it"
+export const BASE_URL = "https://campuscomputer.cc"
+
+export const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const demoProfilePicture = "https://cdn-icons-png.flaticon.com/512/149/149071.png"
 
@@ -23,7 +25,6 @@ export const quickLinkCreateGet = "/quickLink"
 
 //  frontend Start here
 
-export const API_URL = process.env.NEXT_PUBLIC_API_URL;
 // -----------------  student login------------------------
 export const studentRegister = "/auth/student/register"
 export const studentLogin = "/auth/student/login"

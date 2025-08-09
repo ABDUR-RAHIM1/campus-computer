@@ -47,8 +47,8 @@ const orderSchema = new mongoose.Schema({
         default: "pending",
     },
     cancelOrderInfo: {
-        recivedNumber: { type: String, required: true },
-        reason: { type: String, required: true },
+        recivedNumber: { type: String },
+        reason: { type: String },
     },
     createdAt: {
         type: Date,
