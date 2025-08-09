@@ -1,5 +1,6 @@
+import { GetActionAdmin } from "@/actions/admins/GetAction";
 import { GetAction } from "@/actions/students/GetAction";
-import { studentProfileById, studentProfileGetMe, studentProfileGetMeAll } from "@/constans";
+import { studentProfileById, studentProfileGetAllByAdmin, studentProfileGetMe, studentProfileGetMeAll } from "@/constans";
 
 
 export const getMyProfile = async () => {
@@ -17,4 +18,10 @@ export const getStudentProfileById = async (profileId) => {
     const api = studentProfileById + profileId;
     const profile = await GetAction(api);
     return profile
+}
+
+//  get all profile by admin (protected)
+export const getStudentProfileByAdmin = async () => {
+    const profiles = await GetActionAdmin(studentProfileGetAllByAdmin);
+    return profiles
 }

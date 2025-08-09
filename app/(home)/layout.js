@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import ContextApiState from "@/contextApi/ContextApi";
 import { Toaster } from "sonner";
+import { campusComputerMetadata } from "@/seo/metadata";
 
 const notoSansBengali = Noto_Sans_Bengali({
   weight: ["400", "500", "700"],
@@ -13,10 +14,7 @@ const notoSansBengali = Noto_Sans_Bengali({
   variable: "--font-bengali",
 });
 
-export const metadata = {
-  title: "Campus Computer",
-  description: "College Bazar lalmonirhat",
-};
+export const metadata =  campusComputerMetadata
 
 export default function RootLayout({ children }) {
   return (
@@ -25,7 +23,7 @@ export default function RootLayout({ children }) {
         cz-shortcut-listen="true"
         className={`${notoSansBengali.variable} font-sans antialiased`}>
         <ContextApiState>
-          <Toaster position="top-right"/>
+          <Toaster position="top-right" />
           <Navbar />
           {children}
           <Footer />

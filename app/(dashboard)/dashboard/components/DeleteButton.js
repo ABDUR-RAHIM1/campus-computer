@@ -3,7 +3,7 @@ import { DeleteActionAdmin } from '@/actions/admins/DeleteAction';
 import { Button } from '@/components/ui/button';
 import { globalContext } from '@/contextApi/ContextApi';
 import Spinner from '@/utilities/Spinner';
-import { DeleteIcon } from 'lucide-react'
+import { Trash } from 'lucide-react'
 import { useRouter } from 'next/navigation';
 import React, { useContext, useState } from 'react'
 
@@ -37,10 +37,10 @@ export default function DeleteButton({ deleteApi }) {
     }
 
     return (
-        <div onClick={handleDelete} className=' inline-block cursor-pointer'>
+        <div onClick={handleDelete} className=' inline-block '>
             {
-                isLoading ? <Spinner /> : <Button variant={"destructive"}>
-                    <DeleteIcon />
+                isLoading ? <Spinner /> : <Button variant={"destructive"} className={"cursor-pointer"}>
+                    <Trash />
                 </Button>
             }
         </div>

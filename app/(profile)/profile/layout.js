@@ -3,6 +3,7 @@ import "../../globals.css";
 import ProfileNavbar from "./components/ProfileNavbar"; 
 import { Toaster } from "sonner"; 
 import ContextApiState from "@/contextApi/ContextApi";
+import { campusComputerMetadata } from "@/seo/metadata";
 
 // Bengali font
 const bengaliFont = Noto_Sans_Bengali({
@@ -11,10 +12,7 @@ const bengaliFont = Noto_Sans_Bengali({
   variable: "--font-bengali",
 });
 
-export const metadata = {
-  title: "Profile - Campus Computer",
-  description: "College Bazar lalmonirhat",
-};
+export const metadata = campusComputerMetadata
 
 export default function ProfileLayout({ children }) {
   return (

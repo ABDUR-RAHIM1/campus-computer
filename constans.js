@@ -1,5 +1,5 @@
 
-
+export const BASE_URL = "https://campuscomputer.it"
 
 export const demoProfilePicture = "https://cdn-icons-png.flaticon.com/512/149/149071.png"
 
@@ -37,6 +37,8 @@ export const studentProfileGetMe = "/student/profile/me"
 export const studentProfileGetMeAll = "/student/profile/meAll"
 export const studentProfileById = "/student/profile/byId/"
 export const studentProfileUpdateDelete = "/student/profile/action/"
+
+export const studentProfileGetAllByAdmin = "/student/profile/all"
 //  profile end
 // -----------------  student login------------------------
 

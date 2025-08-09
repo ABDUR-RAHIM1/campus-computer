@@ -9,15 +9,25 @@
             // 🔐 Auth Guard: শুধুমাত্র অ্যাডমিনের অনুমতি
         const { error, admin, response } = await adminAuthGuard(req);
         if (error) return response;
+
+          const { isAccess } = await duelAuthGuard(req, profileId)
+        if (!isAccess) {
+            return NextResponse.json(
+                { message: "অনুমোদিত নয়!" },
+                { status: 401 }
+            );
+        };
 }
 
 
  korte hobe:{
-    dashboard er order table a cancel conditionaly korte hobe
+   => order Update  -  
+
+   => orderDetails route protected korte hobe - admin / student er jonno akta middlewere likhte hobe jeta suhdu token ke verify korbe ( hok student token ba admin token) setai duelAuthGuard hisbe use kora hobe  -done 
+ 
    => studentProfile Update - done
-   => order Update  - done
    => profile / dashboard a order overivew card addedd
-   => order cancel
+   => order cancel = done
    }
 
 

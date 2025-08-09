@@ -2,9 +2,11 @@ import { connectDb } from "@/database/connectDb";
 import { NextResponse } from "next/server";
 import StudentProfileModel from "@/database/models/Profile";
 import { studentAuthGuard } from "@/middlewere/studentAuthGuard";
+import { duelAuthGuard } from "@/middlewere/duelAuthGuard";
 
 
 //  profile update 
+// suhdu student update korte parbe 
 export const PUT = async (req, { params }) => {
     const { profileId } = await params;
 
@@ -52,10 +54,21 @@ export const PUT = async (req, { params }) => {
 
 
 //  delete Profile
+// /api/student/profile/action/[profileId]
+// admin / student je kew delete korte parbe 
 export const DELETE = async (req, { params }) => {
     const { profileId } = await params;
 
     try {
+
+        // info === admin / student token info
+        const { error, info } = await duelAuthGuard(req)
+        if (error) {
+            return NextResponse.json(
+                { message: "অনুমোদিত নয়!" },
+                { status: 401 }
+            );
+        };
         await connectDb();
 
         const deletedUser = await StudentProfileModel.findByIdAndDelete(profileId);

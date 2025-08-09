@@ -12,11 +12,20 @@ export default function OrderTable({ orders }) {
   const { showToast } = useContext(globalContext);
   const [orderList, setOrderList] = useState([]);
 
+
   useEffect(() => {
     if (orders) {
       setOrderList(orders);
     }
   }, [orders]);
+
+
+  const activeOrderCount = orderList?.filter(orderItem => orderItem.status === "active")?.length || 0
+  const successOrderCount = orderList?.filter(orderItem => orderItem.status === "success")?.length || 0
+  const cancelOrderCount = orderList?.filter(orderItem => orderItem.status === "cancel")?.length || 0
+
+
+
 
   //  order stutus update handler
   const handleStatusChange = async (orderId, newStatus) => {
@@ -225,7 +234,12 @@ export default function OrderTable({ orders }) {
           নিচে সব কার্যক্রমের অর্ডার তালিকা দেওয়া হলো। প্রতিটি সার্ভিসের বিস্তারিত দেখতে সারির উপরে ক্লিক করুন।
         </p>
 
-        <OrderOverViewCard total={50} success={45} cancel={5} />
+        <OrderOverViewCard
+          total={orderList?.length || 0}
+          active={activeOrderCount}
+          success={successOrderCount}
+          cancel={cancelOrderCount}
+        />
 
         <DataTable
           columns={columns}

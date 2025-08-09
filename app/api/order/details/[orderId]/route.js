@@ -2,15 +2,27 @@ import { connectDb } from "@/database/connectDb";
 import { Order } from "@/database/models/Order";
 import ServiceModel from "@/database/models/Services";
 import StudentAuthModel from "@/database/models/StudentAuth";
+import { duelAuthGuard } from "@/middlewere/duelAuthGuard";
 import { NextResponse } from "next/server";
 
 
+//  student and admin can access
 export const GET = async (req, { params }) => {
 
     const { orderId } = await params;
 
 
     try {
+
+        const { error, info } = await duelAuthGuard(req);
+        if (error) {
+            return NextResponse.json(
+                { message: "অনুমোদিত নয়!" },
+                { status: 401 }
+            );
+        };
+
+
         await connectDb();
 
         const orders = await Order.findOne({ _id: orderId })

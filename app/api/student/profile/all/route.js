@@ -1,13 +1,12 @@
+
 import { connectDb } from "@/database/connectDb";
-import StudentAuthModel from "@/database/models/StudentAuth";
 import { adminAuthGuard } from "@/middlewere/adminAuthGuard";
 import { NextResponse } from "next/server";
+import StudentProfileModel from "@/database/models/Profile";
 
 
-// get all student for admin 
-// api => /api/auth/student/all
-// admin auth middlewere diye protected korte hobe 
-//  ata ekhn use hocce na 
+// admin auth middlewere diye protected  
+//  /api/student/profile/all
 export const GET = async (req) => {
     try {
 
@@ -19,9 +18,8 @@ export const GET = async (req) => {
 
         await connectDb();
 
-        const students = await StudentAuthModel.find()
-            .select("-password")
-            .populate()
+        const students = await StudentProfileModel.find()
+            .populate("studentId", "-password")
 
         return NextResponse.json(students,
             { status: 200 }

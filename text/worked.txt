@@ -1,7 +1,9 @@
 
-problem : {
-    edit profile eta thik korte hobe
+ 
+{
+    => studentProfile add/ delete in dashbaord
 }
+
 
 {
     => services, order button , model , UI te collegeFee , chargeFee etc add kora holo

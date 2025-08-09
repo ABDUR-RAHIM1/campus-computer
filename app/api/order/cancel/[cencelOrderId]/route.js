@@ -1,4 +1,4 @@
-import { Order } from "@/database/models/Order";
+import { Order } from "@/database/models/Order"; 
 import { studentAuthGuard } from "@/middlewere/studentAuthGuard";
 import { NextResponse } from "next/server";
 
@@ -7,14 +7,14 @@ import { NextResponse } from "next/server";
 //  api => /api/order/cancel/[cancelOrderId]
 export const PUT = async (req, { params }) => {
     try {
-        // 🔐 Auth Guard: শুধুমাত্র অ্যাডমিনের অনুমতি
+        // 🔐 Auth Guard: শুধুমাত্র  student অনুমতি
         const auth = await studentAuthGuard(req);
         if (auth.error) return auth.response;
 
 
         const { cencelOrderId: orderId } = await params;
         const { recivedNumber, reason } = await req.json();
- 
+
 
         const isOrder = await Order.findById(orderId);
 
