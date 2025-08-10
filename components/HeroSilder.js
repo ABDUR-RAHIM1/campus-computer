@@ -4,7 +4,7 @@ import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carouse
 import Autoplay from "embla-carousel-autoplay";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
-import lgc1 from "@/public/images/sliders/lgc.jpg"
+import lgc1 from "@/public/images/sliders/lgc.png"
 import lgc2 from "@/public/images/sliders/lgc2.jpg"
 import lgc3 from "@/public/images/sliders/lgc3.png"
 
@@ -24,14 +24,14 @@ export default function HeroSlider() {
                     <CarouselContent>
                         {images.map((src, index) => (
                             <CarouselItem key={index}>
-                                <Card>
+                                <Card className={"p-0"}>
                                     <CardContent className="flex items-center justify-center p-2">
                                         <Image
                                             src={src}
                                             alt={`Slide ${index + 1}`}
                                             width={600}
                                             height={400}
-                                            className="rounded-lg object-cover w-full h-64"
+                                            className="rounded-lg w-full h-64"
                                         />
                                     </CardContent>
                                 </Card>
@@ -42,10 +42,10 @@ export default function HeroSlider() {
 
                 {/* Right side: Information */}
                 <div>
-                    <h2 className="text-3xl font-bold mb-4 text-gray-800">
+                    <h2 className=" text-2xl md:text-3xl font-bold mb-4 text-blue-800 text-center md:text-left">
                         কেন আমাদের আপ্লিকেশন ব্যবহার করবেন?
                     </h2>
-                    <ul className="list-disc ml-6 space-y-2 text-gray-700 text-lg">
+                    <ul className="list-disc ml-6 space-y-2 text-gray-700 text-sm md:text-lg">
                         <li>ঘরে বসে ভর্তি, ফর্ম ফিলাপ ও পেমেন্টের সুবিধা</li>
                         <li>দ্রুত তথ্য যাচাই ও সাবমিশনের নিশ্চয়তা</li>
                         <li>নিরাপদ ও ব্যবহার-বান্ধব ডিজাইন</li>

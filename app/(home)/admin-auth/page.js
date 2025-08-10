@@ -13,7 +13,7 @@ export default function AdminAuth() {
     const [isLoading, setIsLoading] = useState(false)
     const router = useRouter();
     const [formData, setFormData] = useState({
-        email: "",
+        phone: "",
         password: "",
     });
 

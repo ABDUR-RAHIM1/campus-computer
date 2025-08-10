@@ -58,6 +58,11 @@ const ServiceSchema = new mongoose.Schema(
             default: [],
         },
 
+        isRegular: {
+            type: Boolean,
+            enum: [true, false],
+            default: true,
+        },
         active: {
             type: Boolean,
             default: true,

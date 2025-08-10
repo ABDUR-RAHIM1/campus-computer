@@ -1,7 +1,24 @@
 "use client"
-import React from 'react';
+import { globalContext } from '@/contextApi/ContextApi';
+import Spinner from '@/utilities/Spinner';
+import React, { useContext, useState } from 'react';
 
 export function Contact() {
+
+  const { showToast } = useContext(globalContext);
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmitMessage = (e) => {
+    setIsLoading(true)
+    e.preventDefault()
+    setTimeout(() => {
+      showToast(200, "আপনার মেসেজটি গ্রহন করা হয়েছে। ধন্যবাদ")
+      setIsLoading(false)
+    }, 2000);
+  }
+
+
   return (
     <section id="contact" className="bg-white py-16">
       <div className="container mx-auto px-4 max-w-6xl">
@@ -12,7 +29,7 @@ export function Contact() {
           {/* Contact Form */}
           <form
             className="bg-gray-100 p-8 rounded-lg shadow-md flex-1 mb-10 md:mb-0"
-            onSubmit={(e) => e.preventDefault()}
+            onSubmit={handleSubmitMessage}
           >
             <div className="mb-6">
               <label
@@ -66,7 +83,9 @@ export function Contact() {
               type="submit"
               className="w-full bg-blue-600 text-white font-semibold py-3 rounded-md hover:bg-blue-700 transition-colors"
             >
-              পাঠান
+               {
+                isLoading ? <Spinner/> : "পাঠান"
+               }
             </button>
           </form>
 

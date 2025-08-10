@@ -4,6 +4,9 @@ import DataTable from "react-data-table-component";
 import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ServicesOverview from "@/components/overviewCards/ServicesOverview";
+import DeleteButton from "../components/DeleteButton";
+import { servicesActions } from "@/constans";
+import UpdateButton from "../components/UpdateButton";
 
 export default function ServicesTable({ data }) {
   const [servicesData, setServicesData] = useState([]);
@@ -29,6 +32,16 @@ export default function ServicesTable({ data }) {
       name: "#",
       cell: (row, index) => index + 1,
       width: "50px",
+    },
+    {
+      name: "Type",
+      selector: (row) => <div className={` my-6 p-2 rounded-md ${row.isRegular ? "bg-green-100 text-green-500" : " bg-red-100 text-red-500"}`}>
+        {
+          row.isRegular ? "নিয়মিত" : "অনিয়মিত"
+        }
+      </div>,
+      wrap: true,
+      width: "120px",
     },
     {
       name: "Title",
@@ -57,31 +70,16 @@ export default function ServicesTable({ data }) {
     },
     {
       name: "Update",
-      cell: (row) => (
-        <Button
-          onClick={() => handleUpdate(row)}
-          variant="outline"
-          className="flex items-center gap-1 text-blue-600 border-blue-400 hover:bg-blue-50"
-        >
-          <Pencil size={16} />
-          Update
-        </Button>
-      ),
-      width: "150px",
+      cell: (row) =>
+        <UpdateButton />,
+      width: "100px",
     },
     {
       name: "Delete",
       cell: (row) => (
-        <Button
-          onClick={() => handleDelete(row._id)}
-          variant="outline"
-          className="flex items-center gap-1 text-red-600 border-red-400 hover:bg-red-50"
-        >
-          <Trash2 size={16} />
-          Delete
-        </Button>
+        <DeleteButton deleteApi={servicesActions + row._id} />
       ),
-      width: "150px",
+      width: "100px",
     },
   ];
 
@@ -89,7 +87,7 @@ export default function ServicesTable({ data }) {
     return (
       <div className="p-3 bg-blue-50 rounded-md">
         <h4 className="font-semibold text-blue-700 mb-2">
-          📊 Department-wise Fees
+          📊 ডিপার্টমেন্ট অনুযায়ী ফী 
         </h4>
         <div className="overflow-x-auto">
           <table className="w-full text-sm border border-blue-200 rounded">
@@ -119,7 +117,7 @@ export default function ServicesTable({ data }) {
 
   return (
     <div className="w-full md:w-[90%] m-auto my-10  ">
-        <ServicesOverview/>
+      <ServicesOverview />
       <DataTable
         title={
           <span className="text-xl font-semibold text-gray-700">
@@ -150,4 +148,3 @@ export default function ServicesTable({ data }) {
     </div>
   );
 }
- 

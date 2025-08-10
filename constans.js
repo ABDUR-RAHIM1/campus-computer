@@ -47,6 +47,7 @@ export const studentProfileGetAllByAdmin = "/student/profile/all"
 
 //  ----------------- Services ---------------------------
 export const servicesPostGetAll = "/services/postGet"
+export const servicesActions = "/services/action/"   // update/ delete
 //  ----------------- Services ---------------------------
 
 

@@ -11,6 +11,8 @@ import { servicesPostGetAll } from "@/constans";
 import { globalContext } from "@/contextApi/ContextApi";
 import Spinner from "@/utilities/Spinner";
 import { PostActionAdmin } from "@/actions/admins/PostAction";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 export default function AddServicePage() {
     const { showToast } = useContext(globalContext)
@@ -25,6 +27,7 @@ export default function AddServicePage() {
         totalFee: 0,
     })
     const [formData, setFormData] = useState({
+        isRegular: true,
         title: "",
         description: "",
         program: "",
@@ -43,9 +46,7 @@ export default function AddServicePage() {
         }));
     };
 
-    console.log({
-        deparmentData , formData
-    })
+
     //  departmentChange
     const handleDepartmentChange = (e) => {
         const { name, value } = e.target;
@@ -57,7 +58,7 @@ export default function AddServicePage() {
 
         newData.totalFee = Number(newData.collegeFee) + Number(newData.chargeFee);
         setDepartmentData(newData)
-     
+
     }
 
 
@@ -114,6 +115,7 @@ export default function AddServicePage() {
 
     };
 
+
     return (
         <div className="min-h-screen bg-gray-50 px-4 py-10 flex items-start justify-center">
             <div className="w-full max-w-2xl bg-white shadow-lg rounded-xl p-8 border">
@@ -121,7 +123,20 @@ export default function AddServicePage() {
                     🎓 নতুন সার্ভিস যুক্ত করুন
                 </h2>
 
+
+
+
                 <form onSubmit={handleSubmit} className="space-y-4 grid grid-cols-1">
+                    <div className="flex items-center gap-2 mb-5">
+                        <Label>অনিয়মিত ?</Label>
+                        <Checkbox
+                            name="isRegular"
+                            onCheckedChange={(checked) =>
+                                setFormData((prev) => ({ ...prev, isRegular: checked !== true }))
+                            }
+                        />
+                    </div>
+
                     <InputField
                         label=" শিরোনাম"
                         name="title"

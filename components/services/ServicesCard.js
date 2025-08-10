@@ -12,7 +12,7 @@ export default async function ServicesCard({ data }) {
         { bg: 'bg-pink-50', text: 'text-pink-700', desc: 'text-pink-600' },
         { bg: 'bg-indigo-50', text: 'text-indigo-700', desc: 'text-indigo-600' },
     ];
-
+ 
 
     return (
         // <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -29,9 +29,18 @@ export default async function ServicesCard({ data }) {
                         <p className={`${color.desc} text-sm mt-1`}>
                             {service.description}
                         </p>
-                        <p className="text-xs text-gray-500 mt-2">
-                            🎓 {service.program.toUpperCase()} | 📅 {service.session}
-                        </p>
+
+                        <div className=' my-3 flex items-center justify-between flex-wrap'>
+                            <p className="text-xs text-gray-500 mt-2">
+                                🎓 {service.program.toUpperCase()} | 📅 {service.session}
+                            </p>
+
+                            <div className={`py-2 px-2 ${service?.isRegular ? "bg-green-100 text-green-500" : " bg-red-100 text-red-500"} rounded-md  text-sm`}>
+                                {
+                                    service?.isRegular ? "নিয়মিত" : "অনিয়মিত"
+                                }
+                            </div>
+                        </div>
 
                         {/* Show fee list by department */}
                         {service.departmentFees?.length > 0 && (

@@ -24,12 +24,12 @@ const serviceStats = [
 
 export default function AutomationOverview() {
     return (
-        <section className="bg-gray-50 py-10 px-4">
+        <section className="bg-blue-50 py-10 px-4">
             <div className="max-w-5xl mx-auto text-center">
-                <h2 className="text-3xl font-bold text-gray-800 mb-6">
-                    ✅ Campus Computer Automation Success Overview
+                <h2 className=" text-2xl md:text-3xl font-bold text-blue-800 mb-6">
+                     ওভারভিউ 
                 </h2>
-                <p className="text-gray-600 mb-10">
+                <p className="text-blue-600 mb-10">
                     আমাদের মাধ্যমে সফলভাবে সম্পন্ন হওয়া শিক্ষাগত কার্যক্রমের সারাংশ। আপনি যেকোনো স্তরের ছাত্র/ছাত্রী হোন, নিশ্চিন্তে আমাদের উপর আস্থা রাখতে পারেন।
                 </p>
 

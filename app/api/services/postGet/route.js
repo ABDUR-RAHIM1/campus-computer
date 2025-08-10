@@ -44,6 +44,7 @@ export const POST = async (req) => {
             departmentFees: body.departmentFees || [],
             requiredDocuments: body.requiredDocuments || [],
             active: body.active !== undefined ? body.active : true,
+            isRegular: body.isRegular !== undefined ? body.isRegular : true,
         });
 
         const savedService = await newService.save();
