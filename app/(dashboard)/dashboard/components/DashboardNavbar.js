@@ -4,21 +4,13 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu as MenuIcon } from 'lucide-react';
+import { dashboardNavItems } from '@/LocalDatabase/DashbboardNavItems';
 
 export default function DashboardNavbar() {
     const pathname = usePathname();
     const [menuOpen, setMenuOpen] = useState(false);
 
-    const navItems = [
-        { name: 'ড্যাশবোর্ড', href: '/dashboard' },
-        { name: 'অর্ডারসমূহ', href: '/dashboard/orders' },
-        { name: 'পেমেন্ট ইতিহাস', href: '/dashboard/payments' },
-        { name: 'স্টুডেন্ট তালিকা', href: '/dashboard/student-list' },
-        { name: 'সার্ভিস', href: '/dashboard/services' },
-        { name: 'লিংক গুলো', href: '/dashboard/quickLink' },
-        { name: 'নোটিশ বোর্ড', href: '/dashboard/notices' },
-        { name: 'সেটিংস', href: '/dashboard/settings' },
-    ];
+
 
 
     return (
@@ -32,7 +24,7 @@ export default function DashboardNavbar() {
 
                 {/* Navigation Links (Desktop) */}
                 <nav className="hidden md:flex space-x-3">
-                    {navItems.map((item) => (
+                    {dashboardNavItems.map((item) => (
                         <Link
                             key={item.href}
                             href={item.href}
@@ -61,7 +53,7 @@ export default function DashboardNavbar() {
             {/* Mobile Menu */}
             {menuOpen && (
                 <div className="md:hidden px-4 pb-4 space-y-2 animate-fade-in">
-                    {navItems.map((item) => (
+                    {dashboardNavItems.map((item) => (
                         <Link
                             key={item.href}
                             href={item.href}

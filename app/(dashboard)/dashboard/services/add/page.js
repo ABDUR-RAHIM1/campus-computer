@@ -11,23 +11,27 @@ import { servicesPostGetAll } from "@/constans";
 import { globalContext } from "@/contextApi/ContextApi";
 import Spinner from "@/utilities/Spinner";
 import { PostActionAdmin } from "@/actions/admins/PostAction";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
+import { instituteList } from "@/LocalDatabase/Institute";
+import { getAllSubAdmins } from "@/handlers/subAdmins";
+
+
 
 export default function AddServicePage() {
     const { showToast } = useContext(globalContext)
     const [departments, setDepartments] = useState([]);
     const [year, setYear] = useState([]);
     const [isLoading, setIsLoading] = useState(false)
-
+    const [institutes, setInstitutes] = useState([]);
     const [deparmentData, setDepartmentData] = useState({
         department: "",
         collegeFee: 0,
+        subjectFee: 0,
         chargeFee: 0,
         totalFee: 0,
-    })
+    });
     const [formData, setFormData] = useState({
-        isRegular: true,
+        type: "",
+        institute: "",
         title: "",
         description: "",
         program: "",
@@ -38,6 +42,7 @@ export default function AddServicePage() {
         requiredDocuments: "",
     });
 
+
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         setFormData((prev) => ({
@@ -45,6 +50,27 @@ export default function AddServicePage() {
             [name]: type === "checkbox" ? checked : value,
         }));
     };
+
+    // getAll Institue/ subAdmins
+    useEffect(() => {
+        const getData = async () => {
+            const { status, data } = await getAllSubAdmins();
+            if (status === 200) {
+
+                const formatedData = data.map((ins, i) => {
+                    return {
+                        label: ins.username,
+                        value: ins._id
+                    }
+                })
+
+                setInstitutes(formatedData)
+            }
+        };
+
+        getData()
+    }, [])
+
 
 
     //  departmentChange
@@ -56,10 +82,10 @@ export default function AddServicePage() {
             [name]: value
         }
 
-        newData.totalFee = Number(newData.collegeFee) + Number(newData.chargeFee);
+        newData.totalFee = Number(newData.collegeFee) + Number(newData.subjectFee) + Number(newData.chargeFee);
         setDepartmentData(newData)
 
-    }
+    };
 
 
     // deparment filter using Program
@@ -127,15 +153,29 @@ export default function AddServicePage() {
 
 
                 <form onSubmit={handleSubmit} className="space-y-4 grid grid-cols-1">
-                    <div className="flex items-center gap-2 mb-5">
-                        <Label>অনিয়মিত ?</Label>
-                        <Checkbox
-                            name="isRegular"
-                            onCheckedChange={(checked) =>
-                                setFormData((prev) => ({ ...prev, isRegular: checked !== true }))
-                            }
-                        />
-                    </div>
+
+
+                    <SelectField
+                        label="ধরন"
+                        name="institute"
+                        value={formData.institute}
+                        onChange={handleChange}
+                        required
+                        options={institutes}
+                    />
+                    <SelectField
+                        label="ধরন"
+                        name="type"
+                        value={formData.type}
+                        onChange={handleChange}
+                        required
+                        options={[
+                            { label: "নিয়মিত", value: "নিয়মিত" },
+                            { label: "অনিয়মিত", value: "অনিয়মিত" },
+                            { label: "মান-উন্নায়ন", value: "মান-উন্নায়ন" },
+                            { label: "অন্যান্য", value: "অন্যান্য" },
+                        ]}
+                    />
 
                     <InputField
                         label=" শিরোনাম"
@@ -167,9 +207,8 @@ export default function AddServicePage() {
 
 
                     {/*  depertment and fees */}
-
                     <div className=" border my-5 py-4 px-1">
-                        <div className=" flex items-center justify-between gap-2">
+                        <div className=" grid grid-cols-2 gap-2">
                             <SelectField
                                 label="📚 বিভাগ"
                                 name="department"
@@ -185,6 +224,14 @@ export default function AddServicePage() {
                                 value={deparmentData.collegeFee}
                                 onChange={handleDepartmentChange}
                                 required
+                            />
+                            <InputField
+                                label=" সাবজেক্ট ফি (যদি থাকে)"
+                                name="subjectFee"
+                                type="number"
+                                value={deparmentData.subjectFee}
+                                onChange={handleDepartmentChange}
+
                             />
                             <InputField
                                 label="চার্জ ফি (৳)"

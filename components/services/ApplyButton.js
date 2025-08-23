@@ -33,9 +33,31 @@ export default function ApplyButton({ serviceData }) {
         isOthersStudent: false,
         profile: null
     })
-    const [selectedDepartment, setSelectedDepartment] = useState(null);
+
 
     const [profileList, setProfileList] = useState([]);
+    const [selectedDepartment, setSelectedDepartment] = useState(null);
+    const [finalTotalFee, setFinalTotalFee] = useState(0);
+
+
+    //  profile dropdown change
+    const handleProfileChange = (profile) => {
+
+        setFormData((prev) => ({
+            ...prev,
+            profile: profile
+        }))
+    }
+
+
+    const handleSelectDepartment = (value) => {
+        setSelectedDepartment(value);
+        const imporoveSub = formData.profile && formData.profile.improvementSubjects?.length || 0;
+        const imporveFeeCount = Number(imporoveSub) * Number(value.subjectFee || 0);
+        const totalFee = imporveFeeCount + Number(value.chargeFee || 0) + Number(value.collegeFee || 0)
+        setFinalTotalFee(totalFee);
+    }
+
 
     useEffect(() => {
         const getMyProfileList = async () => {
@@ -61,6 +83,7 @@ export default function ApplyButton({ serviceData }) {
         }
 
         setWaiting(true);
+
         try {
             const payload = {
                 method: "POST",
@@ -69,24 +92,24 @@ export default function ApplyButton({ serviceData }) {
                     serviceId: serviceData._id,
                     department: selectedDepartment.department,
                     collegeFee: selectedDepartment.collegeFee,
+                    subjectFee: selectedDepartment.subjectFee,
                     chargeFee: selectedDepartment.chargeFee,
+                    totalFee: finalTotalFee,
                     isOthersStudent: formData.isOthersStudent,
                     profileId: formData.profile._id
                 },
             };
+ 
             const { status, data } = await PostAction(payload);
             showToast(status, data);
             setOpen(false);
-            setSelectedDepartment(null); // Reset after submit
+            // setSelectedDepartment(null); // Reset after submit
         } catch (error) {
             console.log(error);
         } finally {
             setWaiting(false);
         }
     };
-
-
-
 
 
     return (
@@ -153,10 +176,7 @@ export default function ApplyButton({ serviceData }) {
                         </SelectLabel>
                         <Select
 
-                            onValueChange={(value) => setFormData((prev) => ({
-                                ...prev,
-                                profile: value
-                            }))}
+                            onValueChange={handleProfileChange}
                         >
                             <SelectTrigger className="w-full">
                                 <SelectValue placeholder="এখান থেকে প্রোফাইল বাছাই করুন" />
@@ -189,12 +209,13 @@ export default function ApplyButton({ serviceData }) {
                 <div className=" mb-3 rounded-md w-full border border-green-400 bg-green-100 text-green-900 p-3 ">
                     {
                         formData.profile?._id ?
-                            <>
+                            <div className=" text-[12px]">
                                 <p>নাম: {formData.profile?.studentName}</p>
                                 <p>বিভাগ: {formData.profile?.department}</p>
-                            </>
+                                {formData.profile.improvementSubjects.length > 0 && <p> ইম্প্রুভ আছেঃ {formData.profile.improvementSubjects?.length} -টি</p>}
+                            </div>
                             :
-                            <p>
+                            <p className=" text-[12px]">
                                 প্রোফাইল নির্বাচন করলে এখানে নাম ও বিভাগ দেখাবে , সে অনুযায়ী নিচের দেওয়া বিভাগ গুলো থেকে বাছাই করুন
                             </p>
 
@@ -212,10 +233,14 @@ export default function ApplyButton({ serviceData }) {
                                 কলেজ ফি: {selectedDepartment.collegeFee}৳
                             </p>
                             <p className="text-sm text-gray-600">
+                                প্রতি সাবজেক্ট ফি: {selectedDepartment.subjectFee}৳
+                            </p>
+                            <p className="text-sm text-gray-600">
                                 চার্জ ফি: {selectedDepartment.chargeFee}৳
                             </p>
                             <p className="text-sm text-gray-600">
-                                মোট ফি: {selectedDepartment.totalFee}৳
+                                {/* মোট ফি: {selectedDepartment.totalFee}৳ */}
+                                মোট ফি: {finalTotalFee}৳
                             </p>
                             <p className="text-xs text-blue-600 mt-1">
                                 ← পরিবর্তন করতে ক্লিক করুন
@@ -225,12 +250,15 @@ export default function ApplyButton({ serviceData }) {
                         serviceData.departmentFees?.map((dept, i) => (
                             <div
                                 key={i}
-                                onClick={() => setSelectedDepartment(dept)}
+                                onClick={() => handleSelectDepartment(dept)}
                                 className="border p-3 rounded cursor-pointer hover:border-blue-400"
                             >
                                 <p className="font-medium">{dept.department}</p>
                                 <p className="text-sm text-gray-600">
                                     কলেজ ফি: {dept.collegeFee}৳
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                    প্রতি সাবজেক্ট ফি: {dept.subjectFee}৳
                                 </p>
                                 <p className="text-sm text-gray-600">
                                     চার্জ ফি: {dept.chargeFee}৳

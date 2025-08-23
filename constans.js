@@ -18,6 +18,10 @@ export const quickLinkCreateGet = "/quickLink"
 //  qucikLink End
 
 
+//  subAdmins Account Start
+export const subAdminRegGetAll = "/sub-admin/account/regGetAll"
+//  subAdmins Account End
+
 
 // ---------------------  admin -------------
 

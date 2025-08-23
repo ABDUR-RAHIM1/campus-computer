@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import DataTable from "react-data-table-component";
 import { format } from "date-fns";
-import { Button } from "@/components/ui/button"
 import OrderAction from "./OrderAction";
 import OrderOverViewCard from "@/components/overviewCards/OrderOverViewCard";
 
@@ -16,6 +15,13 @@ export default function OrderTable({ orders }) {
       setOrderList(orders);
     }
   }, [orders]);
+
+  const activeOrderCount = orderList?.filter(orderItem => orderItem.status === "active")?.length || 0
+  const successOrderCount = orderList?.filter(orderItem => orderItem.status === "success")?.length || 0
+  const cancelOrderCount = orderList?.filter(orderItem => orderItem.status === "cancel")?.length || 0
+
+
+
 
   const columns = [
 
@@ -49,7 +55,7 @@ export default function OrderTable({ orders }) {
     {
       name: "দাম ",
       selector: (row) => (
-        <p className="my-2">{row.collegeFee || "N/A"}</p>
+        <p className="my-2">{row.totalFee || "N/A"}</p>
       ),
       sortable: true,
       width: "100px",
@@ -188,9 +194,14 @@ export default function OrderTable({ orders }) {
         </p>
 
 
-        <OrderOverViewCard total={20} success={8} cancel={2} />
+        {/* <OrderOverViewCard total={20} success={8} cancel={2} /> */}
 
-
+        <OrderOverViewCard
+          total={orderList?.length || 0}
+          active={activeOrderCount}
+          success={successOrderCount}
+          cancel={cancelOrderCount}
+        />
 
         <DataTable
           columns={columns}

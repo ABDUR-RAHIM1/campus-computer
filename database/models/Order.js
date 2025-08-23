@@ -32,7 +32,15 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    subjectFee: {
+        type: Number,
+        default: 0,
+    },
     chargeFee: {
+        type: Number,
+        default: 0,
+    },
+    totalFee: {
         type: Number,
         default: 0,
     },

@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const ServiceSchema = new mongoose.Schema(
     {
+        institute: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: "SubAdmin",
+        },
         title: {
             type: String,
             required: true,
@@ -40,6 +45,11 @@ const ServiceSchema = new mongoose.Schema(
                     required: true,
                     min: 0,
                 },
+                subjectFee: {
+                    type: Number,
+                    required: false,
+                    min: 0,
+                },
                 chargeFee: {
                     type: Number,
                     required: true,
@@ -58,10 +68,9 @@ const ServiceSchema = new mongoose.Schema(
             default: [],
         },
 
-        isRegular: {
-            type: Boolean,
-            enum: [true, false],
-            default: true,
+        type: {
+            type: String,
+            required: true
         },
         active: {
             type: Boolean,

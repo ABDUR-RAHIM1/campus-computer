@@ -96,7 +96,7 @@ export default function OrderTable({ orders }) {
     {
       name: "দাম ",
       selector: (row) => (
-        <p className="my-2">{row.collegeFee || "N/A"}</p>
+        <p className="my-2">{row.totalFee || row.collegeFee || "N/A"}</p>
       ),
       sortable: true,
       width: "100px",

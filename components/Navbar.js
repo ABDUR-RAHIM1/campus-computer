@@ -30,7 +30,7 @@ export default function Navbar() {
     };
 
     return (
-        <nav className="bg-white shadow-md sticky top-0 z-50 opacity-90">
+        <nav className="bg-white shadow-md sticky top-0 z-50">
             <div className="container mx-auto px-4 py-3 flex items-center justify-between">
                 {/* Logo & Name */}
                 <Logo />

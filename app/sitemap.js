@@ -3,8 +3,7 @@ import { BASE_URL } from "@/constans";
 const staticPages = [
   "about-us",
   "services",
-  "jobs",
-  "about-us", 
+  "jobs", 
   "developer", 
 ];
 

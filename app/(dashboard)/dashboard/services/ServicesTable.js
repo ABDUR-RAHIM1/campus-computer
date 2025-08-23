@@ -15,17 +15,7 @@ export default function ServicesTable({ data }) {
     setServicesData(data);
   }, [data]);
 
-  const handleDelete = (id) => {
-    try {
-      console.log("Delete ID:", id);
-    } catch (error) {
-      console.error("Delete error:", error);
-    }
-  };
-
-  const handleUpdate = (row) => {
-    console.log("Update row:", row);
-  };
+ 
 
   const columns = [
     {
@@ -35,10 +25,8 @@ export default function ServicesTable({ data }) {
     },
     {
       name: "Type",
-      selector: (row) => <div className={` my-6 p-2 rounded-md ${row.isRegular ? "bg-green-100 text-green-500" : " bg-red-100 text-red-500"}`}>
-        {
-          row.isRegular ? "নিয়মিত" : "অনিয়মিত"
-        }
+      selector: (row) => <div className={`py-1 px-2 rounded-sm text-[12px] ${row.type === "নিয়মিত" ? "bg-blue-100 text-blue-500" :" bg-red-100 text-red-500"}`}>
+        {row.type}
       </div>,
       wrap: true,
       width: "120px",
@@ -84,10 +72,11 @@ export default function ServicesTable({ data }) {
   ];
 
   const FeeBreakdown = ({ data }) => {
+     
     return (
       <div className="p-3 bg-blue-50 rounded-md">
         <h4 className="font-semibold text-blue-700 mb-2">
-          📊 ডিপার্টমেন্ট অনুযায়ী ফী 
+          📊 ডিপার্টমেন্ট অনুযায়ী ফী - <span>{data.institute?.username}</span>
         </h4>
         <div className="overflow-x-auto">
           <table className="w-full text-sm border border-blue-200 rounded">
@@ -95,6 +84,7 @@ export default function ServicesTable({ data }) {
               <tr className="bg-blue-200 text-blue-700">
                 <th className="border p-2">Department</th>
                 <th className="border p-2">College Fee</th>
+                <th className="border p-2">Subject Fee</th>
                 <th className="border p-2">Charge Fee</th>
                 <th className="border p-2">Total Fee</th>
               </tr>
@@ -104,6 +94,7 @@ export default function ServicesTable({ data }) {
                 <tr key={index}>
                   <td className="border p-2">{item.department}</td>
                   <td className="border p-2">{item.collegeFee}</td>
+                  <td className="border p-2">{item.subjectFee}</td>
                   <td className="border p-2">{item.chargeFee}</td>
                   <td className="border p-2">{item.totalFee}</td>
                 </tr>

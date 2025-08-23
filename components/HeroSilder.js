@@ -18,7 +18,8 @@ export default function HeroSlider() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                 {/* Left side: Slider */}
                 <Carousel
-                   plugins={[Autoplay({ delay: 3000, stopOnInteraction: false })]}
+                    opts={{ loop: true }}
+                    plugins={[Autoplay({ delay: 3000, stopOnInteraction: false })]}
                     className="w-full max-w-xl mx-auto"
                 >
                     <CarouselContent>

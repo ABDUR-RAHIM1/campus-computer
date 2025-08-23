@@ -7,6 +7,8 @@ import { FaqSection } from '@/components/Faq';
 import { Contact } from '@/components/Contact';
 import AutomationOverview from '@/components/Overview';
 import HeroSlider from '@/components/HeroSilder';
+import Marquee from '@/components/Marque';
+import HomeMarquee from '@/components/Marque';
 
 const CampusComputerPage = async () => {
 
@@ -17,7 +19,7 @@ const CampusComputerPage = async () => {
                 {/* Hero Section */}
                 {/* <Hero /> */}
                 <HeroSlider />
-
+                <HomeMarquee />
                 {/* Automation System Info Section */}
                 <section className="py-16 bg-white border-t border-gray-300">
                     <div className="container mx-auto px-4">

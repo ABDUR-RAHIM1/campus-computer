@@ -10,10 +10,7 @@ export default async function Services() {
         return <DataNotFound text="Services not available for you" />;
     }
 
-    return (
-        <div >
-            <ServicesCard data={data} />
-        </div>
-    );
+    return <ServicesCard data={data} />
+
 }
 

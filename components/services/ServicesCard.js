@@ -35,9 +35,9 @@ export default async function ServicesCard({ data }) {
                                 🎓 {service.program.toUpperCase()} | 📅 {service.session}
                             </p>
 
-                            <div className={`py-2 px-2 ${service?.isRegular ? "bg-green-100 text-green-500" : " bg-red-100 text-red-500"} rounded-md  text-sm`}>
+                            <div className={`py-1 px-2 ${service.type=== "নিয়মিত" ? "bg-green-100 text-green-500" : " bg-red-100 text-red-500"} rounded-md  text-[12px]`}>
                                 {
-                                    service?.isRegular ? "নিয়মিত" : "অনিয়মিত"
+                                    service.type
                                 }
                             </div>
                         </div>

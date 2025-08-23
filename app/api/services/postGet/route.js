@@ -1,5 +1,6 @@
 import { connectDb } from "@/database/connectDb";
 import ServiceModel from "@/database/models/Services";
+import SubAdminModel from "@/database/models/SubAdmin";
 import { adminAuthGuard } from "@/middlewere/adminAuthGuard";
 import { NextResponse } from "next/server";
 
@@ -21,6 +22,7 @@ export const POST = async (req) => {
 
         // Simple validation example, তুমি চাইলে Joi বা Zod দিয়ে করো
         if (
+            !body.institute ||
             !body.title ||
             !body.program ||
             !body.classYear ||
@@ -29,12 +31,13 @@ export const POST = async (req) => {
             body.departmentFees.length === 0
         ) {
             return NextResponse.json(
-                { message: "title, program, classYear এবং fee অবশ্যই দিতে হবে।" },
+                { message: "institute, title, program, classYear এবং fee অবশ্যই দিতে হবে।" },
                 { status: 400 }
             );
         }
 
         const newService = new ServiceModel({
+            institute: body.institute,
             title: body.title,
             description: body.description || "",
             program: body.program,
@@ -44,7 +47,7 @@ export const POST = async (req) => {
             departmentFees: body.departmentFees || [],
             requiredDocuments: body.requiredDocuments || [],
             active: body.active !== undefined ? body.active : true,
-            isRegular: body.isRegular !== undefined ? body.isRegular : true,
+            type: body.type,
         });
 
         const savedService = await newService.save();
@@ -69,7 +72,9 @@ export const GET = async () => {
     try {
         await connectDb();
 
-        const services = await ServiceModel.find({ active: true }).sort({ createdAt: -1 });
+        const services = await ServiceModel.find({ active: true })
+            .sort({ createdAt: -1 })
+            .populate("institute", "-password")
 
         return NextResponse.json(services, { status: 200 });
     } catch (error) {
