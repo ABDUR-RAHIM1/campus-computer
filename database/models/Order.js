@@ -2,10 +2,10 @@
 import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema({
-    isOthersStudent: {
-        type: Boolean,
-        required: true
-    },
+    // isOthersStudent: {
+    //     type: Boolean,
+    //     required: true
+    // },
     otherStudentInfo: {
         type: Object,
     },

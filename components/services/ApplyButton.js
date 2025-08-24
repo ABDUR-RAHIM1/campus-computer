@@ -24,13 +24,14 @@ import { DialogTrigger } from "@radix-ui/react-dialog";
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { getMyAllProfile } from "@/handlers/profile";
+import { ArrowDown } from "lucide-react";
 
 export default function ApplyButton({ serviceData }) {
     const { showToast, studentIsLogin: loginStatus, studentInfo } = useContext(globalContext);
     const [open, setOpen] = useState(false);
     const [waiting, setWaiting] = useState(false);
     const [formData, setFormData] = useState({
-        isOthersStudent: false,
+        // isOthersStudent: false,
         profile: null
     })
 
@@ -95,11 +96,11 @@ export default function ApplyButton({ serviceData }) {
                     subjectFee: selectedDepartment.subjectFee,
                     chargeFee: selectedDepartment.chargeFee,
                     totalFee: finalTotalFee,
-                    isOthersStudent: formData.isOthersStudent,
+                    // isOthersStudent: formData.isOthersStudent,
                     profileId: formData.profile._id
                 },
             };
- 
+
             const { status, data } = await PostAction(payload);
             showToast(status, data);
             setOpen(false);
@@ -111,6 +112,7 @@ export default function ApplyButton({ serviceData }) {
         }
     };
 
+    console.log(formData)
 
     return (
         <Dialog open={open} onOpenChange={(val) => {
@@ -144,7 +146,7 @@ export default function ApplyButton({ serviceData }) {
                     <DialogTitle>বিভাগ নির্বাচন করুন</DialogTitle>
                 </DialogHeader>
 
-                <div className=" my-5">
+                {/* <div className=" my-5">
                     <Label className="hover:bg-accent/50 flex items-start gap-3 rounded-lg border p-3 has-[[aria-checked=true]]:border-blue-600 has-[[aria-checked=true]]:bg-blue-50 dark:has-[[aria-checked=true]]:border-blue-900 dark:has-[[aria-checked=true]]:bg-blue-950">
                         <Checkbox
                             onCheckedChange={(checked) => setFormData((prev) => ({
@@ -166,7 +168,7 @@ export default function ApplyButton({ serviceData }) {
                         </div>
                     </Label>
 
-                </div>
+                </div> */}
 
 
                 <div className=" my-4">
@@ -225,10 +227,26 @@ export default function ApplyButton({ serviceData }) {
                 <div className="space-y-4">
                     {selectedDepartment ? (
                         <div
-                            className="border p-3 rounded bg-blue-50 border-blue-600"
-                            onClick={() => setSelectedDepartment(null)}
+                            className={`border p-3 rounded  ${selectedDepartment.department === formData?.profile?.department
+                                ? "bg-green-100 border-green-500"
+                                : "bg-red-100 border-red-500"
+                                }`}
+
                         >
-                            <p className="font-medium">{selectedDepartment.department}</p>
+                            <div className="flex items-center justify-between flex-wrap">
+                                <p className="font-medium">{selectedDepartment.department}</p>
+                                <p
+                                    className={`text-sm underline ${selectedDepartment.department === formData?.profile?.department
+                                        ? "text-green-600"
+                                        : "text-red-600"
+                                        }`}
+                                >
+                                    {selectedDepartment.department === formData?.profile?.department
+                                        ? "✅ আপনার বিভাগ"
+                                        : "⚠ এটি আপনার বিভাগ নয়"}
+                                </p>
+                            </div>
+
                             <p className="text-sm text-gray-600">
                                 কলেজ ফি: {selectedDepartment.collegeFee}৳
                             </p>
@@ -238,48 +256,73 @@ export default function ApplyButton({ serviceData }) {
                             <p className="text-sm text-gray-600">
                                 চার্জ ফি: {selectedDepartment.chargeFee}৳
                             </p>
-                            <p className="text-sm text-gray-600">
-                                {/* মোট ফি: {selectedDepartment.totalFee}৳ */}
-                                মোট ফি: {finalTotalFee}৳
-                            </p>
-                            <p className="text-xs text-blue-600 mt-1">
-                                ← পরিবর্তন করতে ক্লিক করুন
-                            </p>
+                            <p className="text-sm text-gray-600">মোট ফি: {finalTotalFee}৳</p>
+
+
+                            <div className="text-xs text-blue-600 mt-1 flex items-center gap-1">
+                                {selectedDepartment.department === formData?.profile?.department ? (
+                                    <p>
+                                        <ArrowDown size={14} className="inline-block" />
+                                        নিশ্চিত করুন বাটনে ক্লিক করুন
+                                    </p>
+                                ) : (
+                                    <p
+                                        className="cursor-pointer"
+                                        onClick={() => setSelectedDepartment(null)}>
+                                        "← পরিবর্তন করতে ক্লিক করুন"
+                                    </p>
+                                )}
+                            </div>
                         </div>
                     ) : (
-                        serviceData.departmentFees?.map((dept, i) => (
-                            <div
-                                key={i}
-                                onClick={() => handleSelectDepartment(dept)}
-                                className="border p-3 rounded cursor-pointer hover:border-blue-400"
-                            >
-                                <p className="font-medium">{dept.department}</p>
-                                <p className="text-sm text-gray-600">
-                                    কলেজ ফি: {dept.collegeFee}৳
-                                </p>
-                                <p className="text-sm text-gray-600">
-                                    প্রতি সাবজেক্ট ফি: {dept.subjectFee}৳
-                                </p>
-                                <p className="text-sm text-gray-600">
-                                    চার্জ ফি: {dept.chargeFee}৳
-                                </p>
-                                <p className="text-sm text-gray-600">
-                                    মোট ফি: {dept.totalFee}৳
-                                </p>
-                            </div>
-                        ))
+                        serviceData.departmentFees?.map((dept, i) => {
+                            const isSelected = formData?.profile?.department === dept.department;
+                            const selectStyle =
+                                "border border-green-400 bg-green-100 text-green-900";
+                            const selectText = "আপনার বিভাগ";
+
+                            return (
+                                <div
+                                    key={i}
+                                    onClick={() => handleSelectDepartment(dept)}
+                                    className={`border p-3 rounded cursor-pointer hover:border-blue-400 ${isSelected ? selectStyle : ""
+                                        } `}
+                                >
+                                    <div className="flex items-center justify-between flex-wrap">
+                                        <p className="font-medium">{dept.department}</p>
+                                        <p className="text-sm underline">{isSelected && selectText}</p>
+                                    </div>
+                                    <p className="text-sm text-gray-600">
+                                        কলেজ ফি: {dept.collegeFee}৳
+                                    </p>
+                                    <p className="text-sm text-gray-600">
+                                        প্রতি সাবজেক্ট ফি: {dept.subjectFee}৳
+                                    </p>
+                                    <p className="text-sm text-gray-600">
+                                        চার্জ ফি: {dept.chargeFee}৳
+                                    </p>
+                                    <p className="text-sm text-gray-600">
+                                        মোট ফি: {dept.totalFee}৳
+                                    </p>
+                                </div>
+                            );
+                        })
                     )}
                 </div>
 
 
 
-                <Button
-                    onClick={handleSubmit}
-                    className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white cursor-pointer"
-                    disabled={waiting || !formData.profile?._id}
-                >
-                    {waiting ? <Spinner /> : "নিশ্চিত করুন"}
-                </Button>
+
+                {
+                    selectedDepartment && formData.profile?._id && selectedDepartment?.department === formData?.profile?.department &&
+                    <Button
+                        onClick={handleSubmit}
+                        className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white cursor-pointer"
+                        disabled={waiting || !formData.profile?._id}
+                    >
+                        {waiting ? <Spinner /> : "নিশ্চিত করুন"}
+                    </Button>
+                }
             </DialogContent>
         </Dialog>
     );
