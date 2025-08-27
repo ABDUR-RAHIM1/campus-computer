@@ -7,6 +7,8 @@ export const GetAction = async (endpoint) => {
 
     try {
 
+        // console.log(API_URL + endpoint)
+
         const res = await fetch(API_URL + endpoint, {
             method: "GET",
             credentials: "include",

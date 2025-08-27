@@ -1,0 +1,5 @@
+
+Create / Get all => "/api/student/job-profile/postGet"
+get login user profile => "/api/student/job-profile/me"
+get One By Id => "/api/student/job-profile/me/[jpId]"
+Update / Delete => "/api/student/job-profile/actions/[jobId]"

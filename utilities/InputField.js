@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import React from "react";
 
-export default function InputField({ label, name, type = "text", placeholder, value, onChange, error, required = false, disabled = false }) {
+export default function InputField({ label, name, type = "text", placeholder, value, onChange, error, required = false, disabled = false, multiple = undefined }) {
     return (
         <div className="w-full mb-4">
             <Label htmlFor={name} className="font-medium mb-1">
@@ -19,6 +19,7 @@ export default function InputField({ label, name, type = "text", placeholder, va
                 onChange={onChange}
                 required={required}
                 disabled={disabled}
+                multiple={multiple}
                 className={error ? " border-red-500" : ""}
             />
             {error && <p className="mt-1 text-sm text-red-600">{error}</p>}

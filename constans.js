@@ -45,6 +45,15 @@ export const studentProfileUpdateDelete = "/student/profile/action/"
 
 export const studentProfileGetAllByAdmin = "/student/profile/all"
 //  profile end
+
+
+// job profile Start
+export const jobProfilePostGet = "/student/job-profile/postGet"
+export const jobProfileGetMe = "/student/job-profile/me"
+export const jobProfileGetOne = "/student/job-profile/me/"
+export const jobProfilePutDelete = "/student/job-profile/actions/"
+// job profile End
+
 // -----------------  student login------------------------
 
 

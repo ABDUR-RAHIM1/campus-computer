@@ -1,6 +1,6 @@
 import { GetActionAdmin } from "@/actions/admins/GetAction";
 import { GetAction } from "@/actions/students/GetAction";
-import { studentProfileById, studentProfileGetAllByAdmin, studentProfileGetMe, studentProfileGetMeAll } from "@/constans";
+import { jobProfileGetMe, jobProfileGetOne, jobProfilePostGet, studentProfileById, studentProfileGetAllByAdmin, studentProfileGetMe, studentProfileGetMeAll } from "@/constans";
 
 
 export const getMyProfile = async () => {
@@ -24,4 +24,34 @@ export const getStudentProfileById = async (profileId) => {
 export const getStudentProfileByAdmin = async () => {
     const profiles = await GetActionAdmin(studentProfileGetAllByAdmin);
     return profiles
+};
+
+
+
+//  job profiles
+export const getAllJobProfileByAdmin = async () => {
+    const jobProfiles = await GetActionAdmin(jobProfilePostGet);
+    return jobProfiles
+};
+
+//  login user profile 
+export const getMyJobProfile = async () => {
+    const jobProfile = await GetAction(jobProfileGetMe);
+    return jobProfile;
+}
+
+// get single profile info for student
+export const getOneJobProfileByStudent = async (jpId) => {
+    const endpoint = jobProfileGetOne + jpId
+    const jobProfile = await GetAction(endpoint);
+    return jobProfile;
+}
+
+
+// get single profile info for Admin Dashboard
+export const getOneJobProfileByAdmin = async (jpId) => {
+    const endpoint = jobProfileGetOne + jpId;
+    console.log("client", endpoint)
+    const jobProfile = await GetAction(endpoint);
+    return jobProfile;
 }

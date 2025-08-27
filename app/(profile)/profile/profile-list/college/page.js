@@ -2,8 +2,8 @@ import React from "react";
 import DataNotFound from "@/components/DataNotFound";
 import { getMyAllProfile } from "@/handlers/profile";
 import Link from "next/link";
-import ProfileUpdateButton from "../actions/ProfileUpdateButton";
-import AdditionalFileUploadButton from "../components/AdditionalFileUploadButton";
+import ProfileUpdateButton from "../../actions/ProfileUpdateButton";
+import AdditionalFileUploadButton from "../../components/AdditionalFileUploadButton";
 import Image from "next/image";
 import { demoProfilePicture } from "@/constans";
 

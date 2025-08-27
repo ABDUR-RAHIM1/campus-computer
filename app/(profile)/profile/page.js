@@ -8,6 +8,7 @@ import Link from "next/link";
 import { getMyProfile } from "@/handlers/profile";
 import { getMyProfileInfo } from "@/handlers/studentAuth";
 import ServicesInfo from "@/components/ServicesInfo";
+import ProfileActions from "./components/ProfileActions";
 
 export default async function StudentProfile() {
 
@@ -72,9 +73,10 @@ export default async function StudentProfile() {
                     <p className="text-gray-600 mb-4">{profileData.email || "--"}</p>
 
                     {/* Update Profile Button */}
-                    <Link href="/profile/actions" className=" text-sm inline-block bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition">
-                        প্রোফাইল তৈরি করুন
-                    </Link>
+
+                    <div className="my-3 flex items-center justify-between flex-wrap">
+                        <ProfileActions />
+                    </div>
 
                     <div className="text-left mt-6">
 
@@ -134,7 +136,7 @@ export default async function StudentProfile() {
                     <h3 className="text-2xl font-bold text-gray-800 mb-6">
                         👋 স্বাগতম, {profileData.username || "শিক্ষার্থী"}!
                     </h3>
-                    <ServicesInfo/>
+                    <ServicesInfo />
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <Services />

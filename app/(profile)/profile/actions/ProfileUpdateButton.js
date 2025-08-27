@@ -12,7 +12,7 @@ export default function ProfileUpdateButton({ data }) {
     const router = useRouter();
     const handleEditDataManage = () => {
         setEditData(data)
-        router.push("/profile/actions/edit")
+        router.push("/profile/college/actions/edit")
     }
 
     return (

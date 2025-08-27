@@ -20,9 +20,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { DialogTrigger } from "@radix-ui/react-dialog";
-import { Checkbox } from "@/components/ui/checkbox"
-import { Label } from "@/components/ui/label"
+import { DialogTrigger } from "@radix-ui/react-dialog"; 
 import { getMyAllProfile } from "@/handlers/profile";
 import { ArrowDown } from "lucide-react";
 
@@ -112,7 +110,6 @@ export default function ApplyButton({ serviceData }) {
         }
     };
 
-    console.log(formData)
 
     return (
         <Dialog open={open} onOpenChange={(val) => {
