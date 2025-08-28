@@ -10,9 +10,10 @@ import InputField from "@/utilities/InputField";
 import SelectField from "@/utilities/SelectField";
 import Spinner from "@/utilities/Spinner";
 import React, { useContext, useEffect, useState } from "react";
+import { formatDateToInput } from "@/utilities/formatDateToInput";
 
-const JobApplicationForm = () => {
-    const { showToast, imgUrl, uploadResponse, uploader } = useContext(globalContext);
+const JobProfileFormUpdate = () => {
+    const { editData, showToast, imgUrl, uploadResponse, uploader } = useContext(globalContext);
     const { status, message } = uploadResponse;
 
     const [loading, setLoading] = useState(false);
@@ -27,7 +28,7 @@ const JobApplicationForm = () => {
         dob: "",
         religion: "",
         gender: "",
-        nidNumer: "",
+        nidNumber: "",
         birthNumber: "",
         passportId: "",
         matarialStatus: "",
@@ -42,7 +43,7 @@ const JobApplicationForm = () => {
         signature: "",
         educations: [],
         documents: [],
-        extra: "",
+        extra: ""
     });
 
 
@@ -57,6 +58,25 @@ const JobApplicationForm = () => {
         gpa: "",
     })
     const [fileName, setFileName] = useState("")
+
+    const isEditable = editData && Object.keys(editData)?.length > 0;
+    const isEducation = formData.educations?.length > 0
+
+    // set editable Data in the previous formState 
+    useEffect(() => {
+        if (isEditable && editData) {
+            setFormData((prev) => ({
+                ...prev,
+                ...editData,
+                birthDate: formatDateToInput(editData.birthDate),
+                gender: editData.gender?.trim() || "",
+                religion: editData.religion?.trim() || "",
+                // birthDate: formatDateToInput(editData.birthDate),
+            }));
+        }
+    }, [editData]);
+
+
 
     //  isOthersPerson Change
     const handlePersonChange = (e) => {
@@ -117,6 +137,15 @@ const JobApplicationForm = () => {
         })
     };
 
+    //  clear previous educations information
+    const handleClearPrevEducations = () => {
+        setFormData((prev) => ({
+            ...prev,
+            educations: []
+        }));
+
+        showToast(200, "আগের শিক্ষাগত যোগ্যতা সমুহ মুছে ফেলা হয়েছে!")
+    }
 
     const handleChange = (e) => {
         const { type, name, value, files } = e.target;
@@ -148,8 +177,9 @@ const JobApplicationForm = () => {
                 endpoint: jobProfilePostGet,
                 body: formData
             }
-            const { status, data } = await PostAction(payload);
-            showToast(status, data);
+            alert("কাজ চলতেছে অপেক্ষা করুন")
+            // const { status, data } = await PostAction(payload);
+            // showToast(status, data);
 
 
         } catch (error) {
@@ -197,7 +227,7 @@ const JobApplicationForm = () => {
             className="my-10 max-w-5xl mx-auto p-6 bg-white shadow rounded-lg">
             <div className=" text-center my-6">
                 <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
-                    📝 জব অ্যাপ্লিকেশন ফর্ম
+                    📝 জব অ্যাপ্লিকেশন ফর্ম আপডেট করুন
                 </h2>
                 <p className=" text-red-500 text-sm font-semibold text-center animation-duration-initial ">
                     * দেওয়া প্রতিটি ফিল্ড পুরন করতে হবে।
@@ -360,6 +390,7 @@ const JobApplicationForm = () => {
 
                 <div className="sm:col-span-2 border rounded-sm p-2">
                     <h2 className=" font-medium my-3 text-center">শিক্ষা তথ্য</h2>
+                    <p className=" text-center mb-4">নতুন করে যুক্ত করতে চাইলে আগের গুলো মুছে ফেলে নতুন তথ্য দিন </p>
                     <div className="grid grid-cols-2 gap-2">
                         <InputField
                             label="📧পরিক্ষার ধরন"
@@ -367,7 +398,7 @@ const JobApplicationForm = () => {
                             name="eduType"
                             value={education.eduType}
                             onChange={handleEducationChange}
-                            required
+                            required={!isEducation}
                         />
                         <InputField
                             label="📧 বিভাগ"
@@ -375,7 +406,7 @@ const JobApplicationForm = () => {
                             name="categorie"
                             value={education.categorie}
                             onChange={handleEducationChange}
-                            required
+                            required={!isEducation}
                         />
                         <InputField
                             label="📧 প্রতিষ্ঠানের নাম"
@@ -383,7 +414,7 @@ const JobApplicationForm = () => {
                             name="instituteName"
                             value={education.instituteName}
                             onChange={handleEducationChange}
-                            required
+                            required={!isEducation}
                         />
                         <InputField
                             label="📧 পাশের বছর"
@@ -391,7 +422,7 @@ const JobApplicationForm = () => {
                             name="passingYear"
                             value={education.passingYear}
                             onChange={handleEducationChange}
-                            required
+                            required={!isEducation}
                         />
 
                         <SelectField
@@ -400,7 +431,7 @@ const JobApplicationForm = () => {
                             onChange={handleEducationChange}
                             options={educationBoardOptions}
                             value={formData.board}
-                            required
+                            required={!isEducation}
                         />
                         <InputField
                             label="📧 রোল নাম্বার"
@@ -408,7 +439,7 @@ const JobApplicationForm = () => {
                             name="roll"
                             value={education.roll}
                             onChange={handleEducationChange}
-                            required
+                            required={!isEducation}
                         />
                         <InputField
                             label="📧 রেজিস্ট্রেসন নাম্বার"
@@ -416,7 +447,7 @@ const JobApplicationForm = () => {
                             name="reg"
                             value={education.reg}
                             onChange={handleEducationChange}
-                            required
+                            required={!isEducation}
                         />
                         <InputField
                             label="📧 জিপিএ"
@@ -424,26 +455,37 @@ const JobApplicationForm = () => {
                             name="gpa"
                             value={education.gpa}
                             onChange={handleEducationChange}
-                            required
+                            required={!isEducation}
                         />
+
+                    </div>
+                    <div className=" flex items-center gap-3">
                         <div className="sm:col-span-2">
                             <Button
                                 type={"button"}
                                 onClick={handleAddNewEducation}
                                 variant={"outline"} className={" rounded-full px-6 hover:bg-gray-200 hover:text-blue-500 cursor-pointer bg-blue-500 text-white  transition-all"}>
-                                যুক্ত করুন
+                                নতুন যুক্ত করুন
+                            </Button>
+                        </div>
+                        <div className="sm:col-span-2">
+                            <Button
+                                type={"button"}
+                                onClick={handleClearPrevEducations}
+                                variant={"outline"} className={" rounded-full px-6 hover:bg-gray-200 hover:text-red-500 cursor-pointer bg-red-500 text-white  transition-all"}>
+                                আগের শিক্ষা তথ্য গুলো মুছে ফেলুন
                             </Button>
                         </div>
                     </div>
-
                 </div>
                 <div className="sm:col-span-2 space-y-1.5">
 
                     <div className="my-2">
                         <Label className={"mb-2"}>অতিরিক্ত তথ্য</Label>
                         <Textarea
-                            value={formData.extra}
+                            name={"extra"}
                             onChange={handleChange}
+                            value={formData.extra}
                             placeholder={"অতিরিক্ত তথ্য এখানে লিখুন: Height , Chest etc"}
                         />
                     </div>
@@ -452,8 +494,8 @@ const JobApplicationForm = () => {
                     <div className="mt-2">
                         <InputField
                             name={"cvLink"}
-                            label="সিভি লিংক"
                             value={formData.cvLink}
+                            label="সিভি লিংক"
                             placeholder={"গুগল ড্রাইভ লিংক"}
                             onChange={handleChange}
                         />
@@ -514,7 +556,7 @@ const JobApplicationForm = () => {
                         className="w-full py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium"
                     >
                         {
-                            loading ? <Spinner /> : " ✅ প্রোফাইল তৈরি করুন"
+                            loading ? <Spinner /> : " ✅ প্রোফাইল আপডেট করুন"
                         }
                     </button>
                 </div>
@@ -523,4 +565,4 @@ const JobApplicationForm = () => {
     );
 };
 
-export default JobApplicationForm;
+export default JobProfileFormUpdate;

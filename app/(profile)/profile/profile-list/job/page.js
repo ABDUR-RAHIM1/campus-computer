@@ -2,15 +2,13 @@ import React from "react";
 import DataNotFound from "@/components/DataNotFound";
 import { getMyJobProfile } from "@/handlers/profile";
 import Link from "next/link";
-import ProfileUpdateButton from "../../actions/ProfileUpdateButton";
-import AdditionalFileUploadButton from "../../components/AdditionalFileUploadButton";
 import Image from "next/image";
 import { demoProfilePicture } from "@/constans";
+import JobProfileUpdateButton from "../../actions/JobProfileUpdateButton";
 
 export default async function ProfileList() {
     const { status, data } = await getMyJobProfile();
 
-    console.log(status, data)
 
     if (status !== 200 || !data?.length) {
         return <DataNotFound text={data?.message || "কোনো প্রোফাইল পাওয়া যায়নি।"} />;
@@ -45,6 +43,7 @@ export default async function ProfileList() {
 
 
                                 {/* <ProfileUpdateButton data={profile} /> */}
+                                <JobProfileUpdateButton data={profile} />
 
                             </div>
                             <p className="text-sm text-gray-500">
@@ -64,7 +63,7 @@ export default async function ProfileList() {
 
                         {/* <AdditionalFileUploadButton profileId={profile._id} /> */}
 
-                        <Link href={`/profile/details/${profile._id}`} className=" w-full my-4 text-center inline-block text-sm py-2 px-3 rounded-md bg-blue-500 text-white font-semibold">
+                        <Link href={`/profile/details/job/${profile._id}`} className=" w-full my-4 text-center inline-block text-sm py-2 px-3 rounded-md bg-blue-500 text-white font-semibold">
                             বিস্তারিত
                         </Link>
 

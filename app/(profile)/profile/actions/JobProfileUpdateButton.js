@@ -5,15 +5,15 @@ import { Edit } from "lucide-react";
 import { useRouter } from 'next/navigation';
 import { globalContext } from '@/contextApi/ContextApi';
 
-export default function ProfileUpdateButton({ data }) {
+export default function JobProfileUpdateButton({ data }) {
 
-    const {   setEditData } = useContext(globalContext);
+    const {setEditData } = useContext(globalContext);
 
     const router = useRouter();
     const handleEditDataManage = () => {
         setEditData(data)
-        router.push("/profile/actions/college/edit")
-    }
+        router.push("/profile/actions/job/edit")
+    }; 
 
     return (
         <Button

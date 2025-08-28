@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { PostAction } from "@/actions/students/PostAction";
 import { globalContext } from "@/contextApi/ContextApi";
 import { getStatusColor } from "@/utilities/getStatusColor";
-import { studentProfileCreate, studentProfileUpdateDelete } from "@/constans";
+import { studentProfileUpdateDelete } from "@/constans";
 import { studentProfileFormState } from "@/formStats/StudentProfileState";
 import { Checkbox } from "@/components/ui/checkbox";
 import { sessionList } from "@/LocalDatabase/seasion";

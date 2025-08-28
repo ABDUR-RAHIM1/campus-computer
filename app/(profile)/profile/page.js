@@ -21,7 +21,7 @@ export default async function StudentProfile() {
     const { status: profileStatus, data: profileData } = profileAccount;
 
 
-    if (authStatus !== 200 || profileStatus !== 200) {
+    if (profileStatus !== 200) {
         return <DataNotFound text={"ডাটা পাওয়া যায়নি"} />;
     }
 
