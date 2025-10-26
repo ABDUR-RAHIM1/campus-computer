@@ -7,7 +7,6 @@ import { NextResponse } from "next/server";
 export const GET = async (request, { params }) => {
     const { jpId } = await params; // ✅ await দরকার নেই
 
-    console.log("jobProfile", { jpId })
 
     try {
         // 🔐 Auth check

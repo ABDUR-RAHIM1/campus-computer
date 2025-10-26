@@ -8,7 +8,6 @@ export default async function JobProfileList() {
 
 
     const { status, data } = await getAllJobProfileByAdmin();
- 
 
 
     if (status !== 200 || !data) return <DataNotFound text={data?.message} />

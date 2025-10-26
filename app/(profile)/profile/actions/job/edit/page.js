@@ -3,7 +3,7 @@ import { PostAction } from "@/actions/students/PostAction";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { jobProfilePostGet } from "@/constans";
+import { jobProfilePostGet, jobProfilePutDelete } from "@/constans";
 import { globalContext } from "@/contextApi/ContextApi";
 import { getStatusColor } from "@/utilities/getStatusColor";
 import InputField from "@/utilities/InputField";
@@ -60,7 +60,9 @@ const JobProfileFormUpdate = () => {
     const [fileName, setFileName] = useState("")
 
     const isEditable = editData && Object.keys(editData)?.length > 0;
-    const isEducation = formData.educations?.length > 0
+    const isEducation = formData.educations?.length > 0;
+    const isPhoto = Boolean(formData.photo);
+    const isSignature = Boolean(formData.signature);
 
     // set editable Data in the previous formState 
     useEffect(() => {
@@ -173,17 +175,17 @@ const JobProfileFormUpdate = () => {
         setLoading(true)
         try {
             const payload = {
-                method: "POST",
-                endpoint: jobProfilePostGet,
+                method: "PUT",
+                endpoint: jobProfilePutDelete + formData._id,
                 body: formData
             }
-            alert("কাজ চলতেছে অপেক্ষা করুন")
-            // const { status, data } = await PostAction(payload);
-            // showToast(status, data);
+
+            const { status, data } = await PostAction(payload);
+            showToast(status, data);
 
 
         } catch (error) {
-            console.log("failed to create job Profile", error)
+            console.log("failed to Update job Profile", error)
         } finally {
             setLoading(false)
         }
@@ -219,6 +221,7 @@ const JobProfileFormUpdate = () => {
         { name: "মাদ্রাসা শিক্ষা বোর্ড", value: "মাদ্রাসা" },
         { name: "কারিগরি শিক্ষা বোর্ড", value: "কারিগরি" },
     ];
+
 
 
     return (
@@ -459,7 +462,7 @@ const JobProfileFormUpdate = () => {
                         />
 
                     </div>
-                    <div className=" flex items-center gap-3">
+                    <div className=" flex items-center gap-3 flex-wrap">
                         <div className="sm:col-span-2">
                             <Button
                                 type={"button"}
@@ -478,6 +481,48 @@ const JobProfileFormUpdate = () => {
                         </div>
                     </div>
                 </div>
+
+
+                {/* academic Informtion Table */}
+                {
+                    isEducation &&
+                    <div className="my-5">
+                        <table className="w-full border border-gray-00 text-sm text-left rounded-lg overflow-hidden shadow-sm">
+                            <thead className="bg-gray-100 text-gray-700 uppercase text-[12px]">
+                                <tr>
+                                    <th className="px-4 py-2">Exam Name</th>
+                                    <th className="px-4 py-2">Division/Subject</th>
+                                    <th className="px-4 py-2">Institute Name</th>
+                                    <th className="px-4 py-2">Passing Year</th>
+                                    <th className="px-4 py-2">Board/University</th>
+                                    <th className="px-4 py-2">Roll</th>
+                                    <th className="px-4 py-2">Reg</th>
+                                    <th className="px-4 py-2">GPA/CGPA</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {formData.educations?.map((e, i) => (
+                                    <tr
+                                        key={i}
+                                        className={`border-b hover:bg-gray-50 ${i % 2 === 0 ? "bg-white" : "bg-gray-50"
+                                            }`}
+                                    >
+                                        <td className="px-4 py-2 font-medium text-gray-800">{e.eduType}</td>
+                                        <td className="px-4 py-2">{e.categorie}</td>
+                                        <td className="px-4 py-2">{e.instituteName}</td>
+                                        <td className="px-4 py-2">{e.passingYear}</td>
+                                        <td className="px-4 py-2">{e.board}</td>
+                                        <td className="px-4 py-2">{e.roll}</td>
+                                        <td className="px-4 py-2">{e.reg}</td>
+                                        <td className="px-4 py-2">{e.gpa}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+
+                    </div>
+                }
+
                 <div className="sm:col-span-2 space-y-1.5">
 
                     <div className="my-2">
@@ -511,7 +556,7 @@ const JobProfileFormUpdate = () => {
                             label="📧 ফটো"
                             name="photo"
                             onChange={handleChange}
-                            required
+                            required={!isPhoto}
                         />
                         <p className={`${getStatusColor(status)} text-[12px]`}>
                             {
@@ -526,7 +571,7 @@ const JobProfileFormUpdate = () => {
                             label="📧 সিগনেচার"
                             name="signature"
                             onChange={handleChange}
-                            required
+                            required={!isSignature}
                         />
                         <p className={`${getStatusColor(status)} text-[12px]`}>
                             {

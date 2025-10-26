@@ -190,6 +190,9 @@ const JobApplicationForm = () => {
         { name: "কারিগরি শিক্ষা বোর্ড", value: "কারিগরি" },
     ];
 
+    const isEducation = formData.educations?.length > 0;
+    const isPhoto = Boolean(formData.photo);
+    const isSignature = Boolean(formData.signature);
 
     return (
         <form
@@ -367,7 +370,7 @@ const JobApplicationForm = () => {
                             name="eduType"
                             value={education.eduType}
                             onChange={handleEducationChange}
-                            required
+                            required={!isEducation}
                         />
                         <InputField
                             label="📧 বিভাগ"
@@ -375,7 +378,7 @@ const JobApplicationForm = () => {
                             name="categorie"
                             value={education.categorie}
                             onChange={handleEducationChange}
-                            required
+                            required={!isEducation}
                         />
                         <InputField
                             label="📧 প্রতিষ্ঠানের নাম"
@@ -383,7 +386,7 @@ const JobApplicationForm = () => {
                             name="instituteName"
                             value={education.instituteName}
                             onChange={handleEducationChange}
-                            required
+                            required={!isEducation}
                         />
                         <InputField
                             label="📧 পাশের বছর"
@@ -391,7 +394,7 @@ const JobApplicationForm = () => {
                             name="passingYear"
                             value={education.passingYear}
                             onChange={handleEducationChange}
-                            required
+                            required={!isEducation}
                         />
 
                         <SelectField
@@ -400,7 +403,7 @@ const JobApplicationForm = () => {
                             onChange={handleEducationChange}
                             options={educationBoardOptions}
                             value={formData.board}
-                            required
+                            required={!isEducation}
                         />
                         <InputField
                             label="📧 রোল নাম্বার"
@@ -408,7 +411,7 @@ const JobApplicationForm = () => {
                             name="roll"
                             value={education.roll}
                             onChange={handleEducationChange}
-                            required
+                            required={!isEducation}
                         />
                         <InputField
                             label="📧 রেজিস্ট্রেসন নাম্বার"
@@ -416,7 +419,7 @@ const JobApplicationForm = () => {
                             name="reg"
                             value={education.reg}
                             onChange={handleEducationChange}
-                            required
+                            required={!isEducation}
                         />
                         <InputField
                             label="📧 জিপিএ"
@@ -424,8 +427,9 @@ const JobApplicationForm = () => {
                             name="gpa"
                             value={education.gpa}
                             onChange={handleEducationChange}
-                            required
+                            required={!isEducation}
                         />
+
                         <div className="sm:col-span-2">
                             <Button
                                 type={"button"}
@@ -435,6 +439,46 @@ const JobApplicationForm = () => {
                             </Button>
                         </div>
                     </div>
+
+                    {/* academic Informtion Table */}
+                    {
+                        isEducation &&
+                        <div className="my-5">
+                            <table className="w-full border border-gray-00 text-sm text-left rounded-lg overflow-hidden shadow-sm">
+                                <thead className="bg-gray-100 text-gray-700 uppercase text-[12px]">
+                                    <tr>
+                                        <th className="px-4 py-2">Exam Name</th>
+                                        <th className="px-4 py-2">Division/Subject</th>
+                                        <th className="px-4 py-2">Institute Name</th>
+                                        <th className="px-4 py-2">Passing Year</th>
+                                        <th className="px-4 py-2">Board/University</th>
+                                        <th className="px-4 py-2">Roll</th>
+                                        <th className="px-4 py-2">Reg</th>
+                                        <th className="px-4 py-2">GPA/CGPA</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {formData.educations?.map((e, i) => (
+                                        <tr
+                                            key={i}
+                                            className={`border-b hover:bg-gray-50 ${i % 2 === 0 ? "bg-white" : "bg-gray-50"
+                                                }`}
+                                        >
+                                            <td className="px-4 py-2 font-medium text-gray-800">{e.eduType}</td>
+                                            <td className="px-4 py-2">{e.categorie}</td>
+                                            <td className="px-4 py-2">{e.instituteName}</td>
+                                            <td className="px-4 py-2">{e.passingYear}</td>
+                                            <td className="px-4 py-2">{e.board}</td>
+                                            <td className="px-4 py-2">{e.roll}</td>
+                                            <td className="px-4 py-2">{e.reg}</td>
+                                            <td className="px-4 py-2">{e.gpa}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+
+                        </div>
+                    }
 
                 </div>
                 <div className="sm:col-span-2 space-y-1.5">

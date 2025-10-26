@@ -51,7 +51,7 @@ export const getOneJobProfileByStudent = async (jpId) => {
 // get single profile info for Admin Dashboard
 export const getOneJobProfileByAdmin = async (jpId) => {
     const endpoint = jobProfileGetOne + jpId;
-    console.log("client", endpoint)
-    const jobProfile = await GetAction(endpoint);
+ 
+    const jobProfile = await GetActionAdmin(endpoint);
     return jobProfile;
 }

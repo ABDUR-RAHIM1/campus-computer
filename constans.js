@@ -74,6 +74,13 @@ export const orderCencel = "/order/cancel/" // [cancelOrderId] only admin can do
 // ------------------ Order ------------------------------
 
 
+//  job Post Start Here
+
+export const jobPostCreateGetAll = "/job-post/"
+export const jobPostPutDelete = "/job-post/actions/"
+export const jobPostGetOne = "/job-post/actions/"
+
+//  job Post End Here
 
 
 //  frontend End here

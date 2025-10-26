@@ -6,6 +6,8 @@ export default async function JobProfileDetails({ params }) {
     const { jpId } = await params;
     const { status, data } = await getOneJobProfileByAdmin(jpId);
 
+    // console.log({status , data})
+
     if (status !== 200 || !data) {
         return <DataNotFound />;
     };

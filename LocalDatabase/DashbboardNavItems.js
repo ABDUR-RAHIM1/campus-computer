@@ -17,6 +17,7 @@ export const dashboardNavItems = [
     { name: "জব প্রোফাইল তালিকা", href: "/dashboard/jobs-profile", icon: Users },
     { name: "সার্ভিস", href: "/dashboard/services", icon: Wrench },
     { name: "সাব-এডমিন", href: "/dashboard/sub-admins", icon: Wrench },
+    { name: "জব পোষ্ট", href: "/dashboard/job-post/add", icon: Wrench },
     { name: "লিংক গুলো", href: "/dashboard/quickLink", icon: LinkIcon },
     { name: "নোটিশ বোর্ড", href: "/dashboard/notices", icon: ClipboardList },
     { name: "সেটিংস", href: "/dashboard/settings", icon: Settings },
