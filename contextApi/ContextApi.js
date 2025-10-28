@@ -13,11 +13,16 @@ export default function ContextApiState({ children }) {
     const [studentInfo, setStudentInfo] = useState(null)
     const [loginSignal, setLoginSignal] = useState(false);
 
+    const [totalAmount, setTotalAmount] = useState(0);
+    const [serviceData, setServiceData] = useState(null)
+    const [orderDataForPayment, setOrderDataForPayment] = useState(null);
+
     const [imgUrl, setImgUrl] = useState("");
     const [uploadResponse, setUploadResponse] = useState({
         message: "",
         status: 0,
     });
+
 
     useEffect(() => {
         const getStudentProfile = async () => {
@@ -151,6 +156,9 @@ export default function ContextApiState({ children }) {
     const value = {
         editData, setEditData,
         studentIsLogin, studentInfo,
+        totalAmount, setTotalAmount,
+        serviceData, setServiceData,
+        orderDataForPayment, setOrderDataForPayment,
         loginSignal, setLoginSignal,
         imgUrl,
         imgUrl, uploadResponse, uploader,

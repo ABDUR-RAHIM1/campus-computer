@@ -1,9 +1,12 @@
+"use client"
+import React, { useContext } from 'react';
+import { Button } from '../ui/button';
+import { useRouter } from 'next/navigation';
+import { globalContext } from '@/contextApi/ContextApi';
 
-import React from 'react';
-import ApplyButton from './ApplyButton';
-
-export default async function ServicesCard({ data }) {
-
+export default function ServicesCard({ data }) {
+    const router = useRouter();
+    const { serviceData, setServiceData } = useContext(globalContext)
     const colors = [
         { bg: 'bg-blue-50', text: 'text-blue-700', desc: 'text-blue-600' },
         { bg: 'bg-green-50', text: 'text-green-700', desc: 'text-green-600' },
@@ -12,10 +15,14 @@ export default async function ServicesCard({ data }) {
         { bg: 'bg-pink-50', text: 'text-pink-700', desc: 'text-pink-600' },
         { bg: 'bg-indigo-50', text: 'text-indigo-700', desc: 'text-indigo-600' },
     ];
- 
+
+  
+    const handleNavigateToOrder = (data) => {
+        setServiceData(data)
+        router.push("/profile/create-order")
+    }
 
     return (
-        // <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <>
             {data.map((service, index) => {
                 const color = colors[index % colors.length];
@@ -35,7 +42,7 @@ export default async function ServicesCard({ data }) {
                                 🎓 {service.program.toUpperCase()} | 📅 {service.session}
                             </p>
 
-                            <div className={`py-1 px-2 ${service.type=== "নিয়মিত" ? "bg-green-100 text-green-500" : " bg-red-100 text-red-500"} rounded-md  text-[12px]`}>
+                            <div className={`py-1 px-2 ${service.type === "নিয়মিত" ? "bg-green-100 text-green-500" : " bg-red-100 text-red-500"} rounded-md  text-[12px]`}>
                                 {
                                     service.type
                                 }
@@ -68,7 +75,18 @@ export default async function ServicesCard({ data }) {
                             </div>
                         )}
 
-                        <ApplyButton serviceData={service} />
+                        {/* <ApplyButton serviceData={service} /> */}
+
+                        {/* <NewApplyButton
+                            serviceData={service}
+                        /> */}
+
+                        <Button
+                            onClick={() => handleNavigateToOrder(service)}
+                            className=' inline-block my-4 bg-blue-500 text-white'>
+                            Apply
+                        </Button>
+
                     </div>
                 );
             })}

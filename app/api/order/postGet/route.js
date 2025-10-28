@@ -6,9 +6,11 @@ import { NextResponse } from "next/server";
 import ServiceModel from "@/database/models/Services";
 import StudentAuthModel from "@/database/models/StudentAuth";
 import StudentProfileModel from "@/database/models/Profile";
+import PaymentInfoModel from "@/database/models/PaymentInfo";
 
 //  Create Order by Student
 // api => /api/order/postGet  (create , getAll)
+
 export async function POST(req) {
     try {
         await connectDb();
@@ -18,24 +20,34 @@ export async function POST(req) {
         if (auth.error) return auth.response;
 
         const { id } = auth.student;
+        const {
+            profileId,
+            serviceId,
+            department,
+            collegeFee,
+            subjectFee,
+            chargeFee,
+            totalFee,
+            payment, // 🧾 payment data আসবে body.payment এর মাধ্যমে
+        } = body;
 
-        const { profileId, serviceId, department, collegeFee,subjectFee, chargeFee, totalFee } = body;
-
-        if (!id || !serviceId) {
-            return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
-        };
-
-        //  check same services is Available or not
-        const isExistOrder = await Order.findOne({ studentId: id, serviceId });
-
-        if (isExistOrder) {
-            return NextResponse.json({
-                message: "আপনি অর্ডারটি আগেই কনফার্ম করেছেন। "
-            }, {
-                status: 401
-            })
+        if (!id || !serviceId || !payment) {
+            return NextResponse.json(
+                { message: "Missing required fields" },
+                { status: 400 }
+            );
         }
 
+        // 🔍 Check if order already exists for this student & service
+        const isExistOrder = await Order.findOne({ reference: id, serviceId });
+        if (isExistOrder) {
+            return NextResponse.json(
+                { message: "আপনি অর্ডারটি আগেই কনফার্ম করেছেন।" },
+                { status: 401 }
+            );
+        }
+
+        // 🧾 Step 1️⃣ — Create new order (initially pending)
         const newOrder = await Order.create({
             profileId,
             reference: id,
@@ -44,17 +56,38 @@ export async function POST(req) {
             collegeFee,
             subjectFee,
             chargeFee,
-            totalFee, 
-            status: "active",
-            paymentStatus: "paid",
+            totalFee,
+            status: "pending",
+            paymentStatus: "pending",
         });
 
-        return NextResponse.json({ message: "Order created", newOrder }, { status: 201 });
+        // 💳 Step 2️⃣ — Create payment info linked to this order
+        const newPayment = await PaymentInfoModel.create({
+            userId: id,
+            profileId,
+            orderId: newOrder._id,
+            txnId: payment.txnId,
+            senderNumber: payment.senderNumber,
+            amount: payment.amount,
+            method: payment.method,
+            verified: false, // admin approve দিলে true হবে
+        });
+
+        // ✅ Step 3️⃣ — Return success response
+        return NextResponse.json(
+            {
+                message: "অর্ডার ও পেমেন্ট সফলভাবে জমা হয়েছে।",
+                order: newOrder,
+                payment: newPayment,
+            },
+            { status: 201 }
+        );
     } catch (error) {
         console.error("Error creating order:", error);
         return NextResponse.json({ message: "Server Error" }, { status: 500 });
     }
-};
+}
+
 
 
 //  get all orders by Admin

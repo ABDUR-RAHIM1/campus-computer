@@ -6,9 +6,7 @@ const orderSchema = new mongoose.Schema({
     //     type: Boolean,
     //     required: true
     // },
-    otherStudentInfo: {
-        type: Object,
-    },
+
     profileId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "studentProfile",
@@ -46,8 +44,8 @@ const orderSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["active", "success", "cancel"],
-        default: "active"
+        enum: ["pending", "active", "success", "cancel"],
+        default: "pending"
     },
     paymentStatus: {
         type: String,

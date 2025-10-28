@@ -26,9 +26,9 @@ import { ArrowDown } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-export default function ApplyButton({ serviceData }) {
+export default function NewApplyButton() {
     const router = useRouter();
-    const { showToast, studentIsLogin: loginStatus, setTotalAmount , setOrderDataForPayment  } = useContext(globalContext);
+    const { showToast, studentIsLogin: loginStatus, setTotalAmount , servicesData , setOrderDataForPayment  } = useContext(globalContext);
     const [open, setOpen] = useState(false);
     const [waiting, setWaiting] = useState(false);
     const [formData, setFormData] = useState({
@@ -158,7 +158,7 @@ export default function ApplyButton({ serviceData }) {
             if (!val) setSelectedDepartment(null); // Reset when modal closes
         }}
         >
-            <DialogTrigger asChild>
+            {/* <DialogTrigger asChild>
                 <Button
                     onClick={(e) => {
                         if (!loginStatus) {
@@ -172,7 +172,7 @@ export default function ApplyButton({ serviceData }) {
                 >
                     আবেদন করুন
                 </Button>
-            </DialogTrigger>
+            </DialogTrigger> */}
 
             <DialogContent className="w-[90vw] max-w-3xl h-[80vh] overflow-y-auto"
                 onInteractOutside={(event) => {
@@ -329,24 +329,7 @@ export default function ApplyButton({ serviceData }) {
 
                 {
                     selectedDepartment && formData.profile?._id && selectedDepartment?.department === formData?.profile?.department &&
-                    // <Button
-                    //     onClick={handleSubmit}
-                    //     className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white cursor-pointer"
-                    //     disabled={waiting || !formData.profile?._id}
-                    // >
-                    //     {waiting ? <Spinner /> : "নিশ্চিত করুন"}
-                    // </Button>
-
-                    // <Button
-                    //     asChild
-                    //     className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white cursor-pointer"
-                    // >
-                    //     <Link
-                    //         href={"/profile/payment"}  >
-                    //         পরবর্তী ধাপে যান
-                    //     </Link>
-                    // </Button>
-
+                    
                     <Button
                         onClick={handleProceedToPayment} // 🚨 এখানে পরিবর্তিত ফাংশন ব্যবহার করুন
                         className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white cursor-pointer"
