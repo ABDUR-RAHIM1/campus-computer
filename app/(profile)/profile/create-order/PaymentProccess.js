@@ -32,7 +32,7 @@ const CopyableNumberDisplay = ({ number }) => {
 
     return (
         <div
-            className="flex items-center justify-center p-3 border-2 border-dashed border-green-500 rounded-lg bg-green-50 cursor-pointer hover:bg-green-100 transition-all relative"
+            className="flex items-center justify-center  border-2 border-dashed border-green-500 rounded-lg bg-green-50 cursor-pointer hover:bg-green-100 transition-all relative"
             onClick={handleCopy}
             title="কপি করতে ক্লিক করুন"
         >
@@ -159,7 +159,7 @@ export default function PaymentProccess() {
 
 
     return (
-        <div className="my-10 max-w-xl mx-2 md:mx-auto p-6 bg-white shadow-lg rounded-xl border border-blue-200">
+        <div className="my-10 max-w-xl mx-2 md:mx-auto p-2 md:p-6 bg-white shadow-lg rounded-xl border border-blue-200">
             <h2 className="text-2xl font-bold mb-6 text-center text-blue-600">ম্যানুয়াল পেমেন্ট ফর্ম</h2>
 
             {/* Total Amount Display */}
@@ -281,7 +281,7 @@ export default function PaymentProccess() {
                 {/* Submit Button */}
                 <button
                     type="submit"
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition duration-200 ease-in-out transform hover:scale-[1.01]"
+                    className="w-full text-sm bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-200 ease-in-out transform hover:scale-[1.01]"
                     disabled={waiting}
                 >
                     {waiting ? <Spinner /> : "পেমেন্ট নিশ্চিত করুন"}

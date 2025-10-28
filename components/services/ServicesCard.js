@@ -6,7 +6,7 @@ import { globalContext } from '@/contextApi/ContextApi';
 
 export default function ServicesCard({ data }) {
     const router = useRouter();
-    const { serviceData, setServiceData } = useContext(globalContext)
+    const { setServiceData } = useContext(globalContext)
     const colors = [
         { bg: 'bg-blue-50', text: 'text-blue-700', desc: 'text-blue-600' },
         { bg: 'bg-green-50', text: 'text-green-700', desc: 'text-green-600' },
@@ -75,12 +75,7 @@ export default function ServicesCard({ data }) {
                             </div>
                         )}
 
-                        {/* <ApplyButton serviceData={service} /> */}
-
-                        {/* <NewApplyButton
-                            serviceData={service}
-                        /> */}
-
+                    
                         <Button
                             onClick={() => handleNavigateToOrder(service)}
                             className=' inline-block my-4 bg-blue-500 text-white'>
