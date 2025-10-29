@@ -7,7 +7,7 @@ export default function DashboardSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-full h-screen bg-white shadow-lg flex flex-col border-r border-gray-200">
+    <aside className="w-[250px] h-screen sticky top-0 bg-white shadow-lg flex flex-col border-r border-gray-200 overflow-y-auto">
       <div className="p-4 text-xl font-bold text-blue-600 border-b">
         Campus Computer
       </div>

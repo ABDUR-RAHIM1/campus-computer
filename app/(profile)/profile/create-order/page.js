@@ -12,7 +12,7 @@ export default function CreateOrder() {
                 <div className=' selectionSection p-3 w-full md:w-[53%] border'>
                     <SelectedSection />
                 </div>
-                <div className=' applySection w-full md:w-[44%] border'>
+                <div className=' applySection p-1 w-full md:w-[44%] border'>
                     <PaymentProccess />
                 </div>
             </div>

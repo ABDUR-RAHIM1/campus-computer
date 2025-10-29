@@ -27,7 +27,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 export default function SelectedSection() {
 
-    const { showToast, studentIsLogin: loginStatus, setTotalAmount, serviceData, setOrderDataForPayment } = useContext(globalContext);
+    const { setIsProfileMatch, serviceData, setOrderDataForPayment } = useContext(globalContext);
     const [open, setOpen] = useState(false);
     const [waiting, setWaiting] = useState(false);
     const [formData, setFormData] = useState({
@@ -57,7 +57,6 @@ export default function SelectedSection() {
         const imporveFeeCount = Number(imporoveSub) * Number(value.subjectFee || 0);
         const totalFee = imporveFeeCount + Number(value.chargeFee || 0) + Number(value.collegeFee || 0)
         setFinalTotalFee(totalFee);
-        setTotalAmount(totalFee)
     }
 
 
@@ -80,40 +79,17 @@ export default function SelectedSection() {
 
     const isMatch = selectedDepartment && formData.profile?._id && selectedDepartment?.department === formData?.profile?.department
 
-
-    // const handleProceedToPayment = () => {
-    //     // ১. প্রাথমিক ভ্যালিডেশন
-    //     if (!selectedDepartment) {
-    //         showToast("error", "দয়া করে একটি বিভাগ নির্বাচন করুন।");
-    //         return;
-    //     }
-    //     if (!formData.profile?._id) {
-    //         showToast("error", "দয়া করে একটি প্রোফাইল নির্বাচন করুন।");
-    //         return;
-    //     }
-
-    //     // ২. সকল ডেটা একটি অবজেক্টে সংগ্রহ করা
-    //     const orderData = {
-    //         serviceId: serviceData._id,
-    //         department: selectedDepartment.department,
-    //         collegeFee: selectedDepartment.collegeFee,
-    //         subjectFee: selectedDepartment.subjectFee,
-    //         chargeFee: selectedDepartment.chargeFee,
-    //         totalFee: finalTotalFee,
-    //         profileId: formData.profile._id,
-    //         // // আপনি চাইলে সম্পূর্ণ প্রোফাইল ডেটা বা ডিপার্টমেন্ট ডেটা এখানে সংরক্ষণ করতে পারেন
-    //         // selectedDepartmentDetails: selectedDepartment,
-    //         // selectedProfileDetails: formData.profile
-    //     };
+    //  profile match in services information
+    useEffect(() => {
+        if (isMatch) {
+            setIsProfileMatch(true)
+        } else {
+            setIsProfileMatch(false)
+        }
+    }, [isMatch])
 
 
-    //     setOrderDataForPayment(orderData); 
-
-
-    // };
-
-
-    // 
+    // setOrderDataForPayment (contextApi)
     useEffect(() => {
 
         // ২. সকল ডেটা একটি অবজেক্টে সংগ্রহ করা

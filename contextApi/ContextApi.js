@@ -13,9 +13,9 @@ export default function ContextApiState({ children }) {
     const [studentInfo, setStudentInfo] = useState(null)
     const [loginSignal, setLoginSignal] = useState(false);
 
-    const [totalAmount, setTotalAmount] = useState(0);
     const [serviceData, setServiceData] = useState(null)
     const [orderDataForPayment, setOrderDataForPayment] = useState(null);
+    const [isProfileMatch, setIsProfileMatch] = useState(false)
 
     const [imgUrl, setImgUrl] = useState("");
     const [uploadResponse, setUploadResponse] = useState({
@@ -156,7 +156,7 @@ export default function ContextApiState({ children }) {
     const value = {
         editData, setEditData,
         studentIsLogin, studentInfo,
-        totalAmount, setTotalAmount,
+        isProfileMatch, setIsProfileMatch,
         serviceData, setServiceData,
         orderDataForPayment, setOrderDataForPayment,
         loginSignal, setLoginSignal,

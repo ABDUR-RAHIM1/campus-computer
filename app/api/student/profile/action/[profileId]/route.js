@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import StudentProfileModel from "@/database/models/Profile";
 import { studentAuthGuard } from "@/middlewere/studentAuthGuard";
 import { duelAuthGuard } from "@/middlewere/duelAuthGuard";
+import { Order } from "@/database/models/Order";
 
 
 //  profile update 
@@ -18,6 +19,19 @@ export const PUT = async (req, { params }) => {
         await connectDb();
 
         const body = await req.json();
+
+        const isRunningOrder = await Order.find({
+            profileId,
+            status: { $nin: ["success", "cancel"] }
+        });
+
+        if (isRunningOrder.length > 0) {
+            return NextResponse.json({
+                message: "আবেদন চলমান আছে, আপডেট করা সম্ভব নয়!"
+            }, {
+                status: 401
+            });
+        }
 
         const updatedUser = await StudentProfileModel.findByIdAndUpdate(
             profileId,

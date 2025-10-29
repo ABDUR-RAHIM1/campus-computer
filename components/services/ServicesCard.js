@@ -78,8 +78,8 @@ export default function ServicesCard({ data }) {
                     
                         <Button
                             onClick={() => handleNavigateToOrder(service)}
-                            className=' inline-block my-4 bg-blue-500 text-white'>
-                            Apply
+                            className=' w-full inline-block cursor-pointer my-4 bg-blue-500 text-white'>
+                            আবেদন করুন 
                         </Button>
 
                     </div>

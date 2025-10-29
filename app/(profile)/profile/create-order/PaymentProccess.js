@@ -4,7 +4,7 @@ import { PostAction } from '@/actions/students/PostAction';
 import { orderPostGetall } from '@/constans';
 import { globalContext } from '@/contextApi/ContextApi';
 import Spinner from '@/utilities/Spinner';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 // Receiving Number (Defined once)
 const RECEIVING_NUMBER = "01321040273";
@@ -63,11 +63,12 @@ const CopyableNumberDisplay = ({ number }) => {
 export default function PaymentProccess() {
 
     const {
-        showToast, 
-        finalTotalFee,
+        showToast,
+        isProfileMatch,
         orderDataForPayment
     } = useContext(globalContext);
 
+    const amountToPay = orderDataForPayment?.totalFee || 0;
 
     const [formData, setFormData] = useState({
         method: '',
@@ -79,9 +80,14 @@ export default function PaymentProccess() {
     const [waiting, setWaiting] = useState(false);
     const [localMessage, setLocalMessage] = useState({ text: '', type: '' });
 
-    const amountToPay = orderDataForPayment?.totalFee || 0;
 
-    const feeToPay = finalTotalFee || amountToPay;
+    useEffect(() => {
+        setFormData((prev) => ({
+            ...prev,
+            amount: Number(amountToPay)
+        }));
+    }, [amountToPay]);
+
 
 
 
@@ -281,11 +287,16 @@ export default function PaymentProccess() {
                 {/* Submit Button */}
                 <button
                     type="submit"
-                    className="w-full text-sm bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-200 ease-in-out transform hover:scale-[1.01]"
+                    className={`w-full text-sm ${isProfileMatch ? "bg-blue-600 hover:bg-blue-700" : "bg-red-600 hover:bg-red-700"} text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-200 ease-in-out transform hover:scale-[1.01]`}
                     disabled={waiting}
                 >
                     {waiting ? <Spinner /> : "পেমেন্ট নিশ্চিত করুন"}
                 </button>
+                {
+                    !isProfileMatch &&
+                    <small className='my-2 font-medium text-red-500'>
+                        আপনার বিভাগের সাথে মিলেনি!
+                    </small>}
             </form>
 
             <div className="mt-6 pt-4 border-t text-sm text-gray-600 text-center">
