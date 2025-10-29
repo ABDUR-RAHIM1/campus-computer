@@ -13,6 +13,7 @@ export default function ProfileNavbar() {
   const navItems = [
     { name: 'প্রোফাইল ওভারভিউ', href: '/profile' },
     { name: 'অর্ডারসমূহ', href: '/profile/orders' },
+    { name: 'পেমেন্ট ইতিহাস', href: '/profile/payments' },
     { name: 'মেসেজ', href: '/profile/messages' },
   ];
 

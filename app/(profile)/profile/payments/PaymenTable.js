@@ -61,7 +61,7 @@ export default function PaymentTable({ paymentData = [] }) {
                                             }
   `}
                                     >
-                                        ৳{Math.abs(Number(row?.orderId?.totalFee) - Number(row?.amount))}
+                                        ৳{(Number(row?.orderId?.totalFee) - Number(row?.amount))}
                                     </TableCell>
                                     <TableCell>{row?.method || "N/A"}</TableCell>
                                     <TableCell>

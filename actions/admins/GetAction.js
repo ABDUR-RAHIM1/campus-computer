@@ -4,7 +4,7 @@ import { AdminToken } from "@/getToken";
 
 export const GetActionAdmin = async (endpoint) => {
     const token = await AdminToken()
-
+    console.log(endpoint)
     try {
 
         const res = await fetch(API_URL + endpoint, {
