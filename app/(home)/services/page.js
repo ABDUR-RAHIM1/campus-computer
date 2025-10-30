@@ -16,7 +16,7 @@ export default async function CollageServices() {
 
             <ServicesInfo/>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 items-start gap-6">
                 <ServicesCard data={data} />
             </div>
         </div>

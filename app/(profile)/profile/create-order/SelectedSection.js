@@ -20,16 +20,13 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { DialogTrigger } from "@radix-ui/react-dialog";
 import { getMyAllProfile } from "@/handlers/profile";
 import { ArrowDown } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 export default function SelectedSection() {
 
     const { setIsProfileMatch, serviceData, setOrderDataForPayment } = useContext(globalContext);
-    const [open, setOpen] = useState(false);
-    const [waiting, setWaiting] = useState(false);
+
     const [formData, setFormData] = useState({
         // isOthersStudent: false,
         profile: null

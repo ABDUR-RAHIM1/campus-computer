@@ -83,7 +83,11 @@ export default function OrderTable({ orders }) {
         let textClass = "";
         let statusText = "";
 
-        if (row.status === "cancel") {
+        if (row.status === "pending") {
+          bgClass = "bg-red-100";
+          textClass = "text-yellow-800";
+          statusText = "পেন্ডিং";
+        } else if (row.status === "cancel") {
           bgClass = "bg-red-100";
           textClass = "text-red-800";
           statusText = "বাতিল";
@@ -98,11 +102,16 @@ export default function OrderTable({ orders }) {
         }
 
         return (
-          <p
+          <select
+            value={row.status}
+            onChange={(e) => handleStatusChange(row._id, e.target.value)}
             className={`text-xs px-2 py-1 rounded border font-medium ${bgClass} ${textClass}`}
           >
-            {statusText}
-          </p>
+            <option value="cancel">বাতিল</option>
+            <option value="active">চলমান</option>
+            <option value="success">সম্পন্ন</option>
+            <option value="pending">পেন্ডিং</option>
+          </select>
         );
       },
     },
@@ -169,7 +178,12 @@ export default function OrderTable({ orders }) {
             <p>আপনার অর্ডারটি প্রক্রিয়াধীন রয়েছে।</p>
           </div>
         )}
-
+        {data.status === "pending" && (
+          <div className="my-3 bg-blue-100 p-3 rounded">
+            <h2>🚚 অর্ডারটি যাচাই-বাচাই চলছে</h2>
+            <p className=" text-sm">যাচাই-বাচাই শেষ হলে পূর্ণাঙ্গ কাজ শুরু হবে।</p>
+          </div>
+        )}
         {data.status === "success" && (
           <div className="my-3 bg-green-100 p-3 rounded">
             <h2>✅ অর্ডারটি সফলভাবে সম্পন্ন হয়েছে</h2>

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import {
     Table,
     TableBody,
@@ -10,13 +10,36 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { format } from "date-fns"
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
+import { PostActionAdmin } from "@/actions/admins/PostAction";
+import { paymentInfoStatusUpdate } from "@/constans";
+import { globalContext } from "@/contextApi/ContextApi";
 
 export default function PaymentTable({ paymentData = [] }) {
+    const { showToast } = useContext(globalContext);
     const [payment, setPayment] = useState([])
 
     useEffect(() => {
         setPayment(paymentData)
     }, [paymentData])
+
+
+    const handleStatusChange = async (paymentId, value) => {
+
+        try {
+
+            const payload = {
+                method: "PUT",
+                endpoint: paymentInfoStatusUpdate + paymentId,
+                body: { verified: value === "true" }
+            }
+            const { status, data } = await PostActionAdmin(payload)
+            showToast(status, data);
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <div className="p-4 my-10 mx-3 bg-white rounded-xl shadow-sm border">
@@ -54,10 +77,10 @@ export default function PaymentTable({ paymentData = [] }) {
                                         className={`
                                                 font-semibold
                                                ${Number(row?.amount) < Number(row?.orderId?.totalFee)
-                                                ? "text-red-600"      
+                                                ? "text-red-600"
                                                 : Number(row?.amount) > Number(row?.orderId?.totalFee)
-                                                    ? "text-yellow-600"   
-                                                    : "text-green-600"     
+                                                    ? "text-yellow-600"
+                                                    : "text-green-600"
                                             }
   `}
                                     >
@@ -65,15 +88,25 @@ export default function PaymentTable({ paymentData = [] }) {
                                     </TableCell>
                                     <TableCell>{row?.method || "N/A"}</TableCell>
                                     <TableCell>
-                                        <span
-                                            className={`px-2 py-1 rounded-full text-xs font-semibold ${row?.verified
-                                                ? "bg-green-100 text-green-700"
-                                                : "bg-yellow-100 text-yellow-700"
-                                                }`}
+                                        <Select
+                                            defaultValue={row?.verified ? "verified" : "pending"}
+                                            onValueChange={(value) => handleStatusChange(row?._id, value)}
                                         >
-                                            {row?.verified ? "Paid" : "Pending"}
-                                        </span>
+                                            <SelectTrigger className="w-[120px]">
+                                                <SelectValue />
+                                            </SelectTrigger>
+
+                                            <SelectContent>
+                                                <SelectItem value="true">
+                                                    ✅ Verified
+                                                </SelectItem>
+                                                <SelectItem value="false">
+                                                    ⏳ Pending
+                                                </SelectItem>
+                                            </SelectContent>
+                                        </Select>
                                     </TableCell>
+
                                     <TableCell>
                                         {row?.createdAt
                                             ? (() => {

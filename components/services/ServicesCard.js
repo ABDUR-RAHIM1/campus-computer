@@ -1,11 +1,22 @@
 "use client"
 import React, { useContext } from 'react';
 import { Button } from '../ui/button';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { globalContext } from '@/contextApi/ContextApi';
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableFooter,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
 
 export default function ServicesCard({ data }) {
     const router = useRouter();
+    const pathName = usePathname();
     const { setServiceData } = useContext(globalContext)
     const colors = [
         { bg: 'bg-blue-50', text: 'text-blue-700', desc: 'text-blue-600' },
@@ -16,10 +27,14 @@ export default function ServicesCard({ data }) {
         { bg: 'bg-indigo-50', text: 'text-indigo-700', desc: 'text-indigo-600' },
     ];
 
-  
+
     const handleNavigateToOrder = (data) => {
-        setServiceData(data)
-        router.push("/profile/create-order")
+        if (pathName.startsWith("/profile")) {
+            setServiceData(data)
+            router.push("/profile/create-order");
+        } else { 
+            router.push("/profile");
+        }
     }
 
     return (
@@ -49,24 +64,32 @@ export default function ServicesCard({ data }) {
                             </div>
                         </div>
 
-                        {/* Show fee list by department */}
-                        {service.departmentFees?.length > 0 && (
-                            <div className="mt-2 text-sm text-gray-800">
-                                <p className="font-medium mb-1">💰 বিভাগ অনুযায়ী ফি:</p>
-                                <ul className="list-disc list-inside space-y-1">
-                                    {service.departmentFees.map((item, i) => (
-                                        <li key={i}>
-                                            🏛️ {item.department} — <span className="font-semibold">{item.collegeFee} ৳</span>
-                                        </li>
+                        <div>
+                            <h2 className='my-2 font-medium text-center border p-2'>বিভাগ অনুযায়ী ফি</h2>
+                            <Table>
+                                <TableCaption></TableCaption>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="w-[100px]">বিভাগ</TableHead>
+                                        <TableHead>ফী</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {service?.departmentFees?.map((item, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell>{item.department}</TableCell>
+                                            <TableCell>{item.collegeFee}</TableCell>
+                                        </TableRow>
                                     ))}
-                                </ul>
-                            </div>
-                        )}
+                                </TableBody>
+                            </Table>
+
+                        </div>
 
                         {/* Required Documents */}
                         {service.requiredDocuments?.length > 0 && (
                             <div className=' mt-3'>
-                                <p className="font-medium">💰 ডকুমেন্ট লাগবে :</p>
+                                <p className="font-medium"> ডকুমেন্ট লাগবে :</p>
                                 <ul className="mt-3 text-sm text-gray-700 list-disc list-inside">
                                     {service.requiredDocuments.map((doc, i) => (
                                         <li key={i}>📎 {doc}</li>
@@ -75,11 +98,11 @@ export default function ServicesCard({ data }) {
                             </div>
                         )}
 
-                    
+
                         <Button
                             onClick={() => handleNavigateToOrder(service)}
                             className=' w-full inline-block cursor-pointer my-4 bg-blue-500 text-white'>
-                            আবেদন করুন 
+                            আবেদন করুন
                         </Button>
 
                     </div>

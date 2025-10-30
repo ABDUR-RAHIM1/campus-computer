@@ -77,6 +77,7 @@ export const orderCencel = "/order/cancel/" // [cancelOrderId] only admin can do
 //  ......................... Payment Info Start .....................................
 export const paymentInfoGetAll = "/paymentInfo"
 export const paymentInfoGetMe = "/paymentInfo/me"
+export const paymentInfoStatusUpdate = "/paymentInfo/actions/"
 //  ......................... Payment Info End .....................................
 
 
