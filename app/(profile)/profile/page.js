@@ -134,7 +134,7 @@ export default async function StudentProfile() {
                     </h3>
                     <ServicesInfo />
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 items-start gap-6">
+                    <div className="">
                         <Services />
                     </div>
 

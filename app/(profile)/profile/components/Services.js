@@ -1,7 +1,7 @@
 import DataNotFound from '@/components/DataNotFound';
 import { getAllServices } from '@/handlers/services';
 import React from 'react';
-import ServicesCard from '@/components/services/ServicesCard';
+import ServicesClient from './ServicesClient';
 
 export default async function Services() {
     const { status, data } = await getAllServices();
@@ -10,7 +10,10 @@ export default async function Services() {
         return <DataNotFound text="Services not available for you" />;
     }
 
-    return <ServicesCard data={data} />
+    return <ServicesClient
+        data={data}
+        colsStyle={"grid-cols-1 md:grid-cols-2"}
+    />
 
 }
 

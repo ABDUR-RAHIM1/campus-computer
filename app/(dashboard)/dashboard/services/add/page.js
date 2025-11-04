@@ -13,6 +13,7 @@ import Spinner from "@/utilities/Spinner";
 import { PostActionAdmin } from "@/actions/admins/PostAction";
 import { instituteList } from "@/LocalDatabase/Institute";
 import { getAllSubAdmins } from "@/handlers/subAdmins";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 
 
@@ -156,7 +157,7 @@ export default function AddServicePage() {
 
 
                     <SelectField
-                        label="ধরন"
+                        label="প্রতিষ্ঠান"
                         name="institute"
                         value={formData.institute}
                         onChange={handleChange}
@@ -248,6 +249,40 @@ export default function AddServicePage() {
                                 যুক্ত করুন
                             </Button>
                         </div>
+
+                        {
+                            formData.departmentFees &&
+                            <div className=" my-3 border rounded-md">
+
+                                {
+                                    formData.departmentFees.length > 0 &&
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead>Depertment</TableHead>
+                                                <TableHead>College Fee</TableHead>
+                                                <TableHead>Subject Fee</TableHead>
+                                                <TableHead>Charge Fee</TableHead>
+                                                <TableHead>Total Fee</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {formData?.departmentFees.map((d, i) => (
+                                                <TableRow key={i}>
+                                                    <TableCell className="font-medium">{d.department}</TableCell>
+                                                    <TableCell>{d.collegeFee}</TableCell>
+                                                    <TableCell>{d.subjectFee}</TableCell>
+                                                    <TableCell>{d.chargeFee}</TableCell>
+                                                    <TableCell>{d.totalFee}</TableCell>
+                                                
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                }
+                            </div>
+                        }
+
                     </div>
 
 

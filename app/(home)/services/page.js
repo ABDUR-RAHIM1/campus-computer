@@ -1,3 +1,4 @@
+import ServicesClient from '@/app/(profile)/profile/components/ServicesClient';
 import DataNotFound from '@/components/DataNotFound';
 import ServicesCard from '@/components/services/ServicesCard';
 import ServicesInfo from '@/components/ServicesInfo';
@@ -14,11 +15,15 @@ export default async function CollageServices() {
     return (
         <div className=' px-5 md:px-12 my-10 min-h-screen'>
 
-            <ServicesInfo/>
+            <ServicesInfo />
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 items-start gap-6">
+            {/* <div className="grid grid-cols-1 sm:grid-cols-3 items-start gap-6">
                 <ServicesCard data={data} />
-            </div>
+            </div> */}
+            <ServicesClient
+                data={data}
+                colsStyle={"grid-cols-1 md:grid-cols-3"}
+            />
         </div>
     )
 }

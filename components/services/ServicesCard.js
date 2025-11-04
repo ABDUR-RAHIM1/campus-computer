@@ -14,7 +14,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 
-export default function ServicesCard({ data }) {
+export default function ServicesCard({ servicesData }) {
     const router = useRouter();
     const pathName = usePathname();
     const { setServiceData } = useContext(globalContext)
@@ -39,7 +39,7 @@ export default function ServicesCard({ data }) {
 
     return (
         <>
-            {data.map((service, index) => {
+            {servicesData.map((service, index) => {
                 const color = colors[index % colors.length];
 
                 return (

@@ -48,9 +48,13 @@ export default function Navbar() {
                     }
 
 
+                    <div className=" hidden md:block">
+                        <AccountBtn />
+                    </div>
+                </div>
+                <div className=" block md:hidden">
                     <AccountBtn />
                 </div>
-
                 {/* Mobile Menu Button */}
                 <div className="md:hidden">
                     <button onClick={toggleMenu} className="p-2 text-3xl cursor-pointer border rounded-md "
@@ -64,23 +68,20 @@ export default function Navbar() {
             {/* Mobile Menu */}
             {menuOpen && (
                 <div className="md:hidden bg-white border-t px-4 pb-4 space-y-2">
-                    
+
 
                     <div className=" my-5">
                         {
                             items.map((item, index) => (
                                 <Link
                                     onClick={handleClose}
-                                    key={index} href={item.path} className={` ${item.path === path ? "text-blue-500" : "text-gray-700"} hover:text-blue-600 font-medium block my-3`}>
+                                    key={index} href={item.path} className={` ${item.path === path ? "text-blue-500 bg-blue-50" : "text-gray-700"} hover:text-blue-600 hover:bg-blue-50 font-medium block my-1 p-2 transition-all`}>
                                     {item.item}
                                 </Link>
                             ))
                         }
                     </div>
 
-                    <div onClick={handleClose}>
-                        <AccountBtn />
-                    </div>
                 </div>
             )}
         </nav>

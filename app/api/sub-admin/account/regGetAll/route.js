@@ -58,9 +58,9 @@ export const GET = async (req) => {
     try {
 
 
-        // 🔐 Auth Guard
-        const { error, admin, response } = await adminAuthGuard(req);
-        if (error) return response;
+        // // 🔐 Auth Guard
+        // const { error, admin, response } = await adminAuthGuard(req);
+        // if (error) return response;
 
         const subAdmins = await SubAdminModel.find().select("-password");
 
@@ -68,7 +68,7 @@ export const GET = async (req) => {
 
 
     } catch (error) {
-        console.log(error);
+        
         return NextResponse.json(
             { message: "Failed to fetch sub-admin" },
             { status: 500 }
