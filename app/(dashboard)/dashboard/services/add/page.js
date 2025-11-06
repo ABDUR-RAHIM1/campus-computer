@@ -14,6 +14,9 @@ import { PostActionAdmin } from "@/actions/admins/PostAction";
 import { instituteList } from "@/LocalDatabase/Institute";
 import { getAllSubAdmins } from "@/handlers/subAdmins";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import TextareaField from "@/utilities/TextareaField";
 
 
 
@@ -112,6 +115,15 @@ export default function AddServicePage() {
         }))
     }
 
+
+
+    //  Remove Fee from the state
+    const handleRemoveFeeClick = (indexToRemove) => {
+        const updatedFees = formData.departmentFees.filter((_, index) => index !== indexToRemove);
+        setFormData({ ...formData, departmentFees: updatedFees });
+    };
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true)
@@ -153,7 +165,7 @@ export default function AddServicePage() {
 
 
 
-                <form onSubmit={handleSubmit} className="space-y-4 grid grid-cols-1">
+                <div className="space-y-4 grid grid-cols-1">
 
 
                     <SelectField
@@ -174,6 +186,7 @@ export default function AddServicePage() {
                             { label: "নিয়মিত", value: "নিয়মিত" },
                             { label: "অনিয়মিত", value: "অনিয়মিত" },
                             { label: "মান-উন্নায়ন", value: "মান-উন্নায়ন" },
+                            { label: "ভর্তি", value: "ভর্তি" },
                             { label: "অন্যান্য", value: "অন্যান্য" },
                         ]}
                     />
@@ -268,13 +281,19 @@ export default function AddServicePage() {
                                         </TableHeader>
                                         <TableBody>
                                             {formData?.departmentFees.map((d, i) => (
-                                                <TableRow key={i}>
-                                                    <TableCell className="font-medium">{d.department}</TableCell>
+                                                <TableRow
+                                                    key={i}
+                                                >
+                                                    <TableCell
+                                                        className="font-medium cursor-pointer hover:text-red-500 hover:underline transition-all"
+                                                        onClick={() => handleRemoveFeeClick(i)}
+                                                        title={"Click for Delete"}
+                                                    >{d.department}</TableCell>
                                                     <TableCell>{d.collegeFee}</TableCell>
                                                     <TableCell>{d.subjectFee}</TableCell>
                                                     <TableCell>{d.chargeFee}</TableCell>
                                                     <TableCell>{d.totalFee}</TableCell>
-                                                
+
                                                 </TableRow>
                                             ))}
                                         </TableBody>
@@ -305,24 +324,25 @@ export default function AddServicePage() {
                     />
 
 
-                    <InputField
+                    <TextareaField
                         label="প্রয়োজনীয় ডকুমেন্ট (কমা দিয়ে আলাদা করুন)"
                         name="requiredDocuments"
-                        placeholder="আধার কার্ড, আবেদন ফরম, সনদ"
+                        placeholder="আবেদন ফরম, ছবি , ইত্যাদি"
                         value={formData.requiredDocuments}
                         onChange={handleChange}
                         required
                     />
 
                     <Button
-                        type="submit"
-                        className={`w-full  my-20 bg-green-600 text-white font-semibold rounded hover:bg-green-700 ${isLoading ? " cursor-progress" : " cursor-pointer"}`}
+                        type="button"
+                        onClick={handleSubmit}
+                        className={`w-full  my-10 bg-green-600 text-white font-semibold rounded hover:bg-green-700 ${isLoading ? " cursor-progress" : " cursor-pointer"}`}
                     >
                         {
                             isLoading ? <Spinner /> : "✅ সাবমিট করুন"
                         }
                     </Button>
-                </form>
+                </div>
             </div>
         </div>
     );

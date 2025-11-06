@@ -11,7 +11,7 @@ const items = [
     { item: "হোম", path: "/" },
     { item: "কলেজ সেবা", path: "/services" },
     { item: "জবস", path: "/jobs" },
-    { item: "সেবা সমূহ", path: "/#services-list" },
+    { item: "আমাদের সম্পর্কে", path: "/about-us" },
     { item: "যোগাযোগ", path: "/#contact" },
 ]
 

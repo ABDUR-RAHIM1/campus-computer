@@ -3,15 +3,15 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
-import devPhoto from "@/public/images/me.jpg"
+import devPhoto from "@/public/images/developer.png"
 
 const DeveloperProfile = () => {
     const developer = {
         name: "Abdur Rahim",
         title: "Full Stack Web Developer",
         photo: devPhoto, // আপনার আসল ছবি URL দিন
-        email: "rahim@example.com",
-        phone: "+880 1700-000000",
+        email: "abdurrahim88557@gmail.com",
+        phone: "+8801321040273",
         portfolio: "https://abdr.netlify.app",
         skills: [
             "React.js",
@@ -37,8 +37,8 @@ const DeveloperProfile = () => {
                         width={500}
                         height={500}
                         src={developer.photo}
-                        alt={developer.name}
-                        className="w-48 h-48 rounded-full object-cover border-4 border-blue-500 mx-auto"
+                        alt={"Campus computer"}
+                        className=" w-[80%] h-auto md:w-[400px] md:h-[400px] rounded-full border-4 border-blue-500 mx-auto"
                     />
                 </CardContent>
             </Card>

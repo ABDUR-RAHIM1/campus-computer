@@ -1,0 +1,28 @@
+"use client";
+
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import React from "react";
+
+export default function TextareaField({ label, name, type = "text", placeholder, value, onChange, error, required = false, disabled = false, multiple = undefined }) {
+    return (
+        <div className="w-full mb-4">
+            <Label htmlFor={name} className="font-medium mb-1">
+                {label} {required && <span className="text-red-500">*</span>}
+            </Label>
+            <Textarea
+                id={name}
+                name={name}
+                type={type}
+                placeholder={placeholder}
+                value={value}
+                onChange={onChange}
+                required={required}
+                disabled={disabled}
+                multiple={multiple}
+                className={error ? " border-red-500" : ""}
+            />
+            {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
+        </div>
+    );
+}

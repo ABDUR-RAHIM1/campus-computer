@@ -83,9 +83,9 @@ export function Contact() {
               type="submit"
               className="w-full bg-blue-600 text-white font-semibold py-3 rounded-md hover:bg-blue-700 transition-colors"
             >
-               {
-                isLoading ? <Spinner/> : "পাঠান"
-               }
+              {
+                isLoading ? <Spinner /> : "পাঠান"
+              }
             </button>
           </form>
 
@@ -101,10 +101,11 @@ export function Contact() {
                 01611530939
               </a>
             </p>
-            <p className="mb-6 text-lg">
+            <div className="mb-6 text-lg">
               📍 ঠিকানা: <br />
-              কলেজ বাজার, লালমনিরহাট
-            </p>
+              <p>১। কলেজ বাজার, লালমনিরহাট</p>
+              <p>  ২। স্বনির্ভর কম্পিউটার ট্রেনিং সেন্টার, আদিতমারী</p>
+            </div>
             <p className="mb-6 text-lg">
               📧 ইমেইল: <br />
               <a
