@@ -20,7 +20,7 @@ import { sessionList } from "@/LocalDatabase/seasion";
 export default function AddProfile() {
     const { showToast, imgUrl, uploadResponse, uploader, studentInfo } = useContext(globalContext);
     const [submiting, setSubmiting] = useState(false)
-    const { status, message } = uploadResponse;  
+    const { status, message } = uploadResponse;
 
 
     const [departments, setDepartments] = useState([]);
@@ -40,7 +40,7 @@ export default function AddProfile() {
         }
     }, [studentInfo, studentProfileFormState.isOtherStudent]);
 
-  
+
     const handleChange = (e) => {
         const { type, name, value, files } = e.target;
 
@@ -70,7 +70,6 @@ export default function AddProfile() {
             setDepartments(filterdDeparment);
         }
     }, [formData.program])
-
 
 
 
@@ -158,8 +157,6 @@ export default function AddProfile() {
 
                 }
 
-                <InputField label="📧 ইমেইল" name="email" value={formData.email} onChange={handleChange} />
-
                 <InputField label="🏛️ ইনস্টিটিউটের নাম" name="instituteName" value={formData.instituteName} required onChange={handleChange} />
 
 
@@ -209,30 +206,30 @@ export default function AddProfile() {
 
                 <InputField label="🎟️ ক্লাস রোল" name="classRoll" value={formData.classRoll} onChange={handleChange} />
 
-                <InputField label="🎓 রেজিস্ট্রেশন নম্বর" name="registrationNumber" value={formData.registrationNumber} onChange={handleChange} required />
-                <InputField label="🆔 বোর্ড রোল" name="boardRoll" value={formData.boardRoll} onChange={handleChange} required />
-                <InputField label="🔐 পিন" name="pin" value={formData.pin} onChange={handleChange} />
-
-                {/* <InputField label="👨‍👩‍👧 অভিভাবকের নাম" name="guardianName" value={formData.guardianName} onChange={handleChange} /> */}
-                <InputField label="📱 অভিভাবকের মোবাইল" name="guardianPhone" value={formData.guardianPhone} onChange={handleChange} />
-                <InputField label="🏠 ঠিকানা" name="address" value={formData.address} onChange={handleChange} />
-                <InputField label="🎂 জন্ম তারিখ" name="birthDate" value={formData.birthDate} type="date" onChange={handleChange} />
-
-
-
-                <SelectField
-                    label="⚧️ লিঙ্গ"
-                    name="gender"
-                    value={formData.gender}
+                <InputField
+                    label="🎓স্টুডেন্ট আইডি (Registration/Applicant Id)"
+                    name="registrationNumber"
+                    value={formData.registrationNumber}
                     onChange={handleChange}
+                    placeholder={"Applicant হলে Roll-pin:-5018098-245642"}
                     required
-                    options={[
-                        { label: "পুরুষ", value: "পুরুষ" },
-                        { label: "মহিলা", value: "মহিলা" },
-                        { label: "অন্যান্য", value: "অন্যান্য" },
-                    ]}
                 />
-                <InputField label="🩸 রক্ত গ্রুপ" name="bloodGroup" value={formData.bloodGroup} onChange={handleChange} placeholder="A+ / O+ etc." />
+
+                <InputField
+                    label={"ঐচ্ছিক বিষয়"}
+                    name={"electiveSubject"}
+                    value={formData.electiveSubject}
+                    placeholder={"ঐচ্ছিক/Elective বিষয় কোড লিখুন"}
+                    onChange={handleChange}
+                />
+                <InputField
+                    type="number"
+                    label={"নাম্বার"}
+                    name={"contactNumber"}
+                    value={formData.contactNumber}
+                    placeholder={"যোগাযোগ নাম্বার"}
+                    onChange={handleChange}
+                />
 
                 {/* 🔘 মানোন্নয়ন সেকশন */}
                 <div className="sm:col-span-2">

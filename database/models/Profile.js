@@ -10,10 +10,6 @@ const studentProfileSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    email: {
-        type: String,
-        required: false
-    },
     instituteName: {
         type: String,
         required: true,
@@ -39,25 +35,15 @@ const studentProfileSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    boardRoll: {
-        type: String,
-        required: true,
-    },
     classRoll: {
         type: String,
         required: true,
     },
-    pin: String,
-    guardianPhone: String,
-    address: String,
-    birthDate: Date,
-    bloodGroup: {
+    electiveSubject: {
         type: String,
-        enum: ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"],
     },
-    gender: {
-        type: String,
-        required: false
+    contactNumber: {
+        type: Number,
     },
     hasImprovement: {
         type: Boolean,

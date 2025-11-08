@@ -21,7 +21,7 @@ export default function RootLayout({ children }) {
     <html lang="bn">
       <body
         cz-shortcut-listen="true"
-        className={`${notoSansBengali.variable} font-sans antialiased`}>
+        className={`${notoSansBengali.className}  antialiased`}>
         <ContextApiState>
           <Toaster position="top-right" />
           <Navbar />

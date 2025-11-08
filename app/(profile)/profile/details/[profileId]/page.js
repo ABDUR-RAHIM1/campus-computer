@@ -25,14 +25,8 @@ export default async function Details({ params }) {
         classYear,
         session,
         classRoll,
-        boardRoll,
         pin,
-        email,
-        guardianPhone,
-        address,
-        birthDate,
-        gender,
-        bloodGroup,
+        contactNumber,
         instituteName,
         profilePicture,
         documents = [],
@@ -55,22 +49,15 @@ export default async function Details({ params }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
                 <p><strong>প্রোফাইল মালিক:</strong> {isOtherStudent ? "অন্যের" : "আমি নিজে"}</p>
                 <p><strong>নাম:</strong> {studentName || studentId?.username}</p>
-                <p><strong>মোবাইল:</strong> {studentId?.phone}</p>
-                <p><strong>ইমেইল:</strong> {email}</p>
-                <p><strong>রেজিঃ নম্বর:</strong> {registrationNumber}</p>
-                <p><strong>বোর্ড রোল:</strong> {boardRoll}</p>
+                <p><strong>যোগাযোগ নাম্বার:</strong> {contactNumber || studentId?.phone}</p>
+                <p><strong>স্টুডেন্ট আইডি:</strong> {registrationNumber}</p>
                 <p><strong>ক্লাস রোল:</strong> {classRoll}</p>
                 <p><strong>ডিপার্টমেন্ট:</strong> {department}</p>
                 <p><strong>প্রোগ্রাম:</strong> {program}</p>
                 <p><strong>ক্লাস বর্ষ:</strong> {classYear}</p>
                 <p><strong>সেশন:</strong> {session}</p>
-                <p><strong>পিন:</strong> {pin}</p>
+                <p><strong>পিন:</strong> {pin || "N/A" }</p>
                 <p><strong>ইনস্টিটিউট:</strong> {instituteName}</p>
-                <p><strong>অভিভাবকের মোবাইল:</strong> {guardianPhone}</p>
-                <p><strong>ঠিকানা:</strong> {address}</p>
-                <p><strong>জন্ম তারিখ:</strong> {birthDate}</p>
-                <p><strong>লিঙ্গ:</strong> {gender}</p>
-                <p><strong>রক্ত গ্রুপ:</strong> {bloodGroup}</p>
             </div>
 
             <hr className=' mt-5' />

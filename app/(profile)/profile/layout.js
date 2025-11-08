@@ -19,7 +19,7 @@ export default function ProfileLayout({ children }) {
     <html lang="bn">
       <body
         cz-shortcut-listen="true"
-        className={`${bengaliFont.variable} font-sans antialiased`}
+        className={`${bengaliFont.className} font-sans antialiased`}
       >
         <ContextApiState>
         <Toaster position="top-right" />

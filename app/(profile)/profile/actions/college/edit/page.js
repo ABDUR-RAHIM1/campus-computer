@@ -148,12 +148,7 @@ export default function EditProfile() {
                     disabled={!formData.isOtherStudent}
                 />
 
-                <InputField
-                    label="📧 ইমেইল"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                />
+
 
                 <InputField
                     label="🏛️ ইনস্টিটিউটের নাম"
@@ -179,7 +174,22 @@ export default function EditProfile() {
                         <option value="intermediate">ইন্টারমেডিয়েট</option>
                     </select>
                 </div>
-
+                {/* Class Year */}
+                <div className="space-y-1">
+                    <Label>🏛️ বর্ষ</Label>
+                    <select
+                        value={formData.classYear}
+                        onChange={handleChange}
+                        name="gender"
+                        id="gender"
+                        className=" w-full py-[5px] px-3 rounded-sm border outline-0 focus:shadow-md"
+                    >
+                        <option value="প্রথম বর্ষ">প্রথম বর্ষ</option>
+                        <option value="দ্বিতীয় বর্ষ">দ্বিতীয় বর্ষ</option>
+                        <option value="তৃতীয় বর্ষ">তৃতীয় বর্ষ</option>
+                        <option value="চতুর্থ বর্ষ">চতুর্থ বর্ষ</option>
+                    </select>
+                </div>
                 {/* Class Year */}
                 <div className="space-y-1">
                     <Label>🏛️ বর্ষ</Label>
@@ -229,62 +239,14 @@ export default function EditProfile() {
                     onChange={handleChange}
                     required
                 />
-                <InputField
-                    label="🆔 বোর্ড রোল"
-                    name="boardRoll"
-                    value={formData.boardRoll}
-                    onChange={handleChange}
-                    required
-                />
+
                 <InputField
                     label="🔐 পিন"
                     name="pin"
                     value={formData.pin}
                     onChange={handleChange}
                 />
-                <InputField
-                    label="📱 অভিভাবকের মোবাইল"
-                    name="guardianPhone"
-                    value={formData.guardianPhone}
-                    onChange={handleChange}
-                />
-                <InputField
-                    label="🏠 ঠিকানা"
-                    name="address"
-                    value={formData.address}
-                    onChange={handleChange}
-                />
-                <InputField
-                    label="🎂 জন্ম তারিখ"
-                    name="birthDate"
-                    type="date"
-                    value={formData.birthDate}
-                    onChange={handleChange}
-                />
 
-                {/* Gender */}
-                <div className="space-y-1">
-                    <Label>⚧️ লিঙ্গ</Label>
-                    <select
-                        value={formData.gender}
-                        onChange={handleChange}
-                        name="gender"
-                        id="gender"
-                        className=" w-full py-[5px] px-3 rounded-sm border outline-0 focus:shadow-md"
-                    >
-                        <option value="পুরুষ">পুরুষ</option>
-                        <option value="মহিলা">মহিলা</option>
-                        <option value="অন্যান্য">অন্যান্য</option>
-                    </select>
-                </div>
-
-                <InputField
-                    label="🩸 রক্ত গ্রুপ"
-                    name="bloodGroup"
-                    value={formData.bloodGroup}
-                    onChange={handleChange}
-                    placeholder="A+ / O+ etc."
-                />
 
                 {/* মানোন্নয়ন */}
                 <div className="sm:col-span-2">
