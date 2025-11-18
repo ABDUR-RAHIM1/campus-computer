@@ -69,7 +69,7 @@ export default function HeroSlider() {
                       alt={`Slide ${i + 1}`}
                       width={600}
                       height={400}
-                      className="rounded-lg w-full h-64 object-cover"
+                      className="rounded-lg w-full h-64 "
                     />
                   </CardContent>
                 </Card>

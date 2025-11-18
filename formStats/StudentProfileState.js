@@ -7,7 +7,7 @@ export const studentProfileFormState = {
     session: "",
     contactNumber: "",
     classRoll: "",
-    instituteName: "",
+    institute: "",
     program: "",
     electiveSubject: "",
     hasImprovement: false,

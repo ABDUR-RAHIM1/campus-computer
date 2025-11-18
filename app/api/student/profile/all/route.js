@@ -20,6 +20,7 @@ export const GET = async (req) => {
 
         const students = await StudentProfileModel.find()
             .populate("studentId", "-password")
+            .populate("institute", "username")
 
         return NextResponse.json(students,
             { status: 200 }

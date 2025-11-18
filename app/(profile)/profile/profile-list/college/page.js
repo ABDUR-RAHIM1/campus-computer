@@ -9,12 +9,11 @@ import { demoProfilePicture } from "@/constans";
 
 export default async function ProfileList() {
     const { status, data } = await getMyAllProfile();
-   
+
     if (status !== 200 || !data?.length) {
         return <DataNotFound text={data?.message || "কোনো প্রোফাইল পাওয়া যায়নি।"} />;
     }
-
-
+ 
 
     return (
         <div className="my-20">
@@ -52,7 +51,7 @@ export default async function ProfileList() {
 
                         <div className="space-y-1 text-sm text-gray-700">
                             <p>🎓 শ্রেণি: {profile.department}</p>
-                            <p>🏫 প্রতিষ্ঠান: {profile.instituteName}</p>
+                            <p>🏫 প্রতিষ্ঠান: {profile?.institute?.username || "N/A"}</p>
                             <p>📞 মোবাইল: {profile.contactNumber || profile?.studentId.phone}</p>
                             <p>🔖 রোল নম্বর: {profile.classRoll}</p>
                             <p>📝 রেজিস্ট্রেশন নম্বর: {profile.registrationNumber}</p>

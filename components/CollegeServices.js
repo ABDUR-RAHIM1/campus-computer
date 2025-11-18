@@ -38,7 +38,8 @@ export default function CollegeServices() {
 
   return (
     <section className="py-12 bg-gray-50">
-      <div className="container mx-auto px-4">
+     
+      <div className="container mx-auto px-4 z-30">
         <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">
           🎓 কলেজ সার্ভিস সেন্টার
         </h2>

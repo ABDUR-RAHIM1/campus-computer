@@ -14,7 +14,7 @@ import { studentProfileCreate } from "@/constans";
 import { studentProfileFormState } from "@/formStats/StudentProfileState";
 import { Checkbox } from "@/components/ui/checkbox";
 import { sessionList } from "@/LocalDatabase/seasion";
-
+import { getAllSubAdmins } from "@/handlers/subAdmins";
 
 
 export default function AddProfile() {
@@ -22,7 +22,7 @@ export default function AddProfile() {
     const [submiting, setSubmiting] = useState(false)
     const { status, message } = uploadResponse;
 
-
+    const [institutes, setInstitutes] = useState([]);
     const [departments, setDepartments] = useState([]);
 
 
@@ -43,14 +43,13 @@ export default function AddProfile() {
 
     const handleChange = (e) => {
         const { type, name, value, files } = e.target;
-
+        console.log(name, value)
         if (type === "file") {
             const file = files
             uploader(file)
         } else {
             setFormData((prev) => ({ ...prev, [name]: value }));
         }
-
     };
 
 
@@ -72,6 +71,25 @@ export default function AddProfile() {
     }, [formData.program])
 
 
+    // getAll Institue/ subAdmins
+    useEffect(() => {
+        const getData = async () => {
+            const { status, data } = await getAllSubAdmins();
+            if (status === 200) {
+
+                const formatedData = data.map((ins, i) => {
+                    return {
+                        label: ins.username,
+                        value: ins._id
+                    }
+                })
+
+                setInstitutes(formatedData)
+            }
+        };
+
+        getData()
+    }, [])
 
 
     // 📌 এটাকে component এর উপরে বা ফাইলের উপরে রাখো
@@ -123,7 +141,7 @@ export default function AddProfile() {
 
 
             <div className=" my-8">
-                <Label className="hover:bg-accent/50 flex items-start gap-3 rounded-lg border p-3 has-[[aria-checked=true]]:border-blue-600 has-[[aria-checked=true]]:bg-blue-50 dark:has-[[aria-checked=true]]:border-blue-900 dark:has-[[aria-checked=true]]:bg-blue-950">
+                <Label className="hover:bg-accent/50 flex items-start gap-3 border-blue-300 rounded-lg border p-3 has-[[aria-checked=true]]:border-blue-600 has-[[aria-checked=true]]:bg-blue-50 dark:has-[[aria-checked=true]]:border-blue-900 dark:has-[[aria-checked=true]]:bg-blue-950">
                     <Checkbox
                         onCheckedChange={(checked) => setFormData((prev) => ({
                             ...prev,
@@ -132,7 +150,7 @@ export default function AddProfile() {
                         checked={formData.isOtherStudent}
                         id="toggle-2"
                         defaultChecked
-                        className="data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700"
+                        className="border-blue-500 data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700"
                     />
                     <div className="grid gap-1.5 font-normal">
                         <p className="text-sm leading-none font-medium">
@@ -157,7 +175,15 @@ export default function AddProfile() {
 
                 }
 
-                <InputField label="🏛️ ইনস্টিটিউটের নাম" name="instituteName" value={formData.instituteName} required onChange={handleChange} />
+
+                <SelectField
+                    label="🏛️ শিক্ষা প্রতিষ্ঠান"
+                    name="institute"
+                    value={formData.institute}
+                    onChange={handleChange}
+                    required
+                    options={institutes}
+                />
 
 
                 <SelectField

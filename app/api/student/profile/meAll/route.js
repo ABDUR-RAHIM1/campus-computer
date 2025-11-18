@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import { studentAuthGuard } from "@/middlewere/studentAuthGuard";
 import StudentProfileModel from "@/database/models/Profile";
 import { connectDb } from "@/database/connectDb";
+import SubAdminModel from "@/database/models/SubAdmin";
+
 
 
 //  /api/student/profile/meAll
@@ -16,8 +18,9 @@ export async function GET(req) {
         const { id: studentId, phone } = auth.student;
 
         const student = await StudentProfileModel.find({ studentId })
+            .sort({ createdAt: -1 })
             .populate("studentId", "-password")
-
+            .populate("institute", "username")
 
         return NextResponse.json(student || [], { status: 200 });
 

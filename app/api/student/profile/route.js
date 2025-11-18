@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { studentAuthGuard } from "@/middlewere/studentAuthGuard";
 import StudentProfileModel from "@/database/models/Profile";
 import { connectDb } from "@/database/connectDb";
+import SubAdminModel from "@/database/models/SubAdmin";
 
 
 //  /api/student/profile
@@ -18,7 +19,7 @@ export async function POST(req) {
 
         const {
             studentName,
-            instituteName,
+            institute,
             program,
             department,
             classYear,
@@ -37,7 +38,7 @@ export async function POST(req) {
         await StudentProfileModel.create({
             studentId: studentId,
             studentName,
-            instituteName,
+            institute,
             program,
             department,
             classYear,

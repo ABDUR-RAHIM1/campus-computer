@@ -126,5 +126,11 @@ html {
   body {
     @apply bg-background text-foreground;
   }
-   
+   #services-list{
+     background-image: url("https://img.freepik.com/premium-photo/dark-room-with-computer-blue-light_331530-2432.jpg"); 
+     background-size: cover;
+     background-repeat: no-repeat;
+     background-attachment: fixed;
+    
+   }
 }

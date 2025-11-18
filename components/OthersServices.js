@@ -4,20 +4,24 @@ import React from 'react'
 
 export default function OthersServices() {
     return (
-        <section id="services-list" className='py-16 bg-gradient-to-br from-blue-100 to-blue-200'>
+        // bg-gradient-to-br from-blue-100 to-blue-200
+        <section id="services-list" className='py-16 '>
             <div className="container mx-auto px-4">
-                <h2 className="text-2xl md:text-4xl font-extrabold text-center text-blue-900 mb-6 leading-tight">
-                    আমাদের অন্যান্য সেবাসমূহ
-                </h2>
-                <p className=" text-center text-blue-700 mb-12 max-w-4xl mx-auto">
-                    ক্যাম্পাস কম্পিউটার থেকে আপনি পাবেন বহুমুখী ডিজিটাল সেবা। প্রতিটি সেবাই নির্ভুলতা ও দ্রুততার সাথে প্রদান করা হয়।
-                </p>
+                <div className=' w-full md:w-[75%] m-auto rounded-md p-5 bg-blue-500 text-white text-center mb-3'>
+                    <h2 className="text-2xl md:text-4xl font-extrabold text-center mb-6 leading-tight">
+                        আমাদের অন্যান্য সেবাসমূহ
+                    </h2>
+                    <p className=" text-center max-w-4xl mx-auto">
+                        ক্যাম্পাস কম্পিউটার থেকে আপনি পাবেন বহুমুখী ডিজিটাল সেবা। প্রতিটি সেবাই নির্ভুলতা ও দ্রুততার সাথে প্রদান করা হয়।
+                    </p>
+
+                </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
                     {campusServices.map((service) => (
                         <div
                             key={service.id}
-                            className={`relative ${service.bgColor} rounded-lg shadow-xl overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl w-full max-w-sm`}
+                            className={`relative ${service.bgColor}  rounded-lg shadow-xl overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl w-full max-w-sm`}
                         >
                             <div className="p-5 flex flex-col items-center text-center">
                                 {service.icon && (

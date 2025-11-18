@@ -10,8 +10,9 @@ const studentProfileSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    instituteName: {
-        type: String,
+    institute: {
+        type: mongoose.Schema.ObjectId,
+        ref: "SubAdmin",
         required: true,
     },
     program: {

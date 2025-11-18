@@ -11,13 +11,9 @@ import { servicesPostGetAll } from "@/constans";
 import { globalContext } from "@/contextApi/ContextApi";
 import Spinner from "@/utilities/Spinner";
 import { PostActionAdmin } from "@/actions/admins/PostAction";
-import { instituteList } from "@/LocalDatabase/Institute";
 import { getAllSubAdmins } from "@/handlers/subAdmins";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import TextareaField from "@/utilities/TextareaField";
-
 
 
 export default function AddServicePage() {
