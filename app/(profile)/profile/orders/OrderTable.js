@@ -102,16 +102,10 @@ export default function OrderTable({ orders }) {
         }
 
         return (
-          <select
-            value={row.status}
-            onChange={(e) => handleStatusChange(row._id, e.target.value)}
-            className={`text-xs px-2 py-1 rounded border font-medium ${bgClass} ${textClass}`}
-          >
-            <option value="cancel">বাতিল</option>
-            <option value="active">চলমান</option>
-            <option value="success">সম্পন্ন</option>
-            <option value="pending">পেন্ডিং</option>
-          </select>
+          <div className={`text-xs px-2 py-1 rounded border font-medium ${bgClass} ${textClass}`}>
+            {statusText}
+          </div>
+  
         );
       },
     },

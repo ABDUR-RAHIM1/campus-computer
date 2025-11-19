@@ -4,7 +4,6 @@ import Image from "next/image";
 import DataNotFound from "@/components/DataNotFound";
 import Services from "./components/Services";
 import { demoProfilePicture } from "@/constans";
-import Link from "next/link";
 import { getMyProfile } from "@/handlers/profile";
 import { getMyProfileInfo } from "@/handlers/studentAuth";
 import ServicesInfo from "@/components/ServicesInfo";
@@ -21,6 +20,7 @@ export default async function StudentProfile() {
     const { status: profileStatus, data: profileData } = profileAccount;
 
 
+
     if (profileStatus !== 200) {
         return <DataNotFound text={"ডাটা পাওয়া যায়নি"} />;
     }
@@ -33,7 +33,6 @@ export default async function StudentProfile() {
         "classYear",
         "department",
         "session",
-        "email",
     ];
 
     const isProfileComplete = requiredFields.every(
@@ -42,6 +41,7 @@ export default async function StudentProfile() {
             return value !== undefined && value !== null && value.toString().trim() !== "";
         }
     );
+    
     const getClassYearInBangla = (year) => {
         const yearMap = {
             1: "প্রথম বর্ষ",
@@ -88,21 +88,15 @@ export default async function StudentProfile() {
 
                         <ul className="space-y-1 list-disc list-inside text-gray-700 text-sm">
 
-                            <li>রেজিস্ট্রেশন নম্বর: {profileData.registrationNumber || "__"}</li>
+                            <li>শিক্ষা প্রতিষ্ঠান: {profileData?.institute?.username || "__"}</li>
+                            <li>স্টুডেন্ট আইডি: {profileData.registrationNumber || "__"}</li>
                             <li>বিভাগ: {profileData.department || "__"}</li>
                             <li> প্রোগ্রাম : {profileData.program || "__"}</li>
                             <li>ক্লাস: {getClassYearInBangla(profileData.classYear)}</li>
                             <li>সেশন: {profileData.session || "__"}</li>
                             <li>ক্লাস রোল: {profileData.classRoll || "__"}</li>
-                            <li>বোর্ড রোল: {profileData.boardRoll || "__"}</li>
-                            <li>পিন: {profileData.pin || "__"}</li>
-                            <li>ইমেইল: {profileData.email || "__"}</li>
-                            <li>অভিভাবকের ফোন: {profileData.guardianPhone || "__"}</li>
-                            <li>ঠিকানা: {profileData.address || "__"}</li>
-                            <li>জন্ম তারিখ: {profileData.birthDate || "__"}</li>
-                            <li>লিঙ্গ: {profileData.gender || "__"}</li>
-                            <li>রক্ত গ্রুপ: {profileData.bloodGroup || "__"}</li>
-                            <li>ইনস্টিটিউটের নাম: {profileData.instituteName || "__"}</li>
+                            <li>ঐচ্ছিক বিষয়: {profileData.electiveSubject || "__"}</li>
+                            <li>যোগাযোগ: {"0"+profileData.contactNumber || profileData?.studentId?.phone}</li>
 
                             {/* ✅ মানোন্নয়ন তথ্য */}
                             {profileData.hasImprovement && Array.isArray(profileData.improvementSubjects) && profileData.improvementSubjects.length > 0 && (

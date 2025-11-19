@@ -25,12 +25,16 @@ export default async function Details({ params }) {
         classYear,
         session,
         classRoll,
-        pin,
         contactNumber,
-        instituteName,
+        institute,
+        electiveSubject,
         profilePicture,
+        hasImprovement,
+        improvementSubjects,
         documents = [],
     } = data;
+
+     
 
     return (
         <div className="max-w-4xl mx-auto p-6 bg-white my-10 rounded shadow-md border">
@@ -56,8 +60,23 @@ export default async function Details({ params }) {
                 <p><strong>প্রোগ্রাম:</strong> {program}</p>
                 <p><strong>ক্লাস বর্ষ:</strong> {classYear}</p>
                 <p><strong>সেশন:</strong> {session}</p>
-                <p><strong>পিন:</strong> {pin || "N/A" }</p>
-                <p><strong>ইনস্টিটিউট:</strong> {instituteName}</p>
+                <p><strong>ইনস্টিটিউট:</strong> {institute?.username || "_"}</p>
+                <p><strong> ঐচ্ছিক বিষয়:</strong> {electiveSubject || "_"}</p>
+                {
+                    hasImprovement &&
+                    <div>
+                        <strong> ইম্প্রুভমেন্ট</strong>
+                        <ul className=' ml-3 list-disc'>
+                            {
+                                improvementSubjects && improvementSubjects.map((item, index) => (
+                                    <li key={index}>
+                                        {item}
+                                    </li>
+                                ))
+                            }
+                        </ul>
+                    </div>
+                }
             </div>
 
             <hr className=' mt-5' />

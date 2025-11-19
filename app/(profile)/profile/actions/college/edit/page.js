@@ -16,6 +16,9 @@ import { sessionList } from "@/LocalDatabase/seasion";
 
 import { formatDateToInput } from "@/utilities/formatDateToInput";
 import Spinner from "@/utilities/Spinner";
+import { getAllSubAdmins } from "@/handlers/subAdmins";
+import { getDepartmentsByProgram } from "@/LocalDatabase/departments";
+import SelectField from "@/utilities/SelectField";
 
 export default function EditProfile() {
     const {
@@ -26,34 +29,52 @@ export default function EditProfile() {
         editData,
         studentInfo,
     } = useContext(globalContext);
-
+    const [institutes, setInstitutes] = useState([]);
     const [submitting, setSubmitting] = useState(false);
     const { status, message } = uploadResponse;
     const isEditable = editData && Object.keys(editData)?.length > 0;
+    const [departments, setDepartments] = useState([]);
 
     const [formData, setFormData] = useState({
-        ...studentProfileFormState,
         studentName: "",
+        registrationNumber: "",
+        classYear: "",
+        department: "",
+        session: "",
+        contactNumber: "",
+        classRoll: "",
+        institute: "",
+        program: "",
+        electiveSubject: "",
+        hasImprovement: false,
+        improvementSubjects: [],
+        profilePicture: "",
+        isOtherStudent: false
+
     });
 
+
+
     useEffect(() => {
-        if (!studentProfileFormState.isOtherStudent && studentInfo?.username) {
+        if (!formData.isOtherStudent && studentInfo?.username) {
             setFormData((prev) => ({
                 ...prev,
                 studentName: studentInfo.username,
             }));
         }
-    }, [studentInfo, studentProfileFormState.isOtherStudent]);
+    }, [studentInfo, formData.isOtherStudent]);
 
+
+    
     useEffect(() => {
         if (isEditable && editData) {
-            setFormData((prev) => ({
-                ...prev,
+            setFormData({
                 ...editData,
-                birthDate: formatDateToInput(editData.birthDate), // এখানে ফরম্যাট করে বসাও
-            }));
+                institute: editData.institute?._id || "",
+            });
         }
-    }, [editData]);
+    }, [editData, isEditable]);
+
 
     const handleChange = (e) => {
         const { type, name, value, files } = e.target;
@@ -76,13 +97,43 @@ export default function EditProfile() {
 
 
     useEffect(() => {
-        setFormData((prev) => ({
-            ...prev,
-            profilePicture: imgUrl[0],
-        }));
+        if (imgUrl && imgUrl.length > 0) {
+            setFormData(prev => ({
+                ...prev,
+                profilePicture: imgUrl[0],
+            }));
+        }
     }, [imgUrl]);
 
+    // deparment filter using Program
+    // ekhane formData.program er name ar departments.json er program nam same thakte hobe , tobei ata kaj korbe.
+    useEffect(() => {
+        if (formData.program) {
+            const filterdDeparment = getDepartmentsByProgram(formData.program);
+            setDepartments(filterdDeparment);
+        }
+    }, [formData.program])
 
+
+    // getAll Institue/ subAdmins
+    useEffect(() => {
+        const getData = async () => {
+            const { status, data } = await getAllSubAdmins();
+            if (status === 200) {
+
+                const formatedData = data.map((ins, i) => {
+                    return {
+                        label: ins.username,
+                        value: ins._id
+                    }
+                })
+
+                setInstitutes(formatedData)
+            }
+        };
+
+        getData()
+    }, [])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -109,27 +160,28 @@ export default function EditProfile() {
                 📝 প্রোফাইল আপডেট করুন
             </h2>
 
-            <div className="my-8">
-                <Label className="hover:bg-accent/50 flex items-start gap-3 rounded-lg border p-3 has-[[aria-checked=true]]:border-blue-600 has-[[aria-checked=true]]:bg-blue-50">
+            <div className=" my-8">
+                <Label className="hover:bg-accent/50 flex items-start gap-3 border-blue-300 rounded-lg border p-3 has-[[aria-checked=true]]:border-blue-600 has-[[aria-checked=true]]:bg-blue-50 dark:has-[[aria-checked=true]]:border-blue-900 dark:has-[[aria-checked=true]]:bg-blue-950">
                     <Checkbox
-                        onCheckedChange={(checked) =>
-                            setFormData((prev) => ({
-                                ...prev,
-                                isOtherStudent: !!checked,
-                            }))
-                        }
+                        onCheckedChange={(checked) => setFormData((prev) => ({
+                            ...prev,
+                            isOtherStudent: !!checked
+                        }))}
                         checked={formData.isOtherStudent}
                         id="toggle-2"
+                        defaultChecked
+                        className="border-blue-500 data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700"
                     />
                     <div className="grid gap-1.5 font-normal">
                         <p className="text-sm leading-none font-medium">
-                            অন্য শিক্ষার্থীর জন্য প্রোফাইল বানাবেন ?
+                            অন্য শিক্ষার্থীর জন্য প্রোফাইল তৈরি করবেন ?
                         </p>
                         <p className="text-muted-foreground text-sm">
                             যদি আপনার নিজের জন্য হয় তাহলে টিক দেওয়ার দরকার নেই।
                         </p>
                     </div>
                 </Label>
+
             </div>
 
             <form
@@ -150,17 +202,18 @@ export default function EditProfile() {
 
 
 
-                <InputField
-                    label="🏛️ ইনস্টিটিউটের নাম"
-                    name="instituteName"
-                    value={formData.instituteName}
-                    required
+                <SelectField
+                    label="🏛️ শিক্ষা প্রতিষ্ঠান"
+                    name="institute"
+                    value={formData.institute}
                     onChange={handleChange}
+                    required
+                    options={institutes}
                 />
 
                 {/* Program */}
                 <div className="space-y-1">
-                    <Label>🏛️ প্রোগ্রাম</Label>
+                    <Label>🏛️ প্রোগ্রাম (অনার্স/ডিগ্রি/ইন্টারমেডিয়েট)</Label>
 
                     <select
                         value={formData.program}
@@ -174,22 +227,15 @@ export default function EditProfile() {
                         <option value="intermediate">ইন্টারমেডিয়েট</option>
                     </select>
                 </div>
-                {/* Class Year */}
-                <div className="space-y-1">
-                    <Label>🏛️ বর্ষ</Label>
-                    <select
-                        value={formData.classYear}
-                        onChange={handleChange}
-                        name="gender"
-                        id="gender"
-                        className=" w-full py-[5px] px-3 rounded-sm border outline-0 focus:shadow-md"
-                    >
-                        <option value="প্রথম বর্ষ">প্রথম বর্ষ</option>
-                        <option value="দ্বিতীয় বর্ষ">দ্বিতীয় বর্ষ</option>
-                        <option value="তৃতীয় বর্ষ">তৃতীয় বর্ষ</option>
-                        <option value="চতুর্থ বর্ষ">চতুর্থ বর্ষ</option>
-                    </select>
-                </div>
+                <SelectField
+                    label="📚 বিভাগ"
+                    name="department"
+                    value={formData.department}
+                    onChange={handleChange}
+                    required
+                    options={departments}
+                />
+
                 {/* Class Year */}
                 <div className="space-y-1">
                     <Label>🏛️ বর্ষ</Label>
@@ -233,20 +279,28 @@ export default function EditProfile() {
                     onChange={handleChange}
                 />
                 <InputField
-                    label="🎓 রেজিস্ট্রেশন নম্বর"
+                    label="🎓স্টুডেন্ট আইডি (Registration/Applicant Id)"
                     name="registrationNumber"
                     value={formData.registrationNumber}
                     onChange={handleChange}
+                    placeholder={"Applicant হলে Roll-pin:-5018098-245642"}
                     required
                 />
-
                 <InputField
-                    label="🔐 পিন"
-                    name="pin"
-                    value={formData.pin}
+                    label={"ঐচ্ছিক বিষয়"}
+                    name={"electiveSubject"}
+                    value={formData.electiveSubject}
+                    placeholder={"ঐচ্ছিক/Elective বিষয় কোড লিখুন"}
                     onChange={handleChange}
                 />
-
+                <InputField
+                    type="number"
+                    label={"নাম্বার"}
+                    name={"contactNumber"}
+                    value={formData.contactNumber}
+                    placeholder={"যোগাযোগ নাম্বার"}
+                    onChange={handleChange}
+                />
 
                 {/* মানোন্নয়ন */}
                 <div className="sm:col-span-2">

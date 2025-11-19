@@ -11,7 +11,8 @@ export const GET = async (req, { params }) => {
         const auth = await studentAuthGuard(req);
         if (auth.error) return auth.response;
         const student = await StudentProfileModel.findById(profileId)
-            .populate("studentId", "-password");
+            .populate("studentId", "-password")
+            .populate("institute", "username");
 
         return NextResponse.json(student, {
             status: 200

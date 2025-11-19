@@ -16,7 +16,7 @@ export default function SelectField({ name, label, placeholder = "বাছা�
                 <option value="">{placeholder}</option>
                 {
                     options.map((opt, index) => (
-                        <option key={index} value={opt.value}>{opt.name}</option>
+                        <option key={index} value={opt.value}>{opt.label}</option>
                     ))
                 }
             </select>

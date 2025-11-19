@@ -6,7 +6,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Button } from '@/components/ui/button' 
+import { Button } from '@/components/ui/button'
 import { CancelOrderDialog } from '../components/CancelOrderDailog';
 
 
@@ -15,7 +15,6 @@ export default function OrderAction({ orderId }) {
     const [isOpen, setIsOpen] = useState(false);
 
     const handleOpenCancelFormWithId = () => {
-        console.log("cancel id", orderId)
         setIsOpen(!isOpen)
     }
 
@@ -35,11 +34,11 @@ export default function OrderAction({ orderId }) {
                     <DropdownMenuSeparator />
                     <Button
                         onClick={handleOpenCancelFormWithId}
-                        variant={"outline"}
-                        className={"bg-red-100 border border-red-500 m-2"}
+                        className={"bg-red-500 border hover:bg-red-600 transition-all m-2"}
                     >Cancel Order
                     </Button>
-                    <Button variant={"outline"} className={"bg-blue-100 border border-blue-500 m-2"}>Update Order</Button>
+                    <Button
+                        className={"bg-blue-500 border hover:bg-blue-600 transition-all m-2"}>Update Order</Button>
                 </DropdownMenuContent>
             </DropdownMenu>
         </>

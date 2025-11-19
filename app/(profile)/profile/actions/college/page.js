@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PostAction } from "@/actions/students/PostAction";
 import { globalContext } from "@/contextApi/ContextApi";
-import SelectField from "@/utilities/SelectFiled";
 import { getDepartmentsByProgram } from "@/LocalDatabase/departments";
 import { getStatusColor } from "@/utilities/getStatusColor";
 import { studentProfileCreate } from "@/constans";
@@ -15,6 +14,7 @@ import { studentProfileFormState } from "@/formStats/StudentProfileState";
 import { Checkbox } from "@/components/ui/checkbox";
 import { sessionList } from "@/LocalDatabase/seasion";
 import { getAllSubAdmins } from "@/handlers/subAdmins";
+import SelectField from "@/utilities/SelectField";
 
 
 export default function AddProfile() {
@@ -43,7 +43,7 @@ export default function AddProfile() {
 
     const handleChange = (e) => {
         const { type, name, value, files } = e.target;
-        console.log(name, value)
+        
         if (type === "file") {
             const file = files
             uploader(file)
@@ -79,7 +79,7 @@ export default function AddProfile() {
 
                 const formatedData = data.map((ins, i) => {
                     return {
-                        label: ins.username,
+                        name: ins.username,
                         value: ins._id
                     }
                 })
@@ -154,7 +154,7 @@ export default function AddProfile() {
                     />
                     <div className="grid gap-1.5 font-normal">
                         <p className="text-sm leading-none font-medium">
-                            অন্য শিক্ষার্থীর জন্য প্রোফাইল বানাবেন ?
+                            অন্য শিক্ষার্থীর জন্য প্রোফাইল তৈরি করবেন ?
                         </p>
                         <p className="text-muted-foreground text-sm">
                             যদি আপনার নিজের জন্য হয় তাহলে টিক দেওয়ার দরকার নেই।
