@@ -1,8 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import InputField from "@/utilities/InputField";
-import SelectField from "@/utilities/SelectFiled";
+import InputField from "@/utilities/InputField"; 
 import React, { useContext, useEffect, useState } from "react";
 import { getDepartmentsByProgram } from "@/LocalDatabase/departments";
 import { sessionList } from "@/LocalDatabase/seasion";
@@ -14,6 +13,7 @@ import { PostActionAdmin } from "@/actions/admins/PostAction";
 import { getAllSubAdmins } from "@/handlers/subAdmins";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import TextareaField from "@/utilities/TextareaField";
+import SelectField from "@/utilities/SelectField";
 
 
 export default function AddServicePage() {

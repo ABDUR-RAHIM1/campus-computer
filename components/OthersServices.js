@@ -7,7 +7,7 @@ export default function OthersServices() {
         // bg-gradient-to-br from-blue-100 to-blue-200
         <section id="services-list" className='py-16 '>
             <div className="container mx-auto px-4">
-                <div className=' w-full md:w-[75%] m-auto rounded-md p-5 bg-blue-500 text-white text-center mb-3'>
+                <div className=' w-full md:w-[75%] m-auto rounded-md p-5 bg-blue-500 text-white text-center my-5'>
                     <h2 className="text-2xl md:text-4xl font-extrabold text-center mb-6 leading-tight">
                         আমাদের অন্যান্য সেবাসমূহ
                     </h2>

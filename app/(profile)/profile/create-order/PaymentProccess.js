@@ -5,6 +5,8 @@ import { orderPostGetall } from '@/constans';
 import { globalContext } from '@/contextApi/ContextApi';
 import Spinner from '@/utilities/Spinner';
 import React, { useContext, useEffect, useState } from 'react';
+import { CashoutChargeCalculator } from './CashoutChargeCalculator';
+import { Button } from '@/components/ui/button';
 
 // Receiving Number (Defined once)
 const RECEIVING_NUMBER = "01321040273";
@@ -69,6 +71,20 @@ export default function PaymentProccess() {
     } = useContext(globalContext);
 
     const amountToPay = orderDataForPayment?.totalFee || 0;
+    const chasOutCharge = CashoutChargeCalculator(amountToPay);
+
+    const handlePaymentDetails = () => {
+        alert(`
+            কলেজ ফী: ${orderDataForPayment.collegeFee}
+            প্রতি সাবজেক্ট: ${orderDataForPayment.subjectFee}
+            সার্ভিস চার্জ: ${orderDataForPayment.chargeFee} 
+            মোট ফী: ${amountToPay}
+            ----------------------
+             ক্যাশ আউট চার্জ: ${chasOutCharge}
+              --------------------------
+             সর্বমোট: ${amountToPay + chasOutCharge} টাকা 
+            `)
+    }
 
     const [formData, setFormData] = useState({
         method: '',
@@ -76,6 +92,8 @@ export default function PaymentProccess() {
         senderNumber: '',
         txnId: '',
     });
+
+
 
     const [waiting, setWaiting] = useState(false);
     const [localMessage, setLocalMessage] = useState({ text: '', type: '' });
@@ -174,8 +192,10 @@ export default function PaymentProccess() {
                     আপনাকে মোট পরিশোধ করতে হবে:
                 </p>
                 <p className="text-3xl font-extrabold text-blue-600 mt-1">
-                    ৳ {amountToPay.toLocaleString('bn-BD')}
+                    ৳ {(amountToPay + chasOutCharge).toLocaleString('bn-BD')}
                 </p>
+
+                <Button onClick={handlePaymentDetails} className=' my-3 bg-blue-600 text-white rounded-md text-sm cursor-pointer '> পেমেন্ট বিবরণ </Button>
             </div>
 
             {/* Receiving Number Section */}

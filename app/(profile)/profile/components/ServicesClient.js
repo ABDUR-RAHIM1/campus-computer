@@ -43,22 +43,41 @@ export default function ServicesClient({ data, colsStyle }) {
     return (
         <div className="space-y-6 w-full ">
             {/* Institute Filter Select */}
-            <div className=" py-4 border rounded-md my-4 p-3">
-                <p className=" mb-2 text-sm">আপনার কলেজ নির্বাচন করে কার্যক্রম গুলো দেখুন</p>
-                <Select onValueChange={(value) => setSelectedInstitute(value)} className={"w-full md:w-full"}>
-                    <SelectTrigger>
-                        <SelectValue placeholder="Institute নির্বাচন করুন" />
+            <div className="w-full bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-xl p-5 shadow-sm">
+                <div className="flex items-center gap-3 mb-3">
+                    <div className="h-9 w-9 flex items-center justify-center rounded-full bg-blue-600 text-white text-lg">
+                        🎓
+                    </div>
+                    <h3 className="text-lg font-semibold text-blue-700">
+                        আপনার কলেজ নির্বাচন করুন
+                    </h3>
+                </div>
+
+                <p className="text-sm text-blue-600 mb-3">
+                    কলেজ বাছাই করলে শুধুমাত্র সেই প্রতিষ্ঠানের কার্যক্রমগুলো দেখাবে।
+                </p>
+
+                <Select
+                    onValueChange={(value) => setSelectedInstitute(value)}
+                >
+                    <SelectTrigger className="w-full h-11 border-blue-300 focus:ring-2 focus:ring-blue-500 text-base">
+                        <SelectValue placeholder="🎓 আপনার কলেজ নির্বাচন করুন" />
                     </SelectTrigger>
 
-                    <SelectContent>
+                    <SelectContent className="max-h-64">
                         {institutes.map((inst, idx) => (
-                            <SelectItem key={idx} value={inst.value}>
+                            <SelectItem
+                                key={idx}
+                                value={inst.value}
+                                className="cursor-pointer text-[15px]"
+                            >
                                 {inst.label}
                             </SelectItem>
                         ))}
                     </SelectContent>
                 </Select>
             </div>
+
 
             {/* Services Cards */}
             <div className={`grid ${cols} gap-4`}>
