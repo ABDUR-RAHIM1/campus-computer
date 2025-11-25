@@ -13,6 +13,7 @@ export const adminRegister = "/auth/admin/register"
 export const adminLogin = "/auth/admin/login"
 
 
+
 //  qucikLink Start
 export const quickLinkCreateGet = "/quickLink"
 //  qucikLink End

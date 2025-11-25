@@ -1,6 +1,5 @@
 import ServicesClient from '@/app/(profile)/profile/components/ServicesClient';
-import DataNotFound from '@/components/DataNotFound';
-import ServicesCard from '@/components/services/ServicesCard';
+import DataNotFound from '@/components/DataNotFound'; 
 import ServicesInfo from '@/components/ServicesInfo';
 import { getAllServices } from '@/handlers/services'
 import React from 'react'
