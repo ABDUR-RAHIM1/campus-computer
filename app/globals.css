@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "tw-animate-css";  
+@import "tw-animate-css";
 
 
 
@@ -126,11 +126,119 @@ html {
   body {
     @apply bg-background text-foreground;
   }
-   /* #services-list{
+
+  /* #services-list{
      background-image: url("https://img.freepik.com/premium-photo/dark-room-with-computer-blue-light_331530-2432.jpg"); 
      background-size: cover;
      background-repeat: no-repeat;
      background-attachment: fixed;
     
    } */
+}
+
+/*  markdown editor styles Start */
+
+.markdown h1 {
+  margin-top: 0.67em;
+  /* প্রায় 10px এর কাছাকাছি */
+  margin-bottom: 0.67em;
+  padding: 0;
+  font-size: 2em;
+  /* বড়ো হেডিং */
+  font-weight: bold;
+}
+
+.markdown h2 {
+  margin-top: 0.83em;
+  margin-bottom: 0.83em;
+  padding: 0;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.markdown h3 {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  padding: 0;
+  font-size: 1.17em;
+  font-weight: bold;
+}
+
+.markdown h4 {
+  margin-top: 1.33em;
+  margin-bottom: 1.33em;
+  padding: 0;
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.markdown h5 {
+  margin-top: 1.67em;
+  margin-bottom: 1.67em;
+  padding: 0;
+  font-size: 0.83em;
+  font-weight: bold;
+}
+
+.markdown h6 {
+  margin-top: 2.33em;
+  margin-bottom: 2.33em;
+  padding: 0;
+  font-size: 0.67em;
+  font-weight: bold;
+}
+
+.markdown hr {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 15px 0;
+}
+
+.markdown blockquote {
+  border-left: 4px solid #ccc;
+  padding-left: 1rem;
+  margin: 1rem 0;
+  color: #555;
+  background: #f9f9f9;
+  font-style: italic;
+}
+
+
+.markdown table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.markdown th {
+  border: 1px solid #ddd;
+  padding: 8px;
+  background-color: #f3f4f6;
+  text-align: left;
+}
+
+.markdown td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.markdown table tr:hover {
+  background-color: #f4f6fb;
+  cursor: pointer;
+}
+
+.markdown img {
+  width: auto;
+  height: auto;
+  object-fit: cover;
+  border-radius: 10px;
+  margin: 20px auto;
+  display: block;
+}
+
+/* markdown style end here */
+
+
+.gradientBg {
+  background: linear-gradient(135deg, #ececf2, #a8dfe8);
 }

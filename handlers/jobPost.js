@@ -1,5 +1,5 @@
 import { GetAction } from "@/actions/students/GetAction";
-import { jobPostCreateGetAll } from "@/constans";
+import { jobPostCreateGetAll, jobPostGetOne } from "@/constans";
 
 
 export const GetAllJobPost = async () => {
@@ -7,3 +7,10 @@ export const GetAllJobPost = async () => {
 
     return jobPost;
 }
+
+export const GetSingleJobPostById = async (jobId) => {
+    const jobPost = await GetAction(jobPostGetOne + jobId);
+
+    return jobPost;
+}
+

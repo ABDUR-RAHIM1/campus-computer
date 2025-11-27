@@ -4,25 +4,6 @@ import { NextResponse } from "next/server";
 
 
 
-// ✅ GET single job post
-export async function GET(req, { params }) {
-    try {
-
-        const { jobPostId } = await params;
-
-        await connectDb();
-        const job = await JobPost.findById(jobPostId)
-        if (!job) return NextResponse.json({ error: "Job not found" }, { status: 404 });
-        return NextResponse.json(job, { status: 200 });
-    } catch (error) {
-        return NextResponse.json({
-            message: "Internal Server Error"
-        }, {
-            status: 500
-        })
-    }
-}
-
 // ✅ PUT update job post
 export async function PUT(req, { params }) {
 

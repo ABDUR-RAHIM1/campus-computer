@@ -86,8 +86,8 @@ export const paymentInfoStatusUpdate = "/paymentInfo/actions/"
 //  job Post Start Here
 
 export const jobPostCreateGetAll = "/job-post/"
+export const jobPostGetOne = "/job-post/getOne/"
 export const jobPostPutDelete = "/job-post/actions/"
-export const jobPostGetOne = "/job-post/actions/"
 
 //  job Post End Here
 

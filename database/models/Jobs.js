@@ -1,27 +1,33 @@
 import mongoose from "mongoose";
 
-const categoryFeeSchema = new mongoose.Schema({
-    category: {
-        type: String,
-        required: true,
-    },
-    payPaymentFee: {
-        type: Number,
-        required: true,
-        default: 0,
-    },
-});
-
 const jobPostSchema = new mongoose.Schema(
     {
+        category: {
+            type: String,
+            required: true,
+            trim: true,
+        },
         title: {
             type: String,
             required: true,
             trim: true,
         },
+        startDate: {
+            type: String,
+            required: true,
+        },
+        endDate: {
+            type: String,
+            required: true,
+        },
         description: {
             type: String,
             required: true,
+        },
+        payPaymentFee: {
+            type: Number,
+            required: true,
+            default: 0,
         },
         charge: {
             type: Number,
@@ -36,10 +42,6 @@ const jobPostSchema = new mongoose.Schema(
         noticeLink: {
             type: String,
             required: true,
-        },
-        categories: {
-            type: [categoryFeeSchema], // array of category+fee
-            default: [],
         },
     },
     { timestamps: true }
