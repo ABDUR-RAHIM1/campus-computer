@@ -16,84 +16,25 @@ import { EyeClosed, EyeIcon } from "lucide-react";
 import InputField from "@/utilities/InputField";
 import SelectField from "@/utilities/SelectField";
 import { jobCetegories } from "@/LocalDatabase/jobCategories";
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
 
 export default function JobPostForm() {
     const { showToast } = useContext(globalContext);
     const [togglePreview, setTogglePreview] = useState(false)
-    const [feeFormData, setFeeFormData] = useState({
-        postName: "",
-        payPaymentFee: 0,
-        charge: 0,
-        totalFee: 0,
-    });
-
     const [formData, setFormData] = useState({
         category: "",
         title: "",
-        totalVacancy: "",
         startDate: "",
         endDate: "",
-        postWithFee: [],
+        description: "",
+        payPaymentFee: 0,
+        charge: 0,
+        totalPrice: 0,
         noticeLink: "",
-        totalVacancy: "",
-        description: ""
     });
 
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
 
-    // onChange handler for feeFormData
-    const handleFeeChange = (e) => {
-        const { name, value } = e.target;
-
-        setFeeFormData((prev) => {
-            const updated = {
-                ...prev,
-                [name]: value
-            };
-
-            // Auto calculate total price
-            const pay = Number(updated.payPaymentFee) || 0;
-            const ch = Number(updated.charge) || 0;
-
-            updated.totalFee = pay + ch;
-
-            return updated;
-        });
-    };
-
-
-
-    //  add multiple fee in the main state
-    const handleAddMultipleFee = () => {
-        setFormData((prev) => ({
-            ...prev,
-            postWithFee: [...prev.postWithFee, feeFormData]
-        }))
-    }
-
-
-    //  remove post with fee 
-    const handleRemoveFeeItem = (feeIndex) => {
-
-        const removedPostWithFee = formData.postWithFee.filter((_, index) => index !== feeIndex)
-        setFormData((prev) => ({
-            ...prev,
-            postWithFee: removedPostWithFee
-        }))
-    }
-
-
-    //  onChange handler
     const handleChange = (e) => {
         const { name, value } = e.target;
 
@@ -101,6 +42,21 @@ export default function JobPostForm() {
             ...formData,
             [name]: value,
         };
+
+        // Auto price calculation
+        if (name === "payPaymentFee" || name === "charge") {
+            const pay =
+                name === "payPaymentFee"
+                    ? Number(value)
+                    : Number(formData.payPaymentFee);
+
+            const ch =
+                name === "charge"
+                    ? Number(value)
+                    : Number(formData.charge);
+
+            updatedData.totalPrice = pay + ch;
+        }
 
         setFormData(updatedData);
     };
@@ -177,106 +133,42 @@ export default function JobPostForm() {
                         onChange={handleChange}
                     />
                 </div>
-
                 <div className=" grid grid-cols-3 gap-2">
 
-                    <InputField
-                        type="text"
-                        label={"Post Name"}
-                        name="postName"
-                        value={feeFormData.postName}
-                        onChange={handleFeeChange}
-                    />
                     <InputField
                         type="number"
                         label={"Pay Payment Price"}
                         name="payPaymentFee"
-                        value={feeFormData.payPaymentFee}
-                        onChange={handleFeeChange}
+                        value={formData.payPaymentFee}
+                        onChange={handleChange}
                     />
                     <InputField
                         type="number"
                         label={"Charge"}
                         name="charge"
-                        value={feeFormData.charge}
-                        onChange={handleFeeChange}
+                        value={formData.charge}
+                        onChange={handleChange}
                     />
 
-                    <div className=" w-full p-3 flex items-center justify-between rounded-md bg-blue-100 col-span-3 font-medium">
-                        <p> Total Fee:  {feeFormData.totalPrice || 0} TK</p>
-                        <Button type={"button"}
-                            onClick={handleAddMultipleFee}
-                            className="w-[70%] h-full p-2 bg-blue-700 hover:bg-blue-600 text-white">
-                            Add
-                        </Button>
-                    </div>
-
-                    <div className=" col-span-3 my-3">
-                        <div className=" flex items-center justify-between">
-                            <h2 className=" font-medium capitalize">Fee Preview</h2>
-                            <Button className={" bg-blue-500"}>
-                                <EyeIcon />
-                            </Button>
-                        </div>
-
-                        <div className="my-5">
-                            {formData.postWithFee && formData.postWithFee.length > 0 ? (
-                                <div className="rounded-md border">
-                                    <Table>
-                                        <TableCaption>Post-wise fee details</TableCaption>
-
-                                        <TableHeader>
-                                            <TableRow>
-                                                <TableHead className="w-[200px]">পদের নাম</TableHead>
-                                                <TableHead>আবেদন ফি (BDT)</TableHead>
-                                                <TableHead>চার্জ (BDT)</TableHead>
-                                                <TableHead className="text-right">মোট (BDT)</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-
-                                        <TableBody>
-                                            {formData.postWithFee.map((feeItem, index) => (
-                                                <TableRow key={index}>
-                                                    <TableCell
-                                                        onClick={() => handleRemoveFeeItem(index)}
-                                                        className="font-medium text-red-500 underline transition-all cursor-pointer">{feeItem.postName}</TableCell>
-                                                    <TableCell>{feeItem.payPaymentFee}</TableCell>
-                                                    <TableCell>{feeItem.charge}</TableCell>
-                                                    <TableCell className="text-right font-semibold">
-                                                        {Number(feeItem.payPaymentFee) + Number(feeItem.charge)}
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </div>
-                            ) : (
-                                <p className="text-gray-500">Post With Fee Is Empty</p>
-                            )}
-                        </div>
-
-                    </div>
+                    <InputField
+                        type="number"
+                        label={"Total Price"}
+                        name="totalPrice"
+                        value={formData.totalPrice}
+                        onChange={handleChange}
+                    />
 
                 </div>
 
 
 
-                <div className="grid grid-cols-2 gap-3">
-                    <InputField
-                        type="text"
-                        label={"Total Vacancy"}
-                        name="totalVacancy"
-                        value={formData.totalVacancy}
-                        onChange={handleChange}
-                    />
-                    <InputField
-                        type="text"
-                        label={"Notice Link (Main Website Link)"}
-                        name="noticeLink"
-                        value={formData.noticeLink}
-                        onChange={handleChange}
-                    />
-                </div>
+                <InputField
+                    type="text"
+                    label={"Notice Link (Main Website Link)"}
+                    name="noticeLink"
+                    value={formData.noticeLink}
+                    onChange={handleChange}
+                />
 
                 {/* Description Editor */}
                 <div className=" my-3">

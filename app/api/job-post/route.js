@@ -36,10 +36,9 @@ export async function POST(req) {
             startDate: body.startDate,
             endDate: body.endDate,
             description: body.description,
-            payPaymentFee: body.payPaymentFee,
-            charge: body.charge,
-            totalPrice: body.totalPrice,
+            postWithFee: body.postWithFee, 
             noticeLink: body.noticeLink,
+            totalVacancy: body.totalVacancy,
         });
 
         await newJob.save();

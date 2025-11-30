@@ -8,6 +8,9 @@ import rehypeKatex from 'rehype-katex';
 import rehypeRaw from 'rehype-raw';
 import { formatDateToInput } from '@/utilities/formatDateToInput';
 
+import { BASE_URL } from '@/constans';
+import PostWithFeeTable from '../PostWithFeeTable';
+
 export async function generateMetadata({ params }) {
     const { jobId } = await params;
     const { status, data } = await GetSingleJobPostById(jobId);
@@ -29,7 +32,7 @@ export async function generateMetadata({ params }) {
             description: data.description
                 ? data.description.substring(0, 160).replace(/\n/g, " ")
                 : "Job details and description.",
-            url: `https://your-domain.com/job/${jobId}`,
+            url: `${BASE_URL}/job/${jobId}`,
             type: 'website',
         },
         twitter: {
@@ -52,7 +55,7 @@ export default async function JobDetails({ params }) {
     }
 
     return (
-        <div className='w-full min-h-screen bg-gray-50 p-6'>
+        <div className='w-full min-h-screen bg-gray-50 p-3 md:p-6'>
             <div className='max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6 space-y-6'>
 
                 {/* Title */}
@@ -61,11 +64,16 @@ export default async function JobDetails({ params }) {
                 </h1>
 
                 {/* Category + Dates */}
-                <div className='grid grid-cols-1 md:grid-cols-3 gap-4 text-gray-700'>
+                <div className='grid grid-cols-1 md:grid-cols-4 gap-4 text-gray-700'>
 
                     <div>
                         <span className='font-semibold'>চাকরির ধরন:</span>
                         <p>{data.category || "N/A"}</p>
+                    </div>
+
+                    <div>
+                        <span className='font-semibold'> মোট পদসংখ্যা:</span>
+                        <p>{data.totalVacancy || 0}</p>
                     </div>
 
                     <div>
@@ -80,21 +88,17 @@ export default async function JobDetails({ params }) {
 
                 </div>
 
-                {/* Payment Info */}
-                <div className='flex flex-wrap items-center gap-4 justify-start text-gray-700 border-t pt-4'>
-                    <div className='flex-1 min-w-[150px]'>
-                        <span className='font-semibold'>মুল ফী:</span> {data.payPaymentFee} BDT
-                    </div>
-                    <div className=' border p-3 min-w-[70%]'>
-                        <h2 className=' font-bold underline mb-3 text-red-500'>যদি আমাদের মাধ্যমে আবেদন করেন।</h2>
-                        <div className='flex-1 min-w-[150px]'>
-                            <span className='font-semibold'>চার্জ:</span> {data.charge} BDT
-                        </div>
-                        <div className='flex-1 min-w-[150px]'>
-                            <span className='font-semibold'>মোট:</span> {data.totalPrice} BDT
-                        </div>
-                    </div>
+            
+                <div className="my-5">
+                    {data.postWithFee && data.postWithFee.length > 0 ? (
+                        <PostWithFeeTable
+                            feeData={data.postWithFee}
+                        />
+                    ) : (
+                        <p className="text-gray-500">Post With Fee Is Empty</p>
+                    )}
                 </div>
+
 
                 {/* Notice Link */}
                 {data.noticeLink && (

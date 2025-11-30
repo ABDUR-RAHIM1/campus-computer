@@ -64,7 +64,7 @@ export default async function Jobs() {
 
                             {/* Payment Fee */}
                             <p className="text-sm font-medium text-gray-700 mb-3">
-                                💰 আবেদন ফি: {job.payPaymentFee || job.payPaymentPrice} BDT
+                                👮 মোট পদসংখা: {job.totalVacancy || 0} জন
                             </p>
 
                             {/* Button */}

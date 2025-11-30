@@ -13,7 +13,7 @@ export default function SelectField({ name, label, placeholder = "বাছা�
                 value={value}
                 className='w-full px-2 py-1.5 rounded-md border'
             >
-                <option value="">{placeholder}</option>
+                <option value="" className=' border-b underline'>{placeholder}</option>
                 {
                     options.map((opt, index) => (
                         <option key={index} value={opt.value}>{opt.label}</option>
