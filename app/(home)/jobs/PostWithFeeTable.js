@@ -55,7 +55,9 @@ export default function PostWithFeeTable({ feeData }) {
                         onChange={handleChange}
                         options={selectOptions}
                         value={applyWithUs}
+                
                     />
+                    
                 </div>
             </div>
             <Table>
