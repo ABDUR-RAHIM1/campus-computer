@@ -37,8 +37,8 @@ export default function PostWithFeeTable({ feeData }) {
 
 
     return (
-        <div className="rounded-md border overflow-x-auto">
-            <div className=' my-4 p-5 bg-blue-50 flex items-center justify-center md:justify-between flex-wrap gap-3 md:gap-0'>
+        <div className="rounded-md border">
+            <div className=' my-4 p-5  flex items-center justify-center md:justify-between flex-wrap gap-3 md:gap-0'>
                 <h2 className=' font-medium text-2xl md:text-lg'>ফী সমূহ</h2>
                 <div className=' flex flex-col gap-2 items-center justify-center  '>
                     <h2 className=' font-medium underline'>আমাদের মাধ্যমে আবেদন সম্পন্ন করতে যোগাযোগ করুন</h2>
@@ -61,14 +61,13 @@ export default function PostWithFeeTable({ feeData }) {
             <Table>
                 <TableCaption>পদ অনুযায়ী ফী</TableCaption>
 
-                <TableHeader>
+                <TableHeader className={" text-[12px] md:text-[15px] bg-blue-50"}>
                     <TableRow>
-                        <TableHead className="w-[200px]">পদের নাম</TableHead>
+                        {/* Fixed width + wrap for পদ */}
+                        <TableHead className="w-20  break-words">পদের নাম</TableHead>
                         <TableHead>আবেদন ফি (BDT)</TableHead>
                         <TableHead>
-                            {
-                                applyWithUs ? "চার্জ(BDT)" : "ডিফল্ট"
-                            }
+                            {applyWithUs ? "চার্জ(BDT)" : "ডিফল্ট"}
                         </TableHead>
                         <TableHead className="text-right">মোট (BDT)</TableHead>
                     </TableRow>
@@ -76,20 +75,19 @@ export default function PostWithFeeTable({ feeData }) {
 
                 <TableBody>
                     {feeData.map((feeItem, index) => (
-                        <TableRow key={index}>
-                            <TableCell
-                                className="font-medium">{feeItem.postName}</TableCell>
+                        <TableRow key={index} className={"text-[12px] md:text-[14px]"}>
+                            {/* wrap long text */}
+                            <TableCell className="font-medium w-[250px] md:w-[350px] break-words whitespace-pre-wrap">{feeItem.postName}</TableCell>
                             <TableCell>{feeItem.payPaymentFee}</TableCell>
                             <TableCell>{applyWithUs ? feeItem.charge : 0}</TableCell>
                             <TableCell className="text-right font-semibold">
-                                {
-                                    applyWithUs ? Number(feeItem.totalFee) : Number(feeItem.payPaymentFee)
-                                }
+                                {applyWithUs ? Number(feeItem.totalFee) : Number(feeItem.payPaymentFee)}
                             </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
             </Table>
+
         </div>
     )
 }

@@ -19,31 +19,56 @@ export async function generateMetadata({ params }) {
         return {
             title: "Job Post Not Found",
             description: "The requested job post could not be found.",
+            alternates: {
+                canonical: `${BASE_URL}/jobs/${jobId}`,
+            }
         };
     }
 
+    const title = `${data.title} | Job Details`;
+    const description = data.description
+        ? data.description.substring(0, 160).replace(/\n/g, " ")
+        : "Job details and description.";
+
     return {
-        title: `${data.title} | Job Details`,
-        description: data.description
-            ? data.description.substring(0, 160).replace(/\n/g, " ")
-            : "Job details and description.",
-        openGraph: {
-            title: `${data.title} | Job Details`,
-            description: data.description
-                ? data.description.substring(0, 160).replace(/\n/g, " ")
-                : "Job details and description.",
-            url: `${BASE_URL}/job/${jobId}`,
-            type: 'website',
+        title,
+        description,
+
+        alternates: {
+            canonical: `${BASE_URL}/jobs/${jobId}`,   // ✅ canonical tag added
         },
+
+        openGraph: {
+            title,
+            description,
+            url: `${BASE_URL}/jobs/${jobId}`,
+            type: "website",
+            images: [
+                {
+                    url: '/job-og.png',
+                    width: 1200,
+                    height: 630,
+                    alt: 'Campus Computer OG Image',
+                },
+            ],
+        },
+
         twitter: {
-            card: 'summary_large_image',
-            title: `${data.title} | Job Details`,
-            description: data.description
-                ? data.description.substring(0, 160).replace(/\n/g, " ")
-                : "Job details and description.",
+            card: "summary_large_image",
+            title,
+            description,
+            images: [
+                {
+                    url: '/job-og.png',
+                    width: 1200,
+                    height: 630,
+                    alt: 'Campus Computer OG Image',
+                },
+            ],
         },
     };
 }
+
 
 export default async function JobDetails({ params }) {
 
@@ -64,7 +89,7 @@ export default async function JobDetails({ params }) {
                 </h1>
 
                 {/* Category + Dates */}
-                <div className='grid grid-cols-1 md:grid-cols-4 gap-4 text-gray-700'>
+                <div className='grid grid-cols-2 md:grid-cols-4 gap-4 text-gray-700'>
 
                     <div>
                         <span className='font-semibold'>চাকরির ধরন:</span>
@@ -88,7 +113,7 @@ export default async function JobDetails({ params }) {
 
                 </div>
 
-            
+
                 <div className="my-5">
                     {data.postWithFee && data.postWithFee.length > 0 ? (
                         <PostWithFeeTable
@@ -116,10 +141,17 @@ export default async function JobDetails({ params }) {
                 )}
 
                 {/* Markdown Description */}
-                <div className='markdown prose max-w-full bg-gray-50 p-4 rounded-md border'>
+                <div className='markdown prose max-w-full bg-gray-50 p-4 rounded-md border table-wrapper'>
                     <ReactMarkdown
                         remarkPlugins={[remarkGfm, remarkMath]}
                         rehypePlugins={[rehypeKatex, rehypeRaw]}
+                        components={{
+                            table: ({ node, ...props }) => (
+                                <div className="table-wrapper">
+                                    <table {...props} />
+                                </div>
+                            ),
+                        }}
                     >
                         {data.description || "*No description available*"}
                     </ReactMarkdown>

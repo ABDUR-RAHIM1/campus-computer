@@ -10,11 +10,11 @@ import { usePathname } from "next/navigation";
 const items = [
     { item: "হোম", path: "/" },
     { item: "কলেজ সেবা", path: "/services" },
-    { item: "জবস", path: "/jobs" },
+    { item: "🔥 চাকরি বিজ্ঞপ্তি", path: "/jobs" },
     { item: "আমাদের সম্পর্কে", path: "/about-us" },
     { item: "ব্যবহার নির্দেশিকা", path: "/howToWork" },
     { item: "যোগাযোগ", path: "/#contact" },
-]
+] 
 
 
 export default function Navbar() {
