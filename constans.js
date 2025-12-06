@@ -44,7 +44,8 @@ export const studentProfileGetMeAll = "/student/profile/meAll"
 export const studentProfileById = "/student/profile/byId/"
 export const studentProfileUpdateDelete = "/student/profile/action/"
 
-export const studentProfileGetAllByAdmin = "/student/profile/all"
+export const studentProfileGetAllByAdmin = "/student/profile/all" 
+export const studentProfileGetOneByAdmin = "/student/profile/detailsByAdmin/" 
 //  profile end
 
 

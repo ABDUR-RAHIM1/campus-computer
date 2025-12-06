@@ -3,6 +3,7 @@ import { connectDb } from "@/database/connectDb";
 import { adminAuthGuard } from "@/middlewere/adminAuthGuard";
 import { NextResponse } from "next/server";
 import StudentProfileModel from "@/database/models/Profile";
+import SubAdminModel from "@/database/models/SubAdmin";
 
 
 // admin auth middlewere diye protected  

@@ -79,7 +79,7 @@ export default function AddProfile() {
 
                 const formatedData = data.map((ins, i) => {
                     return {
-                        name: ins.username,
+                        label: ins.username,
                         value: ins._id
                     }
                 })

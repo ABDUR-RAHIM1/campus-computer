@@ -52,14 +52,14 @@ export default function ServiceBenefits() {
   ];
 
   return (
-    <section className="py-12 bg-gray-50">
+    <section className="py-12  servicesBenifitShadow">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">
           🌟 আমাদের সেবা ব্যবহারের বিশেষ সুবিধাসমূহ
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {points.map((item, index) => (
-            <Card key={index} className="hover:shadow-md transition-all border border-gray-100">
+            <Card key={index} className="hover:shadow-md transition-all border border-indigo-400 bg-indigo-100 ">
               <CardHeader className="flex flex-col items-center space-y-3">
                 {item.icon}
                 <CardTitle className="text-lg font-semibold text-center">{item.title}</CardTitle>

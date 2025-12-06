@@ -2,7 +2,7 @@
 import { API_URL } from "@/constans";
 import { StudentToken } from "@/getToken";
 
-export const GetAction = async (endpoint) => {
+export const GetAction = async (endpoint, catchTime = 2000) => {
     const token = await StudentToken()
 
     try {
@@ -16,6 +16,7 @@ export const GetAction = async (endpoint) => {
                 "Content-type": "application/json",
                 "Authorization": `Bearer ${token}`,
             },
+            next: { revalidate: catchTime }
         });
 
         const result = await res.json();

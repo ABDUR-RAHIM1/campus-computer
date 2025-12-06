@@ -8,7 +8,6 @@ export default async function StudentList() {
 
 
     const { status, data } = await getStudentProfileByAdmin();
- 
 
     if (status !== 200 || !data) return <DataNotFound text={data?.message} />
 

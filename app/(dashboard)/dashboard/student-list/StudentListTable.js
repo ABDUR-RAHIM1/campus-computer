@@ -4,6 +4,9 @@ import DataTable from "react-data-table-component";
 import DeleteButton from "../components/DeleteButton";
 import { demoProfilePicture, studentProfileUpdateDelete } from "@/constans";
 import Image from "next/image";
+import { Eye } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 //  user account and his profiles list
 export default function StudentListTable({ data }) {
@@ -18,11 +21,12 @@ export default function StudentListTable({ data }) {
             name: "প্রোফাইল",
             selector: (row) =>
                 <Image
+                    priority
                     width={50}
                     height={50}
                     src={row.profilePicture || demoProfilePicture}
                     alt="Profile"
-                    className="w-10 h-10 rounded-full object-cover my-5"
+                    className="w-10 h-10 rounded-full my-5"
                 />,
             width: "80px",
         },
@@ -50,12 +54,6 @@ export default function StudentListTable({ data }) {
             sortable: true,
         },
         {
-            name: "ইমেইল",
-            selector: (row) => row.email || "N/A",
-            wrap: true,
-            width: "220px"
-        },
-        {
             name: "প্রোগ্রাম",
             selector: (row) => row.program || "N/A",
             sortable: true,
@@ -66,7 +64,20 @@ export default function StudentListTable({ data }) {
             wrap: true,
         },
         {
-            name: "Delete",
+            name: "বিস্তারিত",
+            cell: (row) => (
+                <Button asChild className={"bg-blue-500 text-white cursor-pointer"}>
+                    <Link href={`/dashboard/student-list/details/${row._id}`}>
+                        <Eye />
+                    </Link>
+                </Button>
+            ),
+            ignoreRowClick: true,
+            // allowOverflow: true,
+
+        },
+        {
+            name: "ডিলিট",
             cell: (row) => (
                 <DeleteButton deleteApi={studentProfileUpdateDelete + row._id} />
             ),

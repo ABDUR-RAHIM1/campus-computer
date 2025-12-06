@@ -14,6 +14,7 @@ export default function ProfileNavbar() {
     { name: 'প্রোফাইল ওভারভিউ', href: '/profile' },
     { name: 'অর্ডারসমূহ', href: '/profile/orders' },
     { name: 'পেমেন্ট ইতিহাস', href: '/profile/payments' },
+    { name: "🔥 চাকরি বিজ্ঞপ্তি", href: "/profile/jobs" },
     { name: 'মেসেজ', href: '/profile/messages' },
   ];
 

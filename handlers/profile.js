@@ -1,6 +1,6 @@
 import { GetActionAdmin } from "@/actions/admins/GetAction";
 import { GetAction } from "@/actions/students/GetAction";
-import { jobProfileGetMe, jobProfileGetOne, jobProfilePostGet, studentProfileById, studentProfileGetAllByAdmin, studentProfileGetMe, studentProfileGetMeAll } from "@/constans";
+import { jobProfileGetMe, jobProfileGetOne, jobProfilePostGet, studentProfileById, studentProfileGetAllByAdmin, studentProfileGetMe, studentProfileGetMeAll, studentProfileGetOneByAdmin } from "@/constans";
 
 
 export const getMyProfile = async () => {
@@ -26,7 +26,12 @@ export const getStudentProfileByAdmin = async () => {
     return profiles
 };
 
-
+//  student profile By Id for Admin
+export const getStudentProfileByIdForAdmin = async (profileId) => {
+    const api = studentProfileGetOneByAdmin + profileId;
+    const profile = await GetActionAdmin(api);
+    return profile
+}
 
 //  job profiles
 export const getAllJobProfileByAdmin = async () => {
@@ -51,7 +56,7 @@ export const getOneJobProfileByStudent = async (jpId) => {
 // get single profile info for Admin Dashboard
 export const getOneJobProfileByAdmin = async (jpId) => {
     const endpoint = jobProfileGetOne + jpId;
- 
+
     const jobProfile = await GetActionAdmin(endpoint);
     return jobProfile;
 }
