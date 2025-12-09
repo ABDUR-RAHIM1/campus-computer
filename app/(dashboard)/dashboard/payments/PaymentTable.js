@@ -89,7 +89,7 @@ export default function PaymentTable({ paymentData = [] }) {
                                     <TableCell>{row?.method || "N/A"}</TableCell>
                                     <TableCell>
                                         <Select
-                                            defaultValue={row?.verified ? "verified" : "pending"}
+                                            defaultValue={row?.verified ? "true" : "false"}
                                             onValueChange={(value) => handleStatusChange(row?._id, value)}
                                         >
                                             <SelectTrigger className="w-[120px]">
@@ -97,15 +97,12 @@ export default function PaymentTable({ paymentData = [] }) {
                                             </SelectTrigger>
 
                                             <SelectContent>
-                                                <SelectItem value="true">
-                                                    ✅ Verified
-                                                </SelectItem>
-                                                <SelectItem value="false">
-                                                    ⏳ Pending
-                                                </SelectItem>
+                                                <SelectItem value="true">✅ Verified</SelectItem>
+                                                <SelectItem value="false">⏳ Pending</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </TableCell>
+
 
                                     <TableCell>
                                         {row?.createdAt

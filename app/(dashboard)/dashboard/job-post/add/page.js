@@ -1,11 +1,11 @@
 "use client";
 
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { PostActionAdmin } from "@/actions/admins/PostAction";
-import { jobPostCreateGetAll } from "@/constans";
+import { jobPostCreateGetAll, jobPostPutDelete } from "@/constans";
 import { globalContext } from "@/contextApi/ContextApi";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from 'remark-gfm';
@@ -25,9 +25,10 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import { GetSingleJobPostById } from "@/handlers/jobPost";
 
 export default function JobPostForm() {
-    const { showToast } = useContext(globalContext);
+    const { showToast, editData } = useContext(globalContext);
     const [togglePreview, setTogglePreview] = useState(false)
     const [feeFormData, setFeeFormData] = useState({
         postName: "",
@@ -48,8 +49,54 @@ export default function JobPostForm() {
         description: ""
     });
 
+    const isEditable = editData && Object.keys(editData)?.length > 0;
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
+
+
+    /** =============== set editable Data in the previous State========= */
+    useEffect(() => {
+        if (isEditable && editData) {
+
+            // STEP 1 → First show all existing editable data (without description)
+            setFormData(prev => ({
+                ...prev,
+                category: editData.category ?? "",
+                title: editData.title ?? "",
+                totalVacancy: editData.totalVacancy ?? "",
+                startDate: editData.startDate ?? "",
+                endDate: editData.endDate ?? "",
+                noticeLink: editData.noticeLink ?? "",
+                postWithFee: editData.postWithFee ?? [],
+                description: prev.description
+            }));
+
+            // STEP 2 → Then fetch description only
+            const getJobDesc = async () => {
+                const { status, data } = await GetSingleJobPostById(editData._id);
+
+                if (status === 200 && data?.description) {
+                    setFormData(prev => ({
+                        ...prev,
+                        category: data.category ?? "",
+                        title: data.title ?? "",
+                        totalVacancy: data.totalVacancy ?? "",
+                        startDate: data.startDate ?? "",
+                        endDate: data.endDate ?? "",
+                        noticeLink: data.noticeLink ?? "",
+                        postWithFee: data.postWithFee ?? [],
+                        description: data.description
+                    }));
+                }
+            };
+
+            getJobDesc();
+        }
+    }, [editData]);
+
+    /** =============== set editable Data in the previous State End======*/
+
+
 
     // onChange handler for feeFormData
     const handleFeeChange = (e) => {
@@ -105,6 +152,8 @@ export default function JobPostForm() {
         setFormData(updatedData);
     };
 
+
+    /**================= submit and update hander below ====================== */
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -112,8 +161,8 @@ export default function JobPostForm() {
 
         try {
             const payload = {
-                method: "POST",
-                endpoint: jobPostCreateGetAll,
+                method: isEditable ? "PUT" : "POST",
+                endpoint: isEditable ? jobPostPutDelete + editData?._id : jobPostCreateGetAll,
                 body: formData,
             };
 
@@ -121,16 +170,6 @@ export default function JobPostForm() {
 
             showToast(status, data);
 
-            if (status === 200) {
-                setFormData({
-                    title: "",
-                    description: "",
-                    payPaymentFee: 0,
-                    charge: 0,
-                    totalPrice: 0,
-                    noticeLink: "",
-                });
-            }
         } catch (err) {
             setMessage(`❌ ${err.message}`);
         } finally {
@@ -141,7 +180,7 @@ export default function JobPostForm() {
 
     return (
         <div className="max-w-4xl mx-auto my-10 p-6 border rounded-lg shadow-md">
-            <h2 className="text-xl font-bold mb-4">জব পোস্ট তৈরি করুন</h2>
+            <h2 className="text-xl font-bold mb-4">জব পোস্ট {isEditable ? "আপডেট" : "তৈরি"} করুন</h2>
 
             <form onSubmit={handleSubmit} className="space-y-4">
 
@@ -203,7 +242,7 @@ export default function JobPostForm() {
                     />
 
                     <div className=" w-full p-3 flex items-center justify-between rounded-md bg-blue-100 col-span-3 font-medium">
-                        <p> Total Fee:  {feeFormData.totalPrice || 0} TK</p>
+                        <p> Total Fee:  {feeFormData.totalFee} TK</p>
                         <Button type={"button"}
                             onClick={handleAddMultipleFee}
                             className="w-[70%] h-full p-2 bg-blue-700 hover:bg-blue-600 text-white">
@@ -314,10 +353,12 @@ export default function JobPostForm() {
 
                 </div>
 
-                {/* Submit Button */}
                 <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? "পোস্ট করা হচ্ছে..." : "পোস্ট করুন"}
+                    {loading
+                        ? (isEditable ? "আপডেট হচ্ছে..." : "পোস্ট করা হচ্ছে...")
+                        : (isEditable ? "আপডেট করুন" : "পোস্ট করুন")}
                 </Button>
+
             </form>
 
             {message && (
