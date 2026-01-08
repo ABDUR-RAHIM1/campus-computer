@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ServicesCard from "@/components/services/ServicesCard";
 import { getAllSubAdmins } from "@/handlers/subAdmins";
+import { SearchX } from "lucide-react";
 
 export default function ServicesClient({ data, colsStyle }) {
     const [selectedInstitute, setSelectedInstitute] = useState("");
@@ -80,10 +81,19 @@ export default function ServicesClient({ data, colsStyle }) {
 
 
             {/* Services Cards */}
-            <div className={`grid ${cols} gap-4`}>
+            {
+                filteredData && filteredData?.length > 0 ?
+                    <div className={`grid ${cols} gap-4`}>
+                        <ServicesCard servicesData={filteredData} />
+                    </div>
 
-                <ServicesCard servicesData={filteredData} />
-            </div>
+                    :
+                    <div className="p-10 text-xl md:text-2xl text-center flex items-center justify-center gap-2 text-slate-800">
+                        <SearchX size={40} />
+                        <p>চলমান কোন কার্যক্রম নেই! </p>
+                    </div>
+
+            }
         </div>
     );
 }

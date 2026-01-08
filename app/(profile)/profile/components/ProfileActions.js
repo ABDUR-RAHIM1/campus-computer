@@ -1,13 +1,16 @@
 "use client"
 import { useState } from 'react';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
-export default function ProfileActions() {
+
+
+export default function ProfileActions({ studentRegistration }) {
     const [createDropdown, setCreateDropdown] = useState(false);
     const [viewDropdown, setViewDropdown] = useState(false);
 
     return (
-        <div className="my-3 flex items-center justify-between flex-wrap gap-2">
+        <div className="my-3 flex items-center justify-center flex-wrap gap-2">
 
             {/* Create Profile Dropdown */}
             <div className="relative">
@@ -47,6 +50,22 @@ export default function ProfileActions() {
                         </Link>
                     </div>
                 )}
+            </div>
+
+            <div className='my-0 md:my-5'>
+                <Button asChild
+                    className={" bg-pink-600"}
+                    title={"জাতীয় বিশ্ববিদ্যালয়য়ের ফরম পুরন করুন"}
+                >
+                    <Link href={
+                        {
+                            pathname: "/profile/form_fill_up",
+                            query: { reg: studentRegistration }
+                        }
+                    }>
+                        ফরম ফিলাপ করুন
+                    </Link>
+                </Button>
             </div>
 
         </div>

@@ -41,7 +41,7 @@ export default async function StudentProfile() {
             return value !== undefined && value !== null && value.toString().trim() !== "";
         }
     );
-    
+
     const getClassYearInBangla = (year) => {
         const yearMap = {
             1: "প্রথম বর্ষ",
@@ -70,12 +70,13 @@ export default async function StudentProfile() {
                         {username || "--"}
                     </h2>
                     <p className="text-gray-600 mb-1">📞 {phone || "--"}</p>
-                    <p className="text-gray-600 mb-4">{profileData.email || "--"}</p>
 
                     {/* Update Profile Button */}
 
                     <div className="my-3 flex items-center justify-between flex-wrap">
-                        <ProfileActions />
+                        <ProfileActions
+                            studentRegistration={profileData?.registrationNumber}
+                        />
                     </div>
 
                     <div className="text-left mt-6">
@@ -96,7 +97,7 @@ export default async function StudentProfile() {
                             <li>সেশন: {profileData.session || "__"}</li>
                             <li>ক্লাস রোল: {profileData.classRoll || "__"}</li>
                             <li>ঐচ্ছিক বিষয়: {profileData.electiveSubject || "__"}</li>
-                            <li>যোগাযোগ: {"0"+profileData.contactNumber || profileData?.studentId?.phone}</li>
+                            <li>যোগাযোগ: {"0" + profileData.contactNumber || profileData?.studentId?.phone}</li>
 
                             {/* ✅ মানোন্নয়ন তথ্য */}
                             {profileData.hasImprovement && Array.isArray(profileData.improvementSubjects) && profileData.improvementSubjects.length > 0 && (
