@@ -5,6 +5,8 @@ const staticPages = [
   "services",
   "jobs", 
   "developer", 
+  "services/college", 
+  "services/nu", 
 ];
 
 export default async function sitemap() {
