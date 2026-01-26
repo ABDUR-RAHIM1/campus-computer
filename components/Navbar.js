@@ -52,7 +52,8 @@ export default function Navbar() {
           >
             🔥 চাকরি
           </Link>
-
+   
+   
           {/* Other Services */}
           <DropdownMenu>
             <DropdownMenuTrigger className="font-medium text-gray-700 hover:text-blue-600 outline-none">
