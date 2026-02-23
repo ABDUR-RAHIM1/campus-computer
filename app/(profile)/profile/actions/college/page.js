@@ -43,7 +43,7 @@ export default function AddProfile() {
 
     const handleChange = (e) => {
         const { type, name, value, files } = e.target;
-        
+
         if (type === "file") {
             const file = files
             uploader(file)
@@ -94,6 +94,8 @@ export default function AddProfile() {
 
     // 📌 এটাকে component এর উপরে বা ফাইলের উপরে রাখো
     const parseCommaInputToArray = (value) => {
+        if (!value) return [];
+
         return value
             .split(",")
             .map((item) => item.trim())

@@ -23,6 +23,7 @@ export async function GET(req) {
         //  check same services is Available or not
         const myOrder = await Order.find({ reference: id, })
             // .populate("reference", "username")
+            .sort({ "createdAt": -1 })
             .populate("serviceId", "title")
             .populate("profileId", "studentName")
             .lean();

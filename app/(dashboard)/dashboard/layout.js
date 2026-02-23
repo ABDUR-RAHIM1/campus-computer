@@ -5,13 +5,12 @@ import ContextApiState from "@/contextApi/ContextApi";
 import DashboardNavbar from "./components/DashboardNavbar";
 import DashboardSidebar from "./components/DashboardSidebar";
 
-// Bengali font
-const bengaliFont = Noto_Sans_Bengali({
+ 
+const notoSansBengali = Noto_Sans_Bengali({
   weight: ["400", "500", "700"],
   subsets: ["bengali"],
   variable: "--font-bengali",
 });
-
 export const metadata = {
   title: "Dashboard - Campus Computer",
   description: "College Bazar lalmonirhat",
@@ -22,7 +21,8 @@ export default function RootLayout({ children }) {
     <html lang="bn">
       <body
         cz-shortcut-listen="true"
-        className={`${bengaliFont.variable} font-sans antialiased overflow-hidden`}
+        // className={`${bengaliFont.variable} font-sans antialiased overflow-hidden`}
+        className={`${notoSansBengali.className}  antialiased`}
       >
         <ContextApiState>
           <Toaster position="top-right" />

@@ -1,59 +1,83 @@
-"use client"
-import React, { useState } from "react";
+import React from 'react';
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion";
+import { HelpCircle, MessageCircle } from "lucide-react";
 
-export function FaqSection() {
-    const [openIndex, setOpenIndex] = useState(null);
+const faqs = [
+    {
+        question: "আবেদন করার জন্য আমাকে কি সশরীরে আসতে হবে?",
+        answer: "না, আপনাকে কোথাও আসতে হবে না। আপনি আমাদের ওয়েবসাইটে অ্যাকাউন্ট খুলে প্রয়োজনীয় তথ্য ও ডকুমেন্ট আপলোড করে দিলেই আমাদের এক্সপার্ট টিম আপনার হয়ে আবেদন সম্পন্ন করে দিবে।"
+    },
+    {
+        question: "আমার পেমেন্ট কি নিরাপদ? টাকা পাঠানোর পর কাজ না হলে কী হবে?",
+        answer: "আমরা প্রতিটি পেমেন্টের জন্য ডিজিটাল রিসিট প্রদান করি। যদি কোনো বিশেষ কারণে আপনার আবেদনটি সম্পন্ন করা সম্ভব না হয়, তবে আমাদের রিফান্ড পলিসি অনুযায়ী আপনার টাকা ফেরত দেওয়া হবে।"
+    },
+    {
+        question: "আবেদন সম্পন্ন হয়েছে কি না তা কীভাবে বুঝবো?",
+        answer: "আপনার ড্যাশবোর্ডে লগইন করলে 'My Applications' সেকশনে প্রতিটি আবেদনের রিয়েল-টাইম স্ট্যাটাস দেখতে পাবেন। এছাড়া কাজ শেষ হলে আপনার মোবাইলে কনফার্মেশন মেসেজ চলে যাবে।"
+    },
+    {
+        question: "ভুল তথ্য দিয়ে ফেললে কি সংশোধন করা যাবে?",
+        answer: "আবেদনটি সাবমিট করার আগে আমাদের টিম তথ্যগুলো যাচাই করে। তবে আপনি যদি ভুল তথ্য দিয়ে থাকেন এবং আমাদের টিম কাজ শুরু না করে থাকে, তবে দ্রুত হেল্পলাইনে যোগাযোগ করে তা সংশোধন করতে পারবেন।"
+    },
+    {
+        question: "জরুরি প্রয়োজনে আমি কীভাবে যোগাযোগ করতে পারি?",
+        answer: "যেকোনো প্রয়োজনে আমাদের ওয়েবসাইটেই WhatsApp বাটন আছে অথবা আপনি সরাসরি 01611-530939 নম্বরে কল করতে পারেন। আমাদের সাপোর্ট টিম আপনাকে সাহায্য করার জন্য প্রস্তুত।"
+    }
+];
 
-    const toggle = (index) => {
-        setOpenIndex(openIndex === index ? null : index);
-    };
-
-    const faqs = [
-        {
-            question: '📝 কিভাবে অ্যাকাউন্ট খুলবো?',
-            answer:
-                'আপনার নাম, মোবাইল নাম্বার ও একটি পাসওয়ার্ড দিয়ে সহজেই আমাদের আপ্লিকেশনে  অ্যাকাউন্ট খুলতে পারবেন। অ্যাকাউন্ট বাটনে ক্লিক করে তথ্য দিন এবং সাবমিট করুন।',
-        },
-        {
-            question: '📤 কিভাবে প্রোফাইল তৈরি করবো?',
-            answer:
-                'লগিন করার পর আপনি পাবেন একটা প্রোফাইল ড্যাশবোর্ড , সেখান থেকে প্রোফাইল তৈরি করুন বাটনে ক্লিক করে নির্দিষ্ট স্থানে নিজের অথবা বন্ধুর জন্য (প্রোফাইল) নাম , একাডেমিক তথ্য ছবি বা অন্যান্য প্রয়োজনীয় ফাইল সিলেক্ট করে আপলোড বাটনে ক্লিক করলেই প্রোফাইল তৈরি হয়ে যাবে।',
-        },
-        {
-            question: '📱 কিভাবে পেমেন্ট করবো?',
-            answer:
-                'প্রতিটা সার্ভিসের আবেদন করুন বাটনে ক্লিক করলে নির্ধারিত মূল্য দেখাবে, পেমেন্ট অপশনে আপনার বিকাশ নাম্বার দিলেই নির্দিষ্ট পরিমান টাকা পেমেন্ট হয়ে যাবে।  আর আপনি পেমেন্ট কনফার্মেশন মেসেজ পাবেন।',
-        },
-        {
-            question: '📦 আমি কিভাবে জানবো আমার কাজ শেষ হয়েছে কিনা?',
-            answer:
-                'আপনার প্রোফাইল ড্যাশবোর্ডে লগইন করে কাজের স্ট্যাটাস , পেমেন্ট স্ট্যাটাস সহ যাবতীয় তথ্য দেখতে পারবেন এবং কাজ শেষ হলে SMS/WhatsApp এর মাধ্যমে আপনাকে জানানো হবে।',
-        },
-    ];
-
+export default function FAQSection() {
     return (
-        <section className="py-16 bg-blue-50" id="faq">
-            <div className="container mx-auto px-4">
-                <h2 className=" text-2xl md:text-3xl font-bold text-center text-blue-900 mb-10">
-                    প্রায়শই জিজ্ঞাসিত প্রশ্ন (FAQ)
-                </h2>
-                <div className="max-w-4xl mx-auto space-y-4">
-                    {faqs.map((item, index) => (
-                        <div key={index} className="border rounded-lg overflow-hidden bg-white shadow">
-                            <button
-                                onClick={() => toggle(index)}
-                                className="w-full text-left px-6 py-4 font-semibold text-gray-800 hover:bg-gray-100 focus:outline-none"
-                            >
-                                {item.question}
-                            </button>
-                            {openIndex === index && (
-                                <div className="px-6 pb-4 text-gray-700">
-                                    {item.answer}
-                                </div>
-                            )}
-                        </div>
-                    ))}
+        <section className="py-24 bg-[#f9fafb]">
+            <div className="container mx-auto px-4 max-w-4xl">
+
+                {/* Section Header */}
+                <div className="text-center mb-16">
+                    <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-600 px-4 py-2 rounded-full mb-4">
+                        <HelpCircle size={20} />
+                        <span className="text-sm font-bold uppercase tracking-wider">FAQ</span>
+                    </div>
+                    <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-6">
+                        মনে কি কোনো <span className="text-blue-600">প্রশ্ন</span> আছে?
+                    </h2>
+                    <p className="text-gray-500 font-medium">
+                        স্টুডেন্টদের মনে সচরাচর আসা কিছু প্রশ্নের উত্তর এখানে দেওয়া হলো।
+                    </p>
                 </div>
+
+                {/* Accordion Logic */}
+                <div className="bg-white rounded-[2.5rem] p-6 md:p-10 shadow-xl shadow-blue-100/50 border border-gray-100">
+                    <Accordion type="single" collapsible className="w-full space-y-4">
+                        {faqs.map((faq, index) => (
+                            <AccordionItem
+                                key={index}
+                                value={`item-${index}`}
+                                className="border-b border-gray-100 last:border-0"
+                            >
+                                <AccordionTrigger className="text-left text-lg font-bold text-gray-800 hover:text-blue-600 hover:no-underline py-6">
+                                    {faq.question}
+                                </AccordionTrigger>
+                                <AccordionContent className="text-gray-600 text-base leading-relaxed pb-6 font-medium">
+                                    {faq.answer}
+                                </AccordionContent>
+                            </AccordionItem>
+                        ))}
+                    </Accordion>
+                </div>
+
+                {/* Contact CTA */}
+                <div className="mt-12 text-center">
+                    <p className="text-gray-500 mb-4 font-bold">আপনার প্রশ্নের উত্তর এখানে পাননি?</p>
+                    <button className="inline-flex items-center gap-2 bg-gray-900 text-white px-8 py-4 rounded-2xl font-black hover:bg-blue-600 transition-all shadow-lg">
+                        <MessageCircle size={20} />
+                        সরাসরি মেসেজ দিন
+                    </button>
+                </div>
+
             </div>
         </section>
     );

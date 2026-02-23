@@ -21,7 +21,7 @@ export default function DeleteButton({ deleteApi }) {
         }
         setIsLoading(true)
         try {
-
+ 
             const { status, data } = await DeleteActionAdmin(deleteApi)
 
             showToast(status, data);

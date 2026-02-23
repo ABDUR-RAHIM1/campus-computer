@@ -96,6 +96,7 @@ export async function GET(req) {
         await connectDb();
 
         const orders = await Order.find()
+            .sort({ "createdAt": -1 })
             .populate("reference", "username")
             .populate("serviceId", "title")
             .populate("profileId", "studentName")

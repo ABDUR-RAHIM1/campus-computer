@@ -1,25 +1,21 @@
-import React from 'react'
+import { Monitor, CreditCard, ShieldCheck, Zap } from 'lucide-react';
 
 export default function ServicesInfo() {
-    return (
-        <div className=' my-5 '>
-            <ul className="text-gray-700 mb-6 leading-relaxed text-[12px] ml-4 list-disc">
-                
-                নিচে তালিকাভুক্ত সেবাগুলোর মাধ্যমে আপনি ঘরে বসেই কলেজের বিভিন্ন কাজ সম্পন্ন করতে পারবেন। প্রতিটি সেবার জন্য নির্দিষ্ট কিছু তথ্য প্রদান, প্রয়োজনীয় ডকুমেন্ট আপলোড এবং ফি পরিশোধের প্রয়োজন হতে পারে।
+    const features = [
+        { icon: <Monitor size={16} />, text: "১০০% অনলাইন সেবা" },
+        { icon: <Zap size={16} />, text: "দ্রুত প্রসেসিং" },
+        { icon: <ShieldCheck size={16} />, text: "নিরাপদ ও নির্ভরযোগ্য" },
+        { icon: <CreditCard size={16} />, text: "সহজ ফি পরিশোধ" }
+    ];
 
-                <li>
-                    🛎️ আমাদের প্রতিটি সেবা আপনি অনলাইনে ঘরে বসেই নিতে পারবেন — আপনাকে আর কলেজ বা অফিসে এসে লম্বা লাইনে দাঁড়াতে হবে না।
-                </li>
-                <li>
-                    📤 আবেদন বাটনে ক্লিক করলেই আপনার নির্দিষ্ট ফি দেখাবে এবং ফী প্রদানের মাধ্যমে আমরা আপনার পক্ষ থেকে সকল আবেদন, ফরম পূরণ, ডকুমেন্ট প্রসেসিং ও সাবমিশন সম্পূর্ণ করে দিব।
-                </li>
-                <li>
-                    📱 আপনি আপনার প্রোফাইল থেকেই প্রতিটি আবেদনের আপডেট, অবস্থা (Status), ও কনফার্মেশন দেখতে পারবেন — ফলে সবকিছু থাকবে সম্পূর্ণ আপনার নিয়ন্ত্রণে।
-                </li>
-                <li>
-                    🧾 এটি একটি নিরাপদ ও নির্ভরযোগ্য ডিজিটাল সেবা, যেখানে আপনার সময় ও ঝামেলা দুটোই কমবে।
-                </li>
-            </ul>
+    return (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 my-6">
+            {features.map((f, i) => (
+                <div key={i} className="flex items-center gap-2 bg-blue-50/50 p-2.5 rounded-xl border border-blue-100">
+                    <span className="text-blue-600 bg-white p-1 rounded-md shadow-sm">{f.icon}</span>
+                    <span className="text-[11px] font-bold text-blue-900 leading-tight">{f.text}</span>
+                </div>
+            ))}
         </div>
-    )
+    );
 }

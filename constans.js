@@ -44,8 +44,8 @@ export const studentProfileGetMeAll = "/student/profile/meAll"
 export const studentProfileById = "/student/profile/byId/"
 export const studentProfileUpdateDelete = "/student/profile/action/"
 
-export const studentProfileGetAllByAdmin = "/student/profile/all" 
-export const studentProfileGetOneByAdmin = "/student/profile/detailsByAdmin/" 
+export const studentProfileGetAllByAdmin = "/student/profile/all"
+export const studentProfileGetOneByAdmin = "/student/profile/detailsByAdmin/"
 //  profile end
 
 
@@ -62,7 +62,14 @@ export const jobProfilePutDelete = "/student/job-profile/actions/"
 
 //  ----------------- Services ---------------------------
 export const servicesPostGetAll = "/services/postGet"
-export const servicesActions = "/services/action/"   // update/ delete
+export const servicesActions = "/services/action/"   // update/ delete  
+
+// admission  v 
+export const createGetAdmissionService = "/admission/postGet/"
+export const admissionServiceAction = "/admission/actionWithId/"  // :admissionId getById, Delete, Put
+
+
+
 //  ----------------- Services ---------------------------
 
 

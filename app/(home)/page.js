@@ -1,11 +1,13 @@
-import { FaqSection } from '@/components/Faq';
-import { Contact } from '@/components/Contact';
+import FAQSection from '@/components/Faq'; 
 import AutomationOverview from '@/components/Overview';
-import HeroSlider from '@/components/HeroSilder'; 
 import HomeMarquee from '@/components/Marque';
-import CollegeServices from '@/components/CollegeServices';
-import ServiceBenefits from '@/components/ServiceBenefits';
-import OthersServices from '@/components/OthersServices';
+import Hero from '@/components/HomePage/Hero';
+import SmartQuickLinks from '@/components/HomePage/SmartQuickLink';
+import StepGuideline from '@/components/HomePage/Guidline';
+import SpecialtyServices from '@/components/CollegeServices';
+import ServiceBenefits from '@/components/HomePage/ServicesBenifit';
+import Testimonials from '@/components/HomePage/Testimonial';
+import StudentHelpline from '@/components/HomePage/StudentHelpline';
 
 const CampusComputerPage = async () => {
 
@@ -15,15 +17,23 @@ const CampusComputerPage = async () => {
             <main>
                 {/* Hero Section */}
                 {/* <Hero /> */}
-                <HeroSlider />
+                {/* <HeroSlider /> */}
+                {/* <OthersServices />
+                {/* <ServiceBenefits /> */}
+                {/* <AutomationOverview /> */}
+                {/* <FaqSection />  */}
+
                 <HomeMarquee />
-                <CollegeServices />
+                <Hero />
+                <SmartQuickLinks />
+                <StepGuideline />
+
+                <SpecialtyServices />
                 <ServiceBenefits />
-                <OthersServices/>
+                <Testimonials />
                 <AutomationOverview />
-                <FaqSection />
-                {/* Contact Section */}
-                <Contact />
+                <FAQSection />
+                <StudentHelpline />
             </main>
 
         </div>

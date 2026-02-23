@@ -1,27 +1,38 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import InputField from "@/utilities/InputField"; 
 import React, { useContext, useEffect, useState } from "react";
+import { globalContext } from "@/contextApi/ContextApi";
 import { getDepartmentsByProgram } from "@/LocalDatabase/departments";
-import { sessionList } from "@/LocalDatabase/seasion";
 import { getYearsByProgram } from "@/LocalDatabase/year";
 import { servicesPostGetAll } from "@/constans";
-import { globalContext } from "@/contextApi/ContextApi";
-import Spinner from "@/utilities/Spinner";
 import { PostActionAdmin } from "@/actions/admins/PostAction";
 import { getAllSubAdmins } from "@/handlers/subAdmins";
+
+// UI Components
+import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import InputField from "@/utilities/InputField";
 import TextareaField from "@/utilities/TextareaField";
 import SelectField from "@/utilities/SelectField";
+import Spinner from "@/utilities/Spinner";
+import { Plus, Trash2, Save, GraduationCap, Archive } from "lucide-react";
 
-
-export default function AddServicePage() {
-    const { showToast } = useContext(globalContext)
+// যদি এডিট করতে চান তবে initialData প্রপস হিসেবে পাঠাতে পারেন
+export default function AddServicePage({ initialData = null }) {
+    const { showToast } = useContext(globalContext);
     const [departments, setDepartments] = useState([]);
     const [year, setYear] = useState([]);
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(false);
     const [institutes, setInstitutes] = useState([]);
+    const [open, setOpen] = useState(false);
+
     const [deparmentData, setDepartmentData] = useState({
         department: "",
         collegeFee: 0,
@@ -29,6 +40,7 @@ export default function AddServicePage() {
         chargeFee: 0,
         totalFee: 0,
     });
+
     const [formData, setFormData] = useState({
         type: "",
         institute: "",
@@ -37,11 +49,21 @@ export default function AddServicePage() {
         program: "",
         departmentFees: [],
         classYear: "",
-        session: "",
-        fee: "",
         requiredDocuments: "",
     });
 
+    // 🔄 আগের ডাটা লোড করার জন্য useEffect
+    useEffect(() => {
+        if (initialData) {
+            setFormData({
+                ...initialData,
+                institute: initialData.institute?._id || initialData.institute,
+                requiredDocuments: Array.isArray(initialData.requiredDocuments) 
+                    ? initialData.requiredDocuments.join(", ") 
+                    : initialData.requiredDocuments
+            });
+        }
+    }, [initialData]);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -51,295 +73,229 @@ export default function AddServicePage() {
         }));
     };
 
-    // getAll Institue/ subAdmins
     useEffect(() => {
         const getData = async () => {
             const { status, data } = await getAllSubAdmins();
             if (status === 200) {
-
-                const formatedData = data.map((ins, i) => {
-                    return {
-                        label: ins.username,
-                        value: ins._id
-                    }
-                })
-
-                setInstitutes(formatedData)
+                const formatedData = data.map((ins) => ({
+                    label: ins.username,
+                    value: ins._id
+                }));
+                setInstitutes(formatedData);
             }
         };
+        getData();
+    }, []);
 
-        getData()
-    }, [])
-
-
-
-    //  departmentChange
     const handleDepartmentChange = (e) => {
         const { name, value } = e.target;
-
-        const newData = {
-            ...deparmentData,
-            [name]: value
-        }
-
+        const newData = { ...deparmentData, [name]: value };
         newData.totalFee = Number(newData.collegeFee) + Number(newData.subjectFee) + Number(newData.chargeFee);
-        setDepartmentData(newData)
-
+        setDepartmentData(newData);
     };
 
-
-    // deparment filter using Program
-    // ekhane formData.program er name ar departments.json er program nam same thakte hobe , tobei ata kaj korbe.
     useEffect(() => {
         if (formData.program) {
             const filterdDeparment = getDepartmentsByProgram(formData.program);
             const filteredYear = getYearsByProgram(formData.program);
-            setYear(filteredYear)
+            setYear(filteredYear);
             setDepartments(filterdDeparment);
         }
-    }, [formData.program])
-
-    const sessionOptions = sessionList.map((s) => ({
-        label: s,
-        value: s,
-    }));
+    }, [formData.program]);
 
     const handleAddMultipleDepartmentDataInformState = () => {
+        if (!deparmentData.department) return alert("বিভাগ সিলেক্ট করুন");
         setFormData((prev) => ({
             ...prev,
             departmentFees: [...prev.departmentFees, deparmentData]
-        }))
-    }
+        }));
+        // setDepartmentData({ department: "", collegeFee: 0, subjectFee: 0, chargeFee: 0, totalFee: 0 });
+    };
 
-
-
-    //  Remove Fee from the state
     const handleRemoveFeeClick = (indexToRemove) => {
         const updatedFees = formData.departmentFees.filter((_, index) => index !== indexToRemove);
         setFormData({ ...formData, departmentFees: updatedFees });
     };
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setIsLoading(true)
+        setIsLoading(true);
         const finalData = {
             ...formData,
-            requiredDocuments: formData.requiredDocuments
-                .split(",")
-                .map((doc) => doc.trim()),
+            requiredDocuments: formData.requiredDocuments.split(",").map((doc) => doc.trim()),
         };
 
         try {
-
             const payload = {
-                method: "POST",
-                endpoint: servicesPostGetAll,
+                method: initialData ? "PUT" : "POST", // যদি আগে ডাটা থাকে তবে PUT হবে
+                endpoint: initialData ? `${servicesPostGetAll}/${initialData._id}` : servicesPostGetAll,
                 body: finalData
-            }
+            };
             const { status, data } = await PostActionAdmin(payload);
-            showToast(status, data)
-            console.log(data)
-
+            showToast(status, data);
+            if (status === 200) setOpen(false);
         } catch (error) {
-            console.log("failed t post servies: ", error)
+            console.log("failed to post services: ", error);
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
-
-
     };
 
-
     return (
-        <div className="min-h-screen bg-gray-50 px-4 py-10 flex items-start justify-center">
-            <div className="w-full max-w-2xl bg-white shadow-lg rounded-xl p-8 border">
-                <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
-                    🎓 নতুন সার্ভিস যুক্ত করুন
-                </h2>
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-5 px-6 rounded-2xl flex items-center gap-2 shadow-lg shadow-blue-100 transition-all active:scale-95">
+                    {initialData ? <Archive size={20} /> : <Plus size={20} />} 
+                    {initialData ? "সার্ভিস আপডেট করুন" : "সার্ভিস যুক্ত করুন"}
+                </Button>
+            </DialogTrigger>
 
+            {/* 📏 Width বাড়াতে max-w-4xl অথবা max-w-5xl ব্যবহার করুন */}
+            <DialogContent className="max-w-4xl md:w-[90%] w-[95%] max-h-[95vh] overflow-hidden rounded-[2.5rem] p-0 border-none shadow-2xl flex flex-col">
+                
+                <DialogHeader className="p-8 bg-blue-600 text-white flex-shrink-0">
+                    <DialogTitle className="text-3xl font-black uppercase tracking-tight flex items-center gap-3">
+                        <GraduationCap size={32} /> 
+                        {initialData ? "সার্ভিস আপডেট করুন" : "নতুন সার্ভিস যুক্ত করুন"}
+                    </DialogTitle>
+                    <p className="text-blue-100 text-sm font-bold uppercase tracking-widest mt-1 italic">
+                        সার্ভিস আইডি: {initialData?._id || "নতুন"}
+                    </p>
+                </DialogHeader>
 
-
-
-                <div className="space-y-4 grid grid-cols-1">
-
-
-                    <SelectField
-                        label="প্রতিষ্ঠান"
-                        name="institute"
-                        value={formData.institute}
-                        onChange={handleChange}
-                        required
-                        options={institutes}
-                    />
-                    <SelectField
-                        label="ধরন"
-                        name="type"
-                        value={formData.type}
-                        onChange={handleChange}
-                        required
-                        options={[
-                            { label: "নিয়মিত", value: "নিয়মিত" },
-                            { label: "অনিয়মিত", value: "অনিয়মিত" },
-                            { label: "মান-উন্নায়ন", value: "মান-উন্নায়ন" },
-                            { label: "ভর্তি", value: "ভর্তি" },
-                            { label: "অন্যান্য", value: "অন্যান্য" },
-                        ]}
-                    />
-
-                    <InputField
-                        label=" শিরোনাম"
-                        name="title"
-                        value={formData.title}
-                        onChange={handleChange}
-                        required
-                    />
-                    <InputField
-                        label="বিস্তারিত বিবরণ"
-                        name="description"
-                        value={formData.description}
-                        onChange={handleChange}
-                        required
-                    />
-
-                    <SelectField
-                        label="🏛️ প্রোগ্রাম (অনার্স/ডিগ্রি/ইন্টারমেডিয়েট)"
-                        name="program"
-                        value={formData.program}
-                        onChange={handleChange}
-                        required
-                        options={[
-                            { label: "অনার্স", value: "honors" },
-                            { label: "ডিগ্রি", value: "degree" },
-                            { label: "ইন্টারমেডিয়েট", value: "intermediate" },
-                        ]}
-                    />
-
-
-                    {/*  depertment and fees */}
-                    <div className=" border my-5 py-4 px-1">
-                        <div className=" grid grid-cols-2 gap-2">
-                            <SelectField
-                                label="📚 বিভাগ"
-                                name="department"
-                                value={deparmentData.department}
-                                onChange={handleDepartmentChange}
-                                required
-                                options={departments}
-                            />
+                <div className="p-4 space-y-8 overflow-y-auto flex-grow bg-white">
+                    {/* 📋 বেসিক ইনফো গ্রিড */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <SelectField
+                            label="প্রতিষ্ঠান নির্বাচন করুন"
+                            name="institute"
+                            value={formData.institute}
+                            onChange={handleChange}
+                            options={institutes}
+                            required
+                        />
+                        <SelectField
+                            label="সার্ভিসের ধরন"
+                            name="type"
+                            value={formData.type}
+                            onChange={handleChange}
+                            options={[
+                                { label: "Admission with Form Fillup", value: "admission_with_form_fillup" },
+                                { label: "Year Change Admission", value: "year_change_admission" },
+                                { label: "Regular Form Fillup", value: "regular_form_fillup" },
+                                { label: "Improvement Form Fillup", value: "improvement_form_fillup" },
+                            ]}
+                            required
+                        />
+                        <div className="md:col-span-2">
                             <InputField
-                                label=" কলেজ ফি (৳)"
-                                name="collegeFee"
-                                type="number"
-                                value={deparmentData.collegeFee}
-                                onChange={handleDepartmentChange}
-                                required
-                            />
-                            <InputField
-                                label=" সাবজেক্ট ফি (যদি থাকে)"
-                                name="subjectFee"
-                                type="number"
-                                value={deparmentData.subjectFee}
-                                onChange={handleDepartmentChange}
-
-                            />
-                            <InputField
-                                label="চার্জ ফি (৳)"
-                                name="chargeFee"
-                                type="number"
-                                value={deparmentData.chargeFee}
-                                onChange={handleDepartmentChange}
+                                label="সার্ভিস শিরোনাম (Title)"
+                                name="title"
+                                placeholder="উদা: অনার্স ১ম বর্ষ ফরম ফিলাপ ২০২৪"
+                                value={formData.title}
+                                onChange={handleChange}
                                 required
                             />
                         </div>
-
-                        <div className=" text-center">
-                            <Button onClick={handleAddMultipleDepartmentDataInformState} type={"button"} className={" text-sm my-3 cursor-pointer"}>
-                                যুক্ত করুন
-                            </Button>
+                        <div className="md:col-span-2">
+                            <TextareaField
+                                label="বিস্তারিত বিবরণ (Description)"
+                                name="description"
+                                value={formData.description}
+                                onChange={handleChange}
+                                required
+                            />
                         </div>
-
-                        {
-                            formData.departmentFees &&
-                            <div className=" my-3 border rounded-md">
-
-                                {
-                                    formData.departmentFees.length > 0 &&
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow>
-                                                <TableHead>Depertment</TableHead>
-                                                <TableHead>College Fee</TableHead>
-                                                <TableHead>Subject Fee</TableHead>
-                                                <TableHead>Charge Fee</TableHead>
-                                                <TableHead>Total Fee</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {formData?.departmentFees.map((d, i) => (
-                                                <TableRow
-                                                    key={i}
-                                                >
-                                                    <TableCell
-                                                        className="font-medium cursor-pointer hover:text-red-500 hover:underline transition-all"
-                                                        onClick={() => handleRemoveFeeClick(i)}
-                                                        title={"Click for Delete"}
-                                                    >{d.department}</TableCell>
-                                                    <TableCell>{d.collegeFee}</TableCell>
-                                                    <TableCell>{d.subjectFee}</TableCell>
-                                                    <TableCell>{d.chargeFee}</TableCell>
-                                                    <TableCell>{d.totalFee}</TableCell>
-
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                }
-                            </div>
-                        }
-
+                        <SelectField
+                            label="প্রোগ্রাম (Honors/Degree...)"
+                            name="program"
+                            value={formData.program}
+                            onChange={handleChange}
+                            options={[
+                                { label: "অনার্স", value: "honors" },
+                                { label: "ডিগ্রি", value: "degree" },
+                                { label: "ইন্টারমেডিয়েট", value: "intermediate" },
+                            ]}
+                            required
+                        />
+                         <SelectField
+                            label="বর্ষ (Year)"
+                            name="classYear"
+                            value={formData.classYear}
+                            onChange={handleChange}
+                            options={year}
+                            required
+                        />
                     </div>
 
+                    {/* 💰 ফী সেটআপ সেকশন - আগের ডাটা সহ */}
+                    <div className="bg-blue-50/50 p-3 rounded-[2rem] border-2 border-dashed border-blue-100 space-y-6">
+                        <div className="flex justify-between items-center">
+                            <h3 className="text-sm font-black uppercase tracking-widest text-blue-600 flex items-center gap-2">
+                                <Save size={18} /> বিভাগ ও ফী লিস্ট
+                            </h3>
+                            <span className="text-[10px] bg-blue-600 text-white px-3 py-1 rounded-full font-bold uppercase">
+                                মোট বিভাগ: {formData.departmentFees.length}
+                            </span>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white p-2 rounded-2xl shadow-sm">
+                            <SelectField label="বিভাগ" name="department" value={deparmentData.department} onChange={handleDepartmentChange} options={departments} />
+                            <InputField label="কলেজ ফি" name="collegeFee" type="number" value={deparmentData.collegeFee} onChange={handleDepartmentChange} />
+                            <InputField label="সাবজেক্ট ফি" name="subjectFee" type="number" value={deparmentData.subjectFee} onChange={handleDepartmentChange} />
+                            <InputField label="চার্জ ফি" name="chargeFee" type="number" value={deparmentData.chargeFee} onChange={handleDepartmentChange} />
+                        </div>
+                        
+                        <Button type="button" onClick={handleAddMultipleDepartmentDataInformState} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl py-6 shadow-lg shadow-blue-100 transition-transform active:scale-[0.98]">
+                             তালিকায় ডাটা যুক্ত করুন
+                        </Button>
 
-                    <SelectField
-                        label="📚 বর্ষ"
-                        name="classYear"
-                        value={formData.classYear}
-                        onChange={handleChange}
-                        required
-                        options={year}
-                    />
-
-                    <SelectField
-                        label="📚 সেশন"
-                        name="session"
-                        value={formData.session}
-                        onChange={handleChange}
-                        required
-                        options={sessionOptions}
-                    />
-
+                        {formData.departmentFees.length > 0 && (
+                            <div className="border border-blue-100 rounded-[1.5rem] overflow-hidden bg-white shadow-sm">
+                                <Table>
+                                    <TableHeader className="bg-blue-50">
+                                        <TableRow>
+                                            <TableHead className="font-black text-blue-800 text-xs">DEPARTMENT</TableHead>
+                                            <TableHead className="font-black text-blue-800 text-xs text-center">FEE (SUM)</TableHead>
+                                            <TableHead className="text-right font-black text-blue-800 text-xs px-6">REMOVE</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {formData.departmentFees.map((d, i) => (
+                                            <TableRow key={i} className="hover:bg-gray-50 transition-colors">
+                                                <TableCell className="font-bold text-gray-700 uppercase text-xs">{d.department}</TableCell>
+                                                <TableCell className="font-black text-center text-blue-600">৳ {d.totalFee}</TableCell>
+                                                <TableCell className="text-right px-6">
+                                                    <button onClick={() => handleRemoveFeeClick(i)} className="bg-red-50 text-red-500 hover:bg-red-500 hover:text-white p-2 rounded-lg transition-all">
+                                                        <Trash2 size={16} />
+                                                    </button>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </div>
+                        )}
+                    </div>
 
                     <TextareaField
-                        label="প্রয়োজনীয় ডকুমেন্ট (কমা দিয়ে আলাদা করুন)"
+                        label="প্রয়োজনীয় ডকুমেন্ট (কমা দিয়ে আলাদা করুন)"
                         name="requiredDocuments"
-                        placeholder="আবেদন ফরম, ছবি , ইত্যাদি"
+                        placeholder="উদা: ছবি, মার্কশিট, এডমিট কার্ড"
                         value={formData.requiredDocuments}
                         onChange={handleChange}
                         required
                     />
 
                     <Button
-                        type="button"
                         onClick={handleSubmit}
-                        className={`w-full  my-10 bg-green-600 text-white font-semibold rounded hover:bg-green-700 ${isLoading ? " cursor-progress" : " cursor-pointer"}`}
+                        disabled={isLoading}
+                        className="w-full bg-green-600 hover:bg-green-700 text-white font-black py-8 rounded-[1.5rem] shadow-xl shadow-green-100 uppercase tracking-[0.2em] transition-all text-lg"
                     >
-                        {
-                            isLoading ? <Spinner /> : "✅ সাবমিট করুন"
-                        }
+                        {isLoading ? <Spinner /> : initialData ? "✅ আপডেট নিশ্চিত করুন" : "🚀 সার্ভিস পাবলিশ করুন"}
                     </Button>
                 </div>
-            </div>
-        </div>
+            </DialogContent>
+        </Dialog>
     );
 }

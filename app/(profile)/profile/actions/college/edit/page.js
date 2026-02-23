@@ -65,7 +65,7 @@ export default function EditProfile() {
     }, [studentInfo, formData.isOtherStudent]);
 
 
-    
+
     useEffect(() => {
         if (isEditable && editData) {
             setFormData({
@@ -76,25 +76,51 @@ export default function EditProfile() {
     }, [editData, isEditable]);
 
 
+    // const handleChange = (e) => {
+    //     const { type, name, value, files } = e.target;
+
+    //     if (type === "file") {
+    //         uploader(files);
+    //     } else {
+    //         setFormData((prev) => ({
+    //             ...prev,
+    //             [name]: value,
+    //             ...(name === "improvementSubjects" && {
+    //                 improvementSubjects: value
+    //                     .split(",")
+    //                     .map((subject) => subject.trim())
+    //                 // .filter((subject) => subject !== ""),
+    //             }),
+    //         }));
+    //     }
+    // };
+
+
     const handleChange = (e) => {
         const { type, name, value, files } = e.target;
 
         if (type === "file") {
             uploader(files);
         } else {
-            setFormData((prev) => ({
-                ...prev,
-                [name]: value,
-                ...(name === "improvementSubjects" && {
-                    improvementSubjects: value
-                        .split(",")
-                        .map((subject) => subject.trim())
-                    // .filter((subject) => subject !== ""),
-                }),
-            }));
+            setFormData((prev) => {
+                const newState = { ...prev, [name]: value };
+
+                if (name === "improvementSubjects") {
+
+                    if (!value.trim()) {
+                        newState.improvementSubjects = [];
+                    } else {
+
+                        newState.improvementSubjects = value
+                            .split(",")
+                            .map((subject) => subject.trim())
+                            .filter((subject) => subject !== "");
+                    }
+                }
+                return newState;
+            });
         }
     };
-
 
     useEffect(() => {
         if (imgUrl && imgUrl.length > 0) {
@@ -153,6 +179,8 @@ export default function EditProfile() {
             setSubmitting(false);
         }
     };
+
+    console.log(formData)
 
     return (
         <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow my-20 border">

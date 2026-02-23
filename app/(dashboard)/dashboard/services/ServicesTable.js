@@ -1,12 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import DataTable from "react-data-table-component";
-import { Pencil, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import DataTable from "react-data-table-component"; 
 import ServicesOverview from "@/components/overviewCards/ServicesOverview";
 import DeleteButton from "../components/DeleteButton";
 import { servicesActions } from "@/constans";
 import UpdateButton from "../components/UpdateButton";
+import { CreditCard, Info, Trash2, Edit3, Boxes } from "lucide-react";
 
 export default function ServicesTable({ data }) {
   const [servicesData, setServicesData] = useState([]);
@@ -15,127 +14,157 @@ export default function ServicesTable({ data }) {
     setServicesData(data);
   }, [data]);
 
- 
-
   const columns = [
     {
       name: "#",
-      cell: (row, index) => index + 1,
-      width: "50px",
+      cell: (row, index) => <span className="font-bold text-gray-400">{index + 1}</span>,
+      width: "60px",
     },
     {
       name: "Type",
-      selector: (row) => <div className={`py-1 px-2 rounded-sm text-[12px] ${row.type === "নিয়মিত" ? "bg-blue-100 text-blue-500" :" bg-red-100 text-red-500"}`}>
-        {row.type}
-      </div>,
-      wrap: true,
+      cell: (row) => (
+        <div className={`py-1 px-3 rounded-full text-[10px] font-black uppercase tracking-widest border ${
+          row.type === "নিয়মিত" 
+          ? "bg-blue-50 text-blue-600 border-blue-100" 
+          : "bg-amber-50 text-amber-600 border-amber-100"
+        }`}>
+          {row.type}
+        </div>
+      ),
       width: "120px",
     },
     {
       name: "Title",
-      selector: (row) => row.title,
+      selector: (row) => (
+        <div className="flex flex-col">
+          <span className="font-bold text-gray-800 uppercase text-[13px] tracking-tight">{row.title}</span>
+          <span className="text-[10px] text-gray-400 font-medium">{row.institute?.username}</span>
+        </div>
+      ),
       wrap: true,
-      width: "250px",
+      grow: 2,
     },
     {
       name: "Program",
-      selector: (row) => row.program,
-      width: "100px",
-    },
-    {
-      name: "Session",
-      selector: (row) => row.session,
+      cell: (row) => <span className="text-[11px] font-black uppercase text-gray-500">{row.program}</span>,
       width: "120px",
     },
     {
-      name: "Total Fee",
-      selector: (row) =>
-        row?.departmentFees?.reduce(
-          (sum, item) => sum + (item?.totalFee || 0),
-          0
-        ) ?? "N/A",
+      name: "Avg. Fee",
+      cell: (row) => {
+        const total = row?.departmentFees?.reduce((sum, item) => sum + (item?.totalFee || 0), 0) || 0;
+        return <span className="font-black text-blue-600">৳ {total}</span>;
+      },
       width: "120px",
     },
     {
-      name: "Update",
-      cell: (row) =>
-        <UpdateButton />,
-      width: "100px",
-    },
-    {
-      name: "Delete",
+      name: "Actions",
       cell: (row) => (
-        <DeleteButton deleteApi={servicesActions + row._id} />
+        <div className="flex items-center gap-2">
+          <UpdateButton id={row._id} /> 
+          <DeleteButton deleteApi={servicesActions + row._id} />
+        </div>
       ),
-      width: "100px",
+      width: "140px",
     },
   ];
 
+  // ড্রপডাউন বা এক্সপ্যান্ডেড ফী ব্রেকডাউন ডিজাইন
   const FeeBreakdown = ({ data }) => {
-     
     return (
-      <div className="p-3 bg-blue-50 rounded-md">
-        <h4 className="font-semibold text-blue-700 mb-2">
-          📊 ডিপার্টমেন্ট অনুযায়ী ফী - <span>{data.institute?.username}</span>
-        </h4>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm border border-blue-200 rounded">
-            <thead>
-              <tr className="bg-blue-200 text-blue-700">
-                <th className="border p-2">Department</th>
-                <th className="border p-2">College Fee</th>
-                <th className="border p-2">Subject Fee</th>
-                <th className="border p-2">Charge Fee</th>
-                <th className="border p-2">Total Fee</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white">
-              {data.departmentFees?.map((item, index) => (
-                <tr key={index}>
-                  <td className="border p-2">{item.department}</td>
-                  <td className="border p-2">{item.collegeFee}</td>
-                  <td className="border p-2">{item.subjectFee}</td>
-                  <td className="border p-2">{item.chargeFee}</td>
-                  <td className="border p-2">{item.totalFee}</td>
+      <div className="p-6 bg-gray-50/50 border-b border-gray-100 animate-in slide-in-from-top-2 duration-300">
+        <div className="bg-white rounded-[1.5rem] shadow-sm border border-blue-50 overflow-hidden">
+          <div className="px-5 py-3 bg-blue-600 flex justify-between items-center text-white">
+            <h4 className="text-[11px] font-black uppercase tracking-widest flex items-center gap-2">
+              <CreditCard size={14} /> ফী ব্রেকডাউন (ডিপার্টমেন্ট ভিত্তিক)
+            </h4>
+            <span className="text-[10px] font-bold bg-white/20 px-2 py-1 rounded-md">{data.title}</span>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="bg-blue-50/50 text-[10px] font-black uppercase text-blue-400 tracking-wider">
+                  <th className="px-5 py-3">Department</th>
+                  <th className="px-5 py-3 text-center">College Fee</th>
+                  <th className="px-5 py-3 text-center">Subject Fee</th>
+                  <th className="px-5 py-3 text-center">Charge</th>
+                  <th className="px-5 py-3 text-right">Total Fee</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {data.departmentFees?.map((item, index) => (
+                  <tr key={index} className="hover:bg-blue-50/30 transition-colors">
+                    <td className="px-5 py-3 text-xs font-bold text-gray-700">{item.department}</td>
+                    <td className="px-5 py-3 text-xs text-center font-medium text-gray-500">৳{item.collegeFee}</td>
+                    <td className="px-5 py-3 text-xs text-center font-medium text-gray-500">৳{item.subjectFee}</td>
+                    <td className="px-5 py-3 text-xs text-center font-medium text-gray-500">৳{item.chargeFee}</td>
+                    <td className="px-5 py-3 text-xs text-right font-black text-gray-900 underline decoration-blue-200">৳{item.totalFee}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     );
   };
 
   return (
-    <div className="w-full md:w-[90%] m-auto my-10  ">
+    <div className="w-full space-y-4">
       <ServicesOverview />
-      <DataTable
-        title={
-          <span className="text-xl font-semibold text-gray-700">
-            📋 Services List
-          </span>
-        }
-        columns={columns}
-        data={servicesData}
-        pagination
-        responsive
-        highlightOnHover
-        expandableRows
-        expandableRowsComponent={FeeBreakdown}
-        customStyles={{
-          headCells: {
-            style: {
-              backgroundColor: "#f3f4f6",
-              fontWeight: "bold",
+      
+      <div className="bg-white rounded-[2rem] shadow-xl shadow-blue-50/50 border border-gray-100 overflow-hidden">
+        <DataTable
+          columns={columns}
+          data={servicesData}
+          pagination
+          responsive
+          highlightOnHover
+          expandableRows
+          expandableRowsComponent={FeeBreakdown}
+          customStyles={{
+            table: {
+              style: {
+                backgroundColor: "#ffffff",
+              },
             },
-          },
-          rows: {
-            style: {
-              borderBottom: "1px solid #e5e7eb",
+            headRow: {
+              style: {
+                backgroundColor: "#fcfdfe",
+                borderBottom: "1px solid #f1f5f9",
+                minHeight: "56px",
+              },
             },
-          },
-        }}
-      />
+            headCells: {
+              style: {
+                fontSize: "10px",
+                fontWeight: "900",
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+                color: "#94a3b8",
+              },
+            },
+            rows: {
+              style: {
+                minHeight: "70px",
+                cursor: "pointer",
+                transition: "all 0.2s",
+                "&:hover": {
+                  backgroundColor: "#f8fafc",
+                },
+              },
+            },
+            pagination: {
+              style: {
+                borderTop: "1px solid #f1f5f9",
+                padding: "10px",
+                fontSize: "12px",
+                fontWeight: "bold",
+              },
+            },
+          }}
+        />
+      </div>
     </div>
   );
 }

@@ -5,86 +5,38 @@ import { orderPostGetall } from '@/constans';
 import { globalContext } from '@/contextApi/ContextApi';
 import Spinner from '@/utilities/Spinner';
 import React, { useContext, useEffect, useState } from 'react';
-import { CashoutChargeCalculator } from './CashoutChargeCalculator';
-import { Button } from '@/components/ui/button';
+import { CashoutChargeCalculator } from './CashoutChargeCalculator'; 
+import { CheckCircle2, Info, Copy, Wallet } from 'lucide-react';
 
-// Receiving Number (Defined once)
 const RECEIVING_NUMBER = "01321040273";
 
-// Payment Methods
 const paymentMethods = [
+    { value: 'Rocket', label: 'রকেট (Rocket) - ক্যাশআউট চার্জ ফ্রি' },
     { value: 'Bkash', label: 'বিকাশ (bKash)' },
     { value: 'Nagad', label: 'নগদ (Nagad)' },
-    { value: 'Rocket', label: 'রকেট (Rocket)' },
-];
+]; 
 
-// Reusable Copyable Number Display Component
 const CopyableNumberDisplay = ({ number }) => {
     const [isCopied, setIsCopied] = useState(false);
-
     const handleCopy = async () => {
         try {
             await navigator.clipboard.writeText(number);
             setIsCopied(true);
             setTimeout(() => setIsCopied(false), 2000);
-        } catch (err) {
-            console.error('Failed to copy text: ', err);
-        }
+        } catch (err) { console.error('Failed to copy', err); }
     };
 
     return (
-        <div
-            className="flex items-center justify-center  border-2 border-dashed border-green-500 rounded-lg bg-green-50 cursor-pointer hover:bg-green-100 transition-all relative"
-            onClick={handleCopy}
-            title="কপি করতে ক্লিক করুন"
-        >
-            <span className="text-xl font-extrabold text-green-700 select-none">
-                {number}
-            </span>
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-5 h-5 ml-3 text-green-600"
-            >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75" />
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12.75 16.5H18a2.25 2.25 0 0 0 2.25-2.25V7.5a2.25 2.25 0 0 0-2.25-2.25H12.75V16.5Z" />
-            </svg>
-            {isCopied && (
-                <span className="absolute top-0 right-0 transform translate-x-1/4 -translate-y-1/2 bg-green-600 text-white text-xs px-2 py-0.5 rounded-full shadow-lg whitespace-nowrap z-10 animate-pulse">
-                    কপি!
-                </span>
-            )}
+        <div className="flex items-center justify-center border-2 border-dashed border-green-500 rounded-xl bg-green-50 cursor-pointer hover:bg-green-100 transition-all relative p-3" onClick={handleCopy}>
+            <span className="text-2xl font-black text-green-700">{number}</span>
+            <Copy size={20} className="ml-3 text-green-600" />
+            {isCopied && <span className="absolute -top-3 bg-green-600 text-white text-[10px] px-2 py-1 rounded-full animate-bounce">কপি হয়েছে!</span>}
         </div>
     );
 };
 
-
 export default function PaymentProccess() {
-
-    const {
-        showToast,
-        isProfileMatch,
-        orderDataForPayment
-    } = useContext(globalContext);
-
-    const amountToPay = orderDataForPayment?.totalFee || 0;
-    const chasOutCharge = CashoutChargeCalculator(amountToPay);
-
-    const handlePaymentDetails = () => {
-        alert(`
-            কলেজ ফী: ${orderDataForPayment.collegeFee}
-            প্রতি সাবজেক্ট: ${orderDataForPayment.subjectFee}
-            সার্ভিস চার্জ: ${orderDataForPayment.chargeFee} 
-            মোট ফী: ${amountToPay}
-            ----------------------
-             ক্যাশ আউট চার্জ: ${chasOutCharge}
-              --------------------------
-             সর্বমোট: ${amountToPay + chasOutCharge} টাকা 
-            `)
-    }
+    const { showToast, isProfileMatch, orderDataForPayment } = useContext(globalContext);
 
     const [formData, setFormData] = useState({
         method: '',
@@ -93,235 +45,204 @@ export default function PaymentProccess() {
         txnId: '',
     });
 
-
-
     const [waiting, setWaiting] = useState(false);
     const [localMessage, setLocalMessage] = useState({ text: '', type: '' });
 
+    // --- 📌 স্মার্ট ক্যালকুলেশন লজিক ---
+    const baseAmount = orderDataForPayment?.totalFee || 0;
+    
+    // ১. আপনার খরচ: রকেট বিলার চার্জ (হাজারে ১৩ টাকা) যা সবার থেকে নেওয়া হবে
+    const rocketBillerCharge = Math.ceil((baseAmount / 1000) * 13);
+    const netServiceFee = baseAmount + rocketBillerCharge;
 
+    // ২. ইউজারের খরচ: বিকাশ/নগদ হলে ক্যাশআউট চার্জ যোগ হবে (হাজারে ১৮.৫০ টাকা)
+    const cashoutExtra = CashoutChargeCalculator(netServiceFee);
+
+    // ৩. ফাইনাল প্রদেয় টাকা
+    const totalPayable = (formData.method === 'Bkash' || formData.method === 'Nagad') 
+        ? (netServiceFee + cashoutExtra) 
+        : netServiceFee;
+
+    // ৪. সাশ্রয় (বিকাশ/নগদ বনাম রকেট)
+    const userSavings = (formData.method === 'Rocket') ? cashoutExtra : 0;
+
+    // মেথড পাল্টালে অটোমেটিক অ্যামাউন্ট আপডেট
     useEffect(() => {
-        setFormData((prev) => ({
-            ...prev,
-            amount: Number(amountToPay)
-        }));
-    }, [amountToPay]);
-
-
-
+        if (baseAmount > 0 && formData.method) {
+            setFormData(prev => ({ ...prev, amount: totalPayable }));
+        }
+    }, [formData.method, baseAmount, totalPayable]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prevData => ({
-            ...prevData,
-            [name]: value
-        }));
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handlePaymentDetails = () => {
+        alert(`
+            আবেদন ফি: ${baseAmount}৳
+            পেমেন্ট প্রসেসিং ফি: ${rocketBillerCharge}৳
+            --------------------------
+            নিট ফি: ${netServiceFee}৳
+            ${formData.method === 'Rocket' ? 'ক্যাশআউট চার্জ: ০৳ (রকেট স্পেশাল)' : `ক্যাশআউট চার্জ: ${cashoutExtra}৳`}
+            --------------------------
+            সর্বমোট প্রদেয়: ${totalPayable}৳
+        `);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // ১. পেমেন্ট ফিল্ড ভ্যালিডেশন
         if (!formData.method || !formData.amount || !formData.senderNumber || !formData.txnId) {
-            showToast("error", "অনুগ্রহ করে পেমেন্ট ডিটেইলসের সকল ফিল্ড পূরণ করুন।");
+            showToast("error", "সবগুলো ফিল্ড সঠিকভাবে পূরণ করুন।");
+            return;
+        }
+        if (parseFloat(formData.amount) < totalPayable) {
+            showToast("error", `অ্যামাউন্ট ৳${totalPayable} এর কম হওয়া যাবে না।`);
             return;
         }
 
-        // ২. টাকার পরিমাণের ভ্যালিডেশন (Amount Validation)
-        const submittedAmount = parseFloat(formData.amount);
-        if (submittedAmount < amountToPay) {
-            showToast("error", `প্রদেয় টাকার পরিমাণ ৳${amountToPay} এর কম হতে পারবে না।`);
-            return;
-        }
-
-        // ৩. আপনার মূল অর্ডারের ভ্যালিডেশন
-        if (!orderDataForPayment) {
-            showToast("error", "দয়া করে একটি বিভাগ নির্বাচন করুন।");
-            return;
-        }
-
-        // ৪. সব ঠিক থাকলে সাবমিট শুরু
         setWaiting(true);
-
         try {
-            const body = {
-                ...orderDataForPayment,
-                payment: formData
-            }
-
-            const payload = {
-                method: "POST",
-                endpoint: orderPostGetall,
-                body: body
+            const body = { 
+                ...orderDataForPayment, 
+                payment: formData, 
+                calculatedTotal: totalPayable 
             };
-
+            const payload = { method: "POST", endpoint: orderPostGetall, body: body };
             const { status, data } = await PostAction(payload);
-
-            showToast(status, data || "মেসেজ খুঁজে পাওয়া যায়নি");
-
-            setLocalMessage({ text: data.message || "পেমেন্ট তথ্য সফলভাবে জমা দেওয়া হয়েছে।", type: status });
-
-
-
-            // ফর্ম রিসেট
-            // setFormData({
-            //     method: '',
-            //     amount: '',
-            //     senderNumber: '',
-            //     trxId: '',
-            // });
-
-
-
+            showToast(status, data.message || "পেমেন্ট সফলভাবে জমা হয়েছে");
+            setLocalMessage({ text: data.message || "আপনার তথ্য সফলভাবে জমা দেওয়া হয়েছে।", type: status });
         } catch (error) {
-            console.error("Payment submission failed:", error);
-            showToast("error", error.message || "পেমেন্ট জমা দিতে সমস্যা হয়েছে।");
-            setLocalMessage({ text: "পেমেন্ট জমা দিতে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।", type: "error" });
+            showToast("error", "সার্ভারে সমস্যা হচ্ছে।");
         } finally {
             setWaiting(false);
         }
     };
 
-
     return (
-        <div className="my-10 max-w-xl mx-2 md:mx-auto p-2 md:p-6 bg-white shadow-lg rounded-xl border border-blue-200">
-            <h2 className="text-2xl font-bold mb-6 text-center text-blue-600">ম্যানুয়াল পেমেন্ট ফর্ম</h2>
-
-            {/* Total Amount Display */}
-            <div className="mb-6 p-4 bg-blue-50 border border-blue-300 rounded-lg text-center">
-                <p className="text-lg font-semibold text-gray-700">
-                    আপনাকে মোট পরিশোধ করতে হবে:
-                </p>
-                <p className="text-3xl font-extrabold text-blue-600 mt-1">
-                    ৳ {(amountToPay + chasOutCharge).toLocaleString('bn-BD')}
-                </p>
-
-                <Button onClick={handlePaymentDetails} className=' my-3 bg-blue-600 text-white rounded-md text-sm cursor-pointer '> পেমেন্ট বিবরণ </Button>
+        <div className="my-10 max-w-xl mx-2 md:mx-auto p-4 md:p-8 bg-white shadow-2xl rounded-3xl border border-blue-50 relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-4 opacity-10">
+                <Wallet size={80} />
             </div>
 
-            {/* Receiving Number Section */}
-            <div className="mb-6 p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded-md">
-                <p className="font-semibold text-lg text-gray-800 mb-2 text-center">
-                    টাকা পাঠানোর জন্য <span className="text-red-500">আমাদের একাউন্ট নম্বর:</span>
-                </p>
-                <CopyableNumberDisplay number={RECEIVING_NUMBER} />
-                <p className="text-sm text-center text-gray-600 mt-2">
-                    অনুগ্রহ করে এই নম্বরে আপনার পেমেন্টটি সম্পন্ন করুন <span className='text-red-500 font-bold'>(শুধুমাত্র- Send Money)</span> এবং ট্রানজেকশন আইডিটি নিচে জমা দিন।
-                </p>
-            </div>
+            <h2 className="text-2xl font-extrabold mb-8 text-blue-800 flex items-center gap-2">
+                <CheckCircle2 className="text-green-500" /> পেমেন্ট প্রক্রিয়া
+            </h2>
 
-            {/* --- */}
-
-            {/* ফিডব্যাক মেসেজ */}
-            {localMessage.text && (
-                <div
-                    className={`p-3 mb-4 rounded-lg ${localMessage.type === 'success' ? 'bg-green-100 text-green-700 border border-green-300' : 'bg-red-100 text-red-700 border border-red-300'
-                        }`}
-                >
-                    {localMessage.text}
+            {/* Total Amount Card */}
+            <div className="mb-8 p-6 bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 rounded-2xl text-white shadow-xl">
+                <div className="flex justify-between items-start">
+                    <div>
+                        <p className="text-xs uppercase tracking-widest opacity-70 font-bold">Total Payable Amount</p>
+                        <p className="text-4xl font-black mt-1">৳ {totalPayable.toLocaleString('bn-BD')}</p>
+                    </div>
+                    <button onClick={handlePaymentDetails} className="bg-white/20 p-2 rounded-full hover:bg-white/30 transition-all">
+                        <Info size={18} />
+                    </button>
                 </div>
-            )}
+
+                {/* Savings Alert */}
+                {formData.method === 'Rocket' && userSavings > 0 && (
+                    <div className="mt-4 py-2 px-3 bg-green-400/20 border border-green-400/30 rounded-lg flex items-center gap-2 text-[12px] font-medium text-green-100">
+                        <span className="bg-green-500 text-white px-1.5 py-0.5 rounded text-[10px] font-bold">SAVINGS</span>
+                        রকেটে ক্যাশআউট চার্জ নেই! আপনার ৳{userSavings} বেঁচে গেল।
+                    </div>
+                )}
+            </div>
+
+            {/* Account Info Box */}
+            <div className="mb-8 space-y-4">
+                <div className="p-4 bg-orange-50 border border-orange-100 rounded-2xl">
+                    <p className="text-sm font-bold text-orange-900 mb-3 text-center flex items-center justify-center gap-2">
+                         এই নম্বরে টাকা পাঠান (Send Money)
+                    </p>
+                    <CopyableNumberDisplay number={RECEIVING_NUMBER} />
+                </div>
+                <p className="text-[11px] text-gray-500 text-center italic">
+                    বি:দ্র: রকেটে পেমেন্ট করলে হাজারে ১৮.৫০ টাকা ক্যাশআউট চার্জ দিতে হবে না।
+                </p>
+            </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
-
-                {/* 1. Payment Method Selection (Dropdown) */}
-                <div>
-                    <label htmlFor="method" className="block text-sm font-medium text-gray-700 mb-1">
-                        পেমেন্ট মেথড নির্বাচন করুন <span className="text-red-500">*</span>
-                    </label>
+                {/* Method Selector */}
+                <div className="grid grid-cols-1 gap-4">
+                    <label className="text-xs font-bold text-gray-500 ml-1 uppercase">পেমেন্ট মাধ্যম নির্বাচন করুন</label>
                     <select
-                        id="method"
                         name="method"
                         value={formData.method}
                         onChange={handleChange}
                         required
-                        className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 transition duration-150 ease-in-out bg-white"
+                        className="w-full p-4 border-2 border-gray-100 rounded-xl focus:border-blue-500 outline-none transition-all appearance-none bg-gray-50 font-medium"
                     >
-                        <option value="" disabled>-- নির্বাচন করুন --</option>
-                        {paymentMethods.map(method => (
-                            <option key={method.value} value={method.value}>
-                                {method.label}
-                            </option>
-                        ))}
+                        <option value="">-- মেথড সিলেক্ট করুন --</option>
+                        {paymentMethods.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
                     </select>
                 </div>
 
-                {/* 2. Amount - User Input */}
+                {/* Amount Input */}
                 <div>
-                    <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-1">
-                        আপনার পাঠানো টাকার পরিমাণ (Amount) <span className="text-red-500">*</span>
-                    </label>
+                    <label className="text-xs font-bold text-gray-500 ml-1 uppercase">পাঠানো টাকার পরিমাণ</label>
                     <input
                         type="number"
-                        id="amount"
                         name="amount"
                         value={formData.amount}
-                        onChange={handleChange}
-                        required
-                        min={amountToPay}
-                        placeholder={`ন্যূনতম ${amountToPay} টাকা`}
-                        className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 transition duration-150 ease-in-out"
+                        readOnly
+                        className="w-full p-4 border-2 border-gray-100 rounded-xl bg-gray-50 font-black text-blue-700 text-xl cursor-not-allowed"
                     />
-                    {/* Dynamic validation hint */}
-                    {formData.amount && parseFloat(formData.amount) < amountToPay && (
-                        <p className="text-sm text-red-600 mt-1">প্রদেয় টাকার পরিমাণ ৳{amountToPay} এর কম।</p>
-                    )}
                 </div>
 
-                {/* 3. Sender Number */}
-                <div>
-                    <label htmlFor="senderNumber" className="block text-sm font-medium text-gray-700 mb-1">
-                        যে নম্বর থেকে টাকা পাঠানো হয়েছে <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                        type="text"
-                        id="senderNumber"
-                        name="senderNumber"
-                        value={formData.senderNumber}
-                        onChange={handleChange}
-                        required
-                        pattern="^01[3-9]\d{8}$"
-                        placeholder="যেমন: ০১৭********"
-                        className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 transition duration-150 ease-in-out"
-                    />
-                    <p className="text-xs text-gray-500 mt-1">অনুগ্রহ করে পেমেন্ট করার সময় ব্যবহৃত সম্পূর্ণ নম্বরটি দিন।</p>
+                {/* Sender & Txn */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label className="text-xs font-bold text-gray-500 ml-1 uppercase">আপনার নম্বর</label>
+                        <input 
+                            type="text" 
+                            name="senderNumber" 
+                            placeholder="017xxxxxxxx" 
+                            onChange={handleChange} 
+                            required 
+                            className="w-full p-4 border-2 border-gray-100 rounded-xl outline-none focus:border-blue-400 font-medium transition-all" 
+                        />
+                    </div>
+                    <div>
+                        <label className="text-xs font-bold text-gray-500 ml-1 uppercase">ট্রানজেকশন আইডি (TrxID)</label>
+                        <input 
+                            type="text" 
+                            name="txnId" 
+                            placeholder="F3G4H5J6K7" 
+                            onChange={handleChange} 
+                            required 
+                            className="w-full p-4 border-2 border-gray-100 rounded-xl outline-none focus:border-blue-400 font-medium transition-all uppercase" 
+                        />
+                    </div>
                 </div>
 
-                {/* 4. txnId */}
-                <div>
-                    <label htmlFor="txnId" className="block text-sm font-medium text-gray-700 mb-1">
-                        ট্রানজেকশন আইডি (txnId) <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                        type="text"
-                        id="txnId"
-                        name="txnId"
-                        value={formData.txnId}
-                        onChange={handleChange}
-                        required
-                        placeholder="TrxID, যেমন: F3G4H5J6K7"
-                        className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 transition duration-150 ease-in-out"
-                    />
-                    <p className="text-xs text-gray-500 mt-1">পেমেন্ট সফল হলে আপনার মেসেজে এই আইডিটি পাবেন।</p>
-                </div>
+                {/* Error/Success Local Message */}
+                {localMessage.text && (
+                    <div className={`p-4 rounded-xl text-sm font-medium ${localMessage.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                        {localMessage.text}
+                    </div>
+                )}
 
-                {/* Submit Button */}
+                {/* Final Button */}
                 <button
                     type="submit"
-                    className={`w-full text-sm ${isProfileMatch ? "bg-blue-600 hover:bg-blue-700" : "bg-red-600 hover:bg-red-700"} text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-200 ease-in-out transform hover:scale-[1.01]`}
-                    disabled={waiting}
+                    disabled={waiting || !isProfileMatch || !formData.method}
+                    className={`w-full py-5 rounded-2xl font-black text-lg text-white shadow-2xl transition-all flex items-center justify-center gap-2 ${
+                        isProfileMatch && formData.method ? "bg-blue-600 hover:bg-blue-700 active:scale-95 shadow-blue-200" : "bg-gray-300 cursor-not-allowed"
+                    }`}
                 >
-                    {waiting ? <Spinner /> : "পেমেন্ট নিশ্চিত করুন"}
+                    {waiting ? <Spinner /> : (
+                        <>আবেদন নিশ্চিত করুন <span className="opacity-50">|</span> ৳{totalPayable}</>
+                    )}
                 </button>
-                {
-                    !isProfileMatch &&
-                    <small className='my-2 font-medium text-red-500'>
-                        আপনার বিভাগের সাথে মিলেনি!
-                    </small>}
-            </form>
 
-            <div className="mt-6 pt-4 border-t text-sm text-gray-600 text-center">
-                <p>⚠️ দ্রষ্টব্য: এই তথ্যগুলি জমা দেওয়ার পর কর্তৃপক্ষ ম্যানুয়ালি যাচাই করবে।</p>
-            </div>
+                {!isProfileMatch && (
+                    <p className="text-center text-red-500 text-xs font-bold animate-pulse uppercase">
+                        ⚠️ প্রোফাইল ও বিভাগের তথ্য মিলেনি!
+                    </p>
+                )}
+            </form>
         </div>
     );
 }
