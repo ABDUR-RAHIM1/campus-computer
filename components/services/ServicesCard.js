@@ -7,10 +7,16 @@ import {
     Table,
     TableBody,
     TableCell,
-    TableHead,
-    TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger, 
+} from "@/components/ui/tooltip";
+import { GraduationCap, Building2, FileText, ArrowRightCircle, Info, Paperclip } from "lucide-react";
+import { rocketBillerChargeCalculate } from "@/app/(profile)/profile/create-order/CashoutChargeCalculator";
 
 export default function ServicesCard({ servicesData }) {
     const router = useRouter();
@@ -18,15 +24,12 @@ export default function ServicesCard({ servicesData }) {
     const { setServiceData } = useContext(globalContext);
 
     const colors = [
-        { bg: "from-blue-50 to-blue-100", text: "text-blue-700", desc: "text-blue-600" },
-        { bg: "from-green-50 to-green-100", text: "text-green-700", desc: "text-green-600" },
-        { bg: "from-yellow-50 to-yellow-100", text: "text-yellow-700", desc: "text-yellow-600" },
-        { bg: "from-purple-50 to-purple-100", text: "text-purple-700", desc: "text-purple-600" },
-        { bg: "from-pink-50 to-pink-100", text: "text-pink-700", desc: "text-pink-600" },
-        { bg: "from-indigo-50 to-indigo-100", text: "text-indigo-700", desc: "text-indigo-600" },
+        { bg: "from-blue-50 to-blue-100", border: "border-blue-200", text: "text-blue-700", accent: "bg-blue-600" },
+        { bg: "from-emerald-50 to-emerald-100", border: "border-emerald-200", text: "text-emerald-700", accent: "bg-emerald-600" },
+        { bg: "from-violet-50 to-violet-100", border: "border-violet-200", text: "text-violet-700", accent: "bg-violet-600" },
+        { bg: "from-amber-50 to-amber-100", border: "border-amber-200", text: "text-amber-700", accent: "bg-amber-600" },
     ];
 
-   
     const handleNavigateToOrder = (data) => {
         if (pathName.startsWith("/profile")) {
             setServiceData(data);
@@ -37,94 +40,125 @@ export default function ServicesCard({ servicesData }) {
     };
 
     return (
-        <>
+        <TooltipProvider>
             {servicesData.map((service, index) => {
                 const color = colors[index % colors.length];
 
                 return (
                     <div
                         key={service._id}
-                        className={`block bg-gradient-to-br ${color.bg} border rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition p-5`}
+                        className={`block bg-gradient-to-br ${color.bg} border-2 ${color.border} rounded-[2rem] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-6 mb-6`}
                     >
-                        {/* Header */}
-                        <div className="mb-3">
-                            <h4 className={`text-lg font-bold ${color.text} flex items-center gap-1`}>
-                                📄 {service.title}
-                            </h4>
-                            <p className={`${color.desc} text-sm mt-1`}>
-                                {service.description}
-                            </p>
-                        </div>
-
-                        {/* Meta Info */}
-                        <div className="my-3 flex items-center justify-between flex-wrap gap-3">
-                            <p className="text-xs text-gray-600">
-                                🎓 {service.program.toUpperCase()} | 📅 {service.session}
-                            </p>
-
-                            <div
-                                className={`py-1 px-3 text-xs rounded-full ${service.type === "নিয়মিত"
-                                    ? "bg-green-100 text-green-600"
-                                    : "bg-red-100 text-red-500"
-                                    }`}
-                            >
+                        {/* Header Section */}
+                        <div className="flex flex-col items-start gap-3 mb-5">
+                            <div className={`px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${service.type !== "improvement_form_fillup" ? "bg-green-600 text-white" : "bg-red-500 text-white"}`}>
                                 {service.type}
                             </div>
+
+                            <div className="space-y-1">
+                                <h4 className={`text-xl font-black ${color.text} flex items-start gap-2 leading-tight`}>
+                                    <FileText size={26} className="shrink-0 mt-1" />
+                                    {service.title}
+                                </h4>
+                                <p className="text-gray-600 text-sm font-medium leading-relaxed pl-1">
+                                    {service.description}
+                                </p>
+                            </div>
                         </div>
-
-                        {/* NEW FIELD — Institute Name */}
-                        <div className="bg-white p-3 rounded-lg border mb-4">
-                            <p className="text-sm font-medium text-gray-700">🏫 প্রতিষ্ঠান:</p>
-                            <p className="text-sm text-gray-600 mt-1">{service?.institute?.username || "N/A"}</p>
+                        {/* Meta Info Grid */}
+                        <div className="grid grid-cols-2 gap-3 mb-6">
+                            <div className="bg-white/60 p-3 rounded-2xl border border-white/50 flex items-center gap-2">
+                                <GraduationCap size={16} className="text-gray-400" />
+                                <p className="text-xs font-bold text-gray-700">{service.program?.toUpperCase()}</p>
+                            </div>
+                            <div title={service?.institute?.username || "N/A"} className="bg-white/60 p-3 rounded-2xl border border-white/50 flex items-center gap-2 overflow-hidden">
+                                <Building2 size={16} className="text-gray-400 shrink-0" />
+                                <p className="text-xs font-bold text-gray-700 truncate">{service?.institute?.username || "N/A"}</p>
+                            </div>
                         </div>
-
-                        {/* Department Fees */}
-                        <div className="mb-4">
-                            <h2 className="font-semibold text-center border p-2 rounded bg-white">
-                                বিভাগ অনুযায়ী ফি
-                            </h2>
-
+                        {/* 💰 Fees Table Section */}
+                        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm mb-5">
+                            <div className="bg-gray-50 px-4 py-2 flex justify-between items-center border-b border-gray-100">
+                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-tighter">বিভাগ ভিত্তিক ফি</span>
+                                <span className="text-[10px] font-black text-blue-600 uppercase flex items-center gap-1">
+                                    মোট ফি (বিস্তারিত <Info size={10} />)
+                                </span>
+                            </div>
                             <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead className="w-[100px]">বিভাগ</TableHead>
-                                        <TableHead>ফী</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-
                                 <TableBody>
-                                    {service?.departmentFees?.map((item, index) => (
-                                        <TableRow key={index} className="hover:bg-gray-50">
-                                            <TableCell>{item.department}</TableCell>
-                                            <TableCell>{item.collegeFee}</TableCell>
+                                    {service?.departmentFees?.map((item, i) => (
+                                        <TableRow key={i} className="hover:bg-gray-50/50 border-gray-50">
+                                            <TableCell className="py-2.5 text-xs font-bold text-gray-700">{item.department}</TableCell>
+                                            <TableCell className="py-2.5 text-xs font-black text-right">
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <span className="text-blue-700 cursor-help border-b border-dashed border-blue-300 pb-0.5">
+                                                            ৳{item.collegeFee + item.subjectFee}
+                                                        </span>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent className="bg-white p-4 rounded-xl border shadow-2xl w-64">
+                                                        <div className="space-y-2">
+                                                            <p className="text-xs font-black text-gray-800 border-b pb-2 mb-2 uppercase tracking-widest text-center">ফি ব্রেকডাউন</p>
+                                                            <div className="flex justify-between text-xs text-gray-600">
+                                                                <span>কলেজ ফি:</span>
+                                                                <span className="font-bold font-sans">৳{item.collegeFee || 0}</span>
+                                                            </div>
+                                                            <div className="flex justify-between text-xs text-gray-600">
+                                                                <span>সাবজেক্ট ফি:</span>
+                                                                <span className="font-bold font-sans">৳{item.subjectFee || 0}</span>
+                                                            </div>
+                                                            <div className="flex justify-between text-xs text-blue-600 bg-blue-50/50 p-1 rounded">
+                                                                <span className="font-medium">সার্ভিস চার্জ:</span>
+                                                                <span className="font-black font-sans">৳{item.chargeFee || 0}</span>
+                                                            </div>
+                                                            <div className="flex justify-between text-xs text-blue-600 bg-blue-50/50 p-1 rounded">
+                                                                <span className="font-medium">Biller চার্জ (রকেট):</span>
+                                                                <span className="font-black font-sans">৳{rocketBillerChargeCalculate(item.totalFee || 0)}</span>
+                                                            </div>
+                                                            <div className="border-t pt-2 flex justify-between text-sm font-black text-gray-800">
+                                                                <span> সর্বমোট প্রদেয়:</span>
+                                                                <span className="font-sans">৳{item.totalFee + rocketBillerChargeCalculate(item.totalFee || 0)}</span>
+                                                            </div>
+                                                            <p className="text-[9px] text-gray-400 italic mt-2 text-center leading-tight">
+                                                                * রকেট ছাড়া অন্য কোন মেথড ব্যবহার করে টাকা পাঠালে ক্যাশ আউট চার্জ অতিরিক্ত দিতে হবে।
+                                                            </p>
+                                                        </div>
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            </TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>
                             </Table>
                         </div>
 
-                        {/* Required Documents */}
+                        {/* 🖇️ Required Documents (ফিরিয়ে আনা হয়েছে) */}
                         {service.requiredDocuments?.length > 0 && (
-                            <div className="mb-4 bg-white p-3 rounded-lg border">
-                                <p className="font-semibold text-gray-700">📎 প্রয়োজনীয় ডকুমেন্ট:</p>
-                                <ul className="mt-3 text-sm text-gray-700 list-disc list-inside">
+                            <div className="mb-6 px-1">
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-1">
+                                    <Paperclip size={12} /> প্রয়োজনীয় ডকুমেন্ট
+                                </p>
+                                <div className="flex flex-wrap gap-2">
                                     {service.requiredDocuments.map((doc, i) => (
-                                        <li key={i}>{doc}</li>
+                                        <span key={i} className="bg-white/60 border border-white text-[10px] font-bold px-3 py-1.5 rounded-xl text-gray-600 shadow-sm italic">
+                                            #{doc}
+                                        </span>
                                     ))}
-                                </ul>
+                                </div>
                             </div>
                         )}
 
-                        {/* Button */}
+
+                        {/* Action Button */}
                         <Button
                             onClick={() => handleNavigateToOrder(service)}
-                            className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white"
+                            className={`w-full py-8 rounded-[1.5rem] font-black uppercase tracking-widest text-sm flex items-center justify-center gap-3 transition-all ${color.accent} hover:opacity-90 text-white shadow-xl shadow-gray-200 active:scale-[0.97]`}
                         >
-                            আবেদন করুন
+                            আবেদন শুরু করুন <ArrowRightCircle size={20} />
                         </Button>
                     </div>
                 );
             })}
-        </>
+        </TooltipProvider>
     );
 }

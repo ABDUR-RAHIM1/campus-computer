@@ -5,4 +5,11 @@ export const CashoutChargeCalculator = (amount) => {
     const totalCharged = Math.round(Number(amount) * chargeEveryTk)
     return totalCharged
 
+};
+
+
+export const rocketBillerChargeCalculate = (baseAmount) => {
+    return Math.ceil((baseAmount / 1000) * 15);
 }
+
+

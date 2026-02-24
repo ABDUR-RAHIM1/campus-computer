@@ -5,7 +5,7 @@ import { orderPostGetall } from '@/constans';
 import { globalContext } from '@/contextApi/ContextApi';
 import Spinner from '@/utilities/Spinner';
 import React, { useContext, useEffect, useState } from 'react';
-import { CashoutChargeCalculator } from './CashoutChargeCalculator'; 
+import { CashoutChargeCalculator, rocketBillerChargeCalculate } from './CashoutChargeCalculator';
 import { CheckCircle2, Info, Copy, Wallet } from 'lucide-react';
 
 const RECEIVING_NUMBER = "01321040273";
@@ -14,7 +14,7 @@ const paymentMethods = [
     { value: 'Rocket', label: 'রকেট (Rocket) - ক্যাশআউট চার্জ ফ্রি' },
     { value: 'Bkash', label: 'বিকাশ (bKash)' },
     { value: 'Nagad', label: 'নগদ (Nagad)' },
-]; 
+];
 
 const CopyableNumberDisplay = ({ number }) => {
     const [isCopied, setIsCopied] = useState(false);
@@ -50,17 +50,18 @@ export default function PaymentProccess() {
 
     // --- 📌 স্মার্ট ক্যালকুলেশন লজিক ---
     const baseAmount = orderDataForPayment?.totalFee || 0;
-    
+
     // ১. আপনার খরচ: রকেট বিলার চার্জ (হাজারে ১৩ টাকা) যা সবার থেকে নেওয়া হবে
-    const rocketBillerCharge = Math.ceil((baseAmount / 1000) * 13);
+    // const rocketBillerCharge = Math.ceil((baseAmount / 1000) * 13);
+    const rocketBillerCharge = rocketBillerChargeCalculate(baseAmount)
     const netServiceFee = baseAmount + rocketBillerCharge;
 
     // ২. ইউজারের খরচ: বিকাশ/নগদ হলে ক্যাশআউট চার্জ যোগ হবে (হাজারে ১৮.৫০ টাকা)
     const cashoutExtra = CashoutChargeCalculator(netServiceFee);
 
     // ৩. ফাইনাল প্রদেয় টাকা
-    const totalPayable = (formData.method === 'Bkash' || formData.method === 'Nagad') 
-        ? (netServiceFee + cashoutExtra) 
+    const totalPayable = (formData.method === 'Bkash' || formData.method === 'Nagad')
+        ? (netServiceFee + cashoutExtra)
         : netServiceFee;
 
     // ৪. সাশ্রয় (বিকাশ/নগদ বনাম রকেট)
@@ -103,10 +104,10 @@ export default function PaymentProccess() {
 
         setWaiting(true);
         try {
-            const body = { 
-                ...orderDataForPayment, 
-                payment: formData, 
-                calculatedTotal: totalPayable 
+            const body = {
+                ...orderDataForPayment,
+                payment: formData,
+                calculatedTotal: totalPayable
             };
             const payload = { method: "POST", endpoint: orderPostGetall, body: body };
             const { status, data } = await PostAction(payload);
@@ -154,7 +155,7 @@ export default function PaymentProccess() {
             <div className="mb-8 space-y-4">
                 <div className="p-4 bg-orange-50 border border-orange-100 rounded-2xl">
                     <p className="text-sm font-bold text-orange-900 mb-3 text-center flex items-center justify-center gap-2">
-                         এই নম্বরে টাকা পাঠান (Send Money)
+                        এই নম্বরে টাকা পাঠান (Send Money)
                     </p>
                     <CopyableNumberDisplay number={RECEIVING_NUMBER} />
                 </div>
@@ -195,24 +196,24 @@ export default function PaymentProccess() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label className="text-xs font-bold text-gray-500 ml-1 uppercase">আপনার নম্বর</label>
-                        <input 
-                            type="text" 
-                            name="senderNumber" 
-                            placeholder="017xxxxxxxx" 
-                            onChange={handleChange} 
-                            required 
-                            className="w-full p-4 border-2 border-gray-100 rounded-xl outline-none focus:border-blue-400 font-medium transition-all" 
+                        <input
+                            type="text"
+                            name="senderNumber"
+                            placeholder="017xxxxxxxx"
+                            onChange={handleChange}
+                            required
+                            className="w-full p-4 border-2 border-gray-100 rounded-xl outline-none focus:border-blue-400 font-medium transition-all"
                         />
                     </div>
                     <div>
                         <label className="text-xs font-bold text-gray-500 ml-1 uppercase">ট্রানজেকশন আইডি (TrxID)</label>
-                        <input 
-                            type="text" 
-                            name="txnId" 
-                            placeholder="F3G4H5J6K7" 
-                            onChange={handleChange} 
-                            required 
-                            className="w-full p-4 border-2 border-gray-100 rounded-xl outline-none focus:border-blue-400 font-medium transition-all uppercase" 
+                        <input
+                            type="text"
+                            name="txnId"
+                            placeholder="F3G4H5J6K7"
+                            onChange={handleChange}
+                            required
+                            className="w-full p-4 border-2 border-gray-100 rounded-xl outline-none focus:border-blue-400 font-medium transition-all uppercase"
                         />
                     </div>
                 </div>
@@ -228,9 +229,8 @@ export default function PaymentProccess() {
                 <button
                     type="submit"
                     disabled={waiting || !isProfileMatch || !formData.method}
-                    className={`w-full py-5 rounded-2xl font-black text-lg text-white shadow-2xl transition-all flex items-center justify-center gap-2 ${
-                        isProfileMatch && formData.method ? "bg-blue-600 hover:bg-blue-700 active:scale-95 shadow-blue-200" : "bg-gray-300 cursor-not-allowed"
-                    }`}
+                    className={`w-full py-5 rounded-2xl font-black text-lg text-white shadow-2xl transition-all flex items-center justify-center gap-2 ${isProfileMatch && formData.method ? "bg-blue-600 hover:bg-blue-700 active:scale-95 shadow-blue-200" : "bg-gray-300 cursor-not-allowed"
+                        }`}
                 >
                     {waiting ? <Spinner /> : (
                         <>আবেদন নিশ্চিত করুন <span className="opacity-50">|</span> ৳{totalPayable}</>
