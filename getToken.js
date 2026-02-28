@@ -1,6 +1,7 @@
 "use server"
 
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export const StudentToken = async () => {
     const cookieStore = await cookies();
@@ -9,6 +10,15 @@ export const StudentToken = async () => {
     return token;
 };
 
+
+// logout student
+export const logoutStudent = async () => {
+    const cookieStore = await cookies();
+
+    cookieStore.delete("student_token");
+    redirect("/student-login");
+
+ };
 
 export const AdminToken = async () => {
     const cookieStore = await cookies();

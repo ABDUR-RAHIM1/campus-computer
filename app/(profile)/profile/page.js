@@ -134,7 +134,7 @@ export default async function StudentProfile() {
 
                 {/* Right Side - Main Content (সার্ভিসগুলো সবসময় ভিজিবল থাকবে) */}
                 <div className="lg:col-span-2 space-y-6">
-                    <div className="bg-white shadow-xl shadow-blue-100/50 rounded-[2.5rem] p-8 border border-gray-50">
+                    <div className="bg-white shadow-xl shadow-blue-100/50 rounded-[2.5rem] p-3 md:p-8 border border-gray-50">
                         <div className="mb-6">
                             <h3 className="text-3xl font-black text-gray-900 tracking-tighter flex items-center gap-2">
                                 হ্যালো, {username || "শিক্ষার্থী"}! <span className="animate-bounce">👋</span>

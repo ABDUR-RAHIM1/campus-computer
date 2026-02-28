@@ -16,23 +16,19 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog";
 import InputField from "@/utilities/InputField";
 import TextareaField from "@/utilities/TextareaField";
 import SelectField from "@/utilities/SelectField";
 import Spinner from "@/utilities/Spinner";
-import { Plus, Trash2, Save, GraduationCap, Archive } from "lucide-react";
-import { rocketBillerChargeCalculate } from "@/app/(profile)/profile/create-order/CashoutChargeCalculator";
+import { Trash2, Save, GraduationCap, Archive } from "lucide-react";
 
-// যদি এডিট করতে চান তবে initialData প্রপস হিসেবে পাঠাতে পারেন
-export default function AddServicePage({ initialData = null }) {
+export default function AddServicePage({ initialData = null, open, setOpen, refreshData }) {
     const { showToast } = useContext(globalContext);
     const [departments, setDepartments] = useState([]);
     const [year, setYear] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [institutes, setInstitutes] = useState([]);
-    const [open, setOpen] = useState(false);
 
     const [deparmentData, setDepartmentData] = useState({
         department: "",
@@ -40,10 +36,9 @@ export default function AddServicePage({ initialData = null }) {
         subjectFee: 0,
         chargeFee: 0,
         processingFee: 0,
-        rocketBillerCharge: 0,
         totalFee: 0,
     });
-    console.log(deparmentData)
+console.log(deparmentData)
     const [formData, setFormData] = useState({
         type: "",
         institute: "",
@@ -55,7 +50,7 @@ export default function AddServicePage({ initialData = null }) {
         requiredDocuments: "",
     });
 
-    // 🔄 আগের ডাটা লোড করার জন্য useEffect
+    // 🔄 initialData থাকলে ফর্ম ফিল আপ হবে, না থাকলে রিসেট হবে
     useEffect(() => {
         if (initialData) {
             setFormData({
@@ -65,17 +60,21 @@ export default function AddServicePage({ initialData = null }) {
                     ? initialData.requiredDocuments.join(", ")
                     : initialData.requiredDocuments
             });
+        } else {
+            setFormData({
+                type: "",
+                institute: "",
+                title: "",
+                description: "",
+                program: "",
+                departmentFees: [],
+                classYear: "",
+                requiredDocuments: "",
+            });
         }
-    }, [initialData]);
+    }, [initialData, open]);
 
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: type === "checkbox" ? checked : value,
-        }));
-    };
-
+    // ইন্সটিটিউট লিস্ট লোড করা
     useEffect(() => {
         const getData = async () => {
             const { status, data } = await getAllSubAdmins();
@@ -90,25 +89,22 @@ export default function AddServicePage({ initialData = null }) {
         getData();
     }, []);
 
-   
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: type === "checkbox" ? checked : value,
+        }));
+    };
+
     const handleDepartmentChange = (e) => {
         const { name, value } = e.target;
         const newData = { ...deparmentData, [name]: value };
-
-        // ১. সব ফি গুলোর সাব-টোটাল (বিলার চার্জ ছাড়া)
-        const subTotal = Number(newData.collegeFee || 0) +
-            Number(newData.subjectFee || 0) +
-            Number(newData.processingFee || 0) +
-            Number(newData.chargeFee || 0);
-
-        const billerCharge = rocketBillerChargeCalculate(subTotal);
-        newData.rocketBillerCharge = billerCharge;
-
-        newData.totalFee = subTotal + billerCharge;
-
+        newData.totalFee = Number(newData.collegeFee) + Number(newData.subjectFee) + Number(newData.chargeFee);
         setDepartmentData(newData);
     };
 
+    // প্রোগ্রাম অনুযায়ী ডিপার্টমেন্ট এবং বর্ষ ফিল্টার করা
     useEffect(() => {
         if (formData.program) {
             const filterdDeparment = getDepartmentsByProgram(formData.program);
@@ -124,7 +120,7 @@ export default function AddServicePage({ initialData = null }) {
             ...prev,
             departmentFees: [...prev.departmentFees, deparmentData]
         }));
-        // setDepartmentData({ department: "", collegeFee: 0, subjectFee: 0, chargeFee: 0, totalFee: 0 });
+        setDepartmentData({ department: "", collegeFee: 0, subjectFee: 0, chargeFee: 0, totalFee: 0 });
     };
 
     const handleRemoveFeeClick = (indexToRemove) => {
@@ -137,20 +133,25 @@ export default function AddServicePage({ initialData = null }) {
         setIsLoading(true);
         const finalData = {
             ...formData,
-            requiredDocuments: formData.requiredDocuments.split(",").map((doc) => doc.trim()),
+            requiredDocuments: typeof formData.requiredDocuments === 'string'
+                ? formData.requiredDocuments.split(",").map((doc) => doc.trim())
+                : formData.requiredDocuments,
         };
 
         try {
             const payload = {
-                method: initialData ? "PUT" : "POST", // যদি আগে ডাটা থাকে তবে PUT হবে
+                method: initialData ? "PUT" : "POST",
                 endpoint: initialData ? `${servicesPostGetAll}/${initialData._id}` : servicesPostGetAll,
                 body: finalData
             };
             const { status, data } = await PostActionAdmin(payload);
             showToast(status, data);
-            if (status === 200) setOpen(false);
+            if (status === 200) {
+                setOpen(false);
+                if (refreshData) refreshData(); // ডাটা রিফ্রেশ করার জন্য কলব্যাক
+            }
         } catch (error) {
-            console.log("failed to post services: ", error);
+            console.log("Failed to process service: ", error);
         } finally {
             setIsLoading(false);
         }
@@ -158,14 +159,6 @@ export default function AddServicePage({ initialData = null }) {
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-5 px-6 rounded-2xl flex items-center gap-2 shadow-lg shadow-blue-100 transition-all active:scale-95">
-                    {initialData ? <Archive size={20} /> : <Plus size={20} />}
-                    {initialData ? "সার্ভিস আপডেট করুন" : "সার্ভিস যুক্ত করুন"}
-                </Button>
-            </DialogTrigger>
-
-            {/* 📏 Width বাড়াতে max-w-4xl অথবা max-w-5xl ব্যবহার করুন */}
             <DialogContent className="max-w-4xl md:w-[90%] w-[95%] max-h-[95vh] overflow-hidden rounded-[2.5rem] p-0 border-none shadow-2xl flex flex-col">
 
                 <DialogHeader className="p-8 bg-blue-600 text-white flex-shrink-0">
@@ -174,11 +167,11 @@ export default function AddServicePage({ initialData = null }) {
                         {initialData ? "সার্ভিস আপডেট করুন" : "নতুন সার্ভিস যুক্ত করুন"}
                     </DialogTitle>
                     <p className="text-blue-100 text-sm font-bold uppercase tracking-widest mt-1 italic">
-                        সার্ভিস আইডি: {initialData?._id || "নতুন"}
+                        মোড: {initialData ? "এডিট সার্ভিস" : "ক্রিয়েট সার্ভিস"}
                     </p>
                 </DialogHeader>
 
-                <div className="p-4 space-y-8 overflow-y-auto flex-grow bg-white">
+                <div className="p-6 space-y-8 overflow-y-auto flex-grow bg-white">
                     {/* 📋 বেসিক ইনফো গ্রিড */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <SelectField
@@ -243,21 +236,14 @@ export default function AddServicePage({ initialData = null }) {
                         />
                     </div>
 
-                    {/* 💰 ফী সেটআপ সেকশন - আগের ডাটা সহ */}
-                    <div className="bg-blue-50/50 p-3 rounded-[2rem] border-2 border-dashed border-blue-100 space-y-6">
-                        <div className="flex justify-between items-center">
-                            <h3 className="text-sm font-black uppercase tracking-widest text-blue-600 flex items-center gap-2">
-                                <Save size={18} /> বিভাগ ও ফী লিস্ট
-                            </h3>
-                            <span className="text-[10px] bg-blue-600 text-white px-3 py-1 rounded-full font-bold uppercase">
-                                মোট বিভাগ: {formData.departmentFees.length}
-                            </span>
-                        </div>
+                    {/* 💰 ফী সেটআপ সেকশন */}
+                    <div className="bg-blue-50/50 p-5 rounded-[2rem] border-2 border-dashed border-blue-100 space-y-6">
+                        <h3 className="text-sm font-black uppercase tracking-widest text-blue-600 flex items-center gap-2">
+                            <Save size={18} /> বিভাগ ও ফী লিস্ট
+                        </h3>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-2 rounded-2xl shadow-sm">
-                            <div className="col-span-2">
-                                <SelectField label="বিভাগ" name="department" value={deparmentData.department} onChange={handleDepartmentChange} options={departments} />
-                            </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-white p-4 rounded-2xl shadow-sm">
+                            <SelectField label="বিভাগ" name="department" value={deparmentData.department} onChange={handleDepartmentChange} options={departments} />
 
                             <InputField label="কলেজ ফি" name="collegeFee" type="number" value={deparmentData.collegeFee} onChange={handleDepartmentChange} />
 
@@ -268,7 +254,7 @@ export default function AddServicePage({ initialData = null }) {
                             <InputField label="চার্জ ফি" name="chargeFee" type="number" value={deparmentData.chargeFee} onChange={handleDepartmentChange} />
                         </div>
 
-                        <Button type="button" onClick={handleAddMultipleDepartmentDataInformState} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl py-6 shadow-lg shadow-blue-100 transition-transform active:scale-[0.98]">
+                        <Button type="button" onClick={handleAddMultipleDepartmentDataInformState} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl py-6 shadow-lg transition-all active:scale-95">
                             তালিকায় ডাটা যুক্ত করুন
                         </Button>
 
@@ -288,7 +274,7 @@ export default function AddServicePage({ initialData = null }) {
                                                 <TableCell className="font-bold text-gray-700 uppercase text-xs">{d.department}</TableCell>
                                                 <TableCell className="font-black text-center text-blue-600">৳ {d.totalFee}</TableCell>
                                                 <TableCell className="text-right px-6">
-                                                    <button onClick={() => handleRemoveFeeClick(i)} className="bg-red-50 text-red-500 hover:bg-red-500 hover:text-white p-2 rounded-lg transition-all">
+                                                    <button type="button" onClick={() => handleRemoveFeeClick(i)} className="bg-red-50 text-red-500 hover:bg-red-500 hover:text-white p-2 rounded-lg transition-all">
                                                         <Trash2 size={16} />
                                                     </button>
                                                 </TableCell>

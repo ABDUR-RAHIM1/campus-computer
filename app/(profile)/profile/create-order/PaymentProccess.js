@@ -131,7 +131,7 @@ export default function PaymentProccess() {
             </h2>
 
             {/* Total Amount Card */}
-            <div className="mb-8 p-6 bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 rounded-2xl text-white shadow-xl">
+            <div className="mb-8 p-4 bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 rounded-2xl text-white shadow-xl">
                 <div className="flex justify-between items-start">
                     <div>
                         <p className="text-xs uppercase tracking-widest opacity-70 font-bold">Total Payable Amount</p>

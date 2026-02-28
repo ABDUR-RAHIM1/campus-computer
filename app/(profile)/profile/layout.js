@@ -22,7 +22,7 @@ export default function ProfileLayout({ children }) {
         className={`${bengaliFont.className} font-sans antialiased`}
       >
         <ContextApiState>
-        <Toaster position="top-right" />
+        <Toaster position="middle" />
           <ProfileNavbar />
           {children}
 

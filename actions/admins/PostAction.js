@@ -7,7 +7,6 @@ export const PostActionAdmin = async (payload) => {
     try {
         const { method, endpoint, body } = payload;
 
-        console.log({payload})
 
         const res = await fetch(API_URL + endpoint, {
             method: method,

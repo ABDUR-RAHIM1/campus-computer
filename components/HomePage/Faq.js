@@ -72,10 +72,16 @@ export default function FAQSection() {
                 {/* Contact CTA */}
                 <div className="mt-12 text-center">
                     <p className="text-gray-500 mb-4 font-bold">আপনার প্রশ্নের উত্তর এখানে পাননি?</p>
-                    <button className="inline-flex items-center gap-2 bg-gray-900 text-white px-8 py-4 rounded-2xl font-black hover:bg-blue-600 transition-all shadow-lg">
+                    {/* <button className="inline-flex items-center gap-2 bg-gray-900 text-white px-8 py-4 rounded-2xl font-black hover:bg-blue-600 transition-all shadow-lg">
                         <MessageCircle size={20} />
                         সরাসরি মেসেজ দিন
-                    </button>
+                    </button> */}
+                    <a href="https://wa.me/8801611530939" target="_blank" rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 bg-gray-900 text-white px-8 py-4 rounded-2xl font-black hover:bg-blue-600 transition-all shadow-lg"
+                    >
+                        <MessageCircle size={20} />
+                        সরাসরি মেসেজ দিন
+                    </a>
                 </div>
 
             </div>

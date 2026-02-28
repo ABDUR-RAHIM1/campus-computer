@@ -3,7 +3,7 @@ import { getAllServices } from '@/handlers/services';
 import { Plus, Wrench, Layers } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
-import ServicesTable from './ServicesTable';
+import ServicesTable from './ServicesTable'; 
 import AddServicePage from './add/page';
 
 export default async function Services() {

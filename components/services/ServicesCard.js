@@ -1,27 +1,29 @@
 "use client";
-import React, { useContext } from "react";
-import { Button } from "../ui/button";
-import { usePathname, useRouter } from "next/navigation";
-import { globalContext } from "@/contextApi/ContextApi";
+import React from "react";
 import {
     Table,
     TableBody,
     TableCell,
     TableRow,
 } from "@/components/ui/table";
+
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger, 
-} from "@/components/ui/tooltip";
-import { GraduationCap, Building2, FileText, ArrowRightCircle, Info, Paperclip } from "lucide-react";
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
+import { GraduationCap, Building2, FileText, Info, Paperclip } from "lucide-react";
+import ApplyButton from "./ApplyButton";
 import { rocketBillerChargeCalculate } from "@/app/(profile)/profile/create-order/CashoutChargeCalculator";
 
 export default function ServicesCard({ servicesData }) {
-    const router = useRouter();
-    const pathName = usePathname();
-    const { setServiceData } = useContext(globalContext);
+
+    // রকেট বিলার চার্জ ক্যালকুলেশন (আপনার লজিক অনুযায়ী)
+    // const rocketBillerChargeCalculate = (amount) => {
+    //     if (!amount) return 0;
+    //     // উদাহরণ: প্রতি হাজারে ১০ টাকা বা ১% (আপনার ফাংশনটি এখানে রিপ্লেস করুন)
+    //     return Math.ceil(amount * 0.01);
+    // };
 
     const colors = [
         { bg: "from-blue-50 to-blue-100", border: "border-blue-200", text: "text-blue-700", accent: "bg-blue-600" },
@@ -30,40 +32,24 @@ export default function ServicesCard({ servicesData }) {
         { bg: "from-amber-50 to-amber-100", border: "border-amber-200", text: "text-amber-700", accent: "bg-amber-600" },
     ];
 
-    const handleNavigateToOrder = (data) => {
-        if (pathName.startsWith("/profile")) {
-            setServiceData(data);
-            router.push("/profile/create-order");
-        } else {
-            router.push("/profile");
-        }
-    };
+    console.log(servicesData)
 
     return (
-        <TooltipProvider>
+        <>
             {servicesData.map((service, index) => {
                 const color = colors[index % colors.length];
 
                 return (
-                    <div
-                        key={service._id}
-                        className={`block bg-gradient-to-br ${color.bg} border-2 ${color.border} rounded-[2rem] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-6 mb-6`}
-                    >
+                    <div key={service._id} className={`block bg-gradient-to-br ${color.bg} border-2 ${color.border} rounded-[2rem] p-6 mb-6 shadow-sm transition-all`}>
+
                         {/* Header Section */}
                         <div className="flex flex-col items-start gap-3 mb-5">
                             <div className={`px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${service.type !== "improvement_form_fillup" ? "bg-green-600 text-white" : "bg-red-500 text-white"}`}>
                                 {service.type}
                             </div>
-
-                            <div className="space-y-1">
-                                <h4 className={`text-xl font-black ${color.text} flex items-start gap-2 leading-tight`}>
-                                    <FileText size={26} className="shrink-0 mt-1" />
-                                    {service.title}
-                                </h4>
-                                <p className="text-gray-600 text-sm font-medium leading-relaxed pl-1">
-                                    {service.description}
-                                </p>
-                            </div>
+                            <h4 className={`text-xl font-black ${color.text} flex items-start gap-2 leading-tight`}>
+                                <FileText size={24} className="shrink-0 mt-1" /> {service.title}
+                            </h4>
                         </div>
                         {/* Meta Info Grid */}
                         <div className="grid grid-cols-2 gap-3 mb-6">
@@ -76,89 +62,115 @@ export default function ServicesCard({ servicesData }) {
                                 <p className="text-xs font-bold text-gray-700 truncate">{service?.institute?.username || "N/A"}</p>
                             </div>
                         </div>
-                        {/* 💰 Fees Table Section */}
+
+                        {/*  short Description */}
+                        <div className="my-3 border-b">
+                            <p className=" italic text-sm">{service?.description || "N/A"}</p>
+                        </div>
+                        {/*  short Description */}
+
+                        {/* 💰 Fees Table with Clickable Popover */}
                         <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm mb-5">
                             <div className="bg-gray-50 px-4 py-2 flex justify-between items-center border-b border-gray-100">
-                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-tighter">বিভাগ ভিত্তিক ফি</span>
-                                <span className="text-[10px] font-black text-blue-600 uppercase flex items-center gap-1">
-                                    মোট ফি (বিস্তারিত <Info size={10} />)
-                                </span>
+                                <span className="text-[10px] font-black text-gray-400 uppercase">বিভাগ ভিত্তিক ফি</span>
+                                <span className="text-[10px] font-black text-blue-600 uppercase">মোট ফি (ট্যাপ করুন <Info size={10} className="inline" />)</span>
                             </div>
                             <Table>
                                 <TableBody>
-                                    {service?.departmentFees?.map((item, i) => (
-                                        <TableRow key={i} className="hover:bg-gray-50/50 border-gray-50">
-                                            <TableCell className="py-2.5 text-xs font-bold text-gray-700">{item.department}</TableCell>
-                                            <TableCell className="py-2.5 text-xs font-black text-right">
-                                                <Tooltip>
-                                                    <TooltipTrigger asChild>
-                                                        <span className="text-blue-700 cursor-help border-b border-dashed border-blue-300 pb-0.5">
-                                                            ৳{item.collegeFee + item.subjectFee}
-                                                        </span>
-                                                    </TooltipTrigger>
-                                                    <TooltipContent className="bg-white p-4 rounded-xl border shadow-2xl w-64">
-                                                        <div className="space-y-2">
-                                                            <p className="text-xs font-black text-gray-800 border-b pb-2 mb-2 uppercase tracking-widest text-center">ফি ব্রেকডাউন</p>
-                                                            <div className="flex justify-between text-xs text-gray-600">
-                                                                <span>কলেজ ফি:</span>
-                                                                <span className="font-bold font-sans">৳{item.collegeFee || 0}</span>
+                                    {service?.departmentFees?.map((item, i) => {
+                                        const mainFee = (item.collegeFee || 0) + (item.subjectFee || 0);
+                                        const processingFee = item.processingFee || 0;
+                                        const serviceCharge = item.chargeFee || 0;
+                                        // const billerCharge = rocketBillerChargeCalculate(mainFee || 0);
+                                        const billerCharge = item.rocketBillerCharge || 0;
+                                        // const totalAmount = mainFee + serviceCharge + billerCharge;
+                                        const totalAmount = item.totalFee || 0;
+
+                                        return (
+                                            <TableRow key={i} className="border-gray-50">
+                                                <TableCell className="py-2.5 text-xs font-bold text-gray-700">{item.department}</TableCell>
+                                                <TableCell className="py-2.5 text-xs font-black text-right">
+
+                                                    {/* 📱 Popover for Mobile & Desktop */}
+                                                    <Popover>
+                                                        <PopoverTrigger asChild>
+                                                            <button className="text-blue-700 outline-none flex items-center gap-1 ml-auto active:scale-95 transition-transform border-b border-dashed border-blue-400 cursor-help">
+                                                                ৳{mainFee} <Info size={14} className="text-blue-300" />
+                                                            </button>
+                                                        </PopoverTrigger>
+                                                        <PopoverContent align="end" className="w-72 p-4 rounded-2xl shadow-2xl border-2 z-50">
+                                                            <div className="space-y-3">
+                                                                <p className="text-xs font-black text-gray-800 border-b pb-2 text-center uppercase tracking-widest">পেমেন্ট ব্রেকডাউন</p>
+
+                                                                <div className="flex justify-between text-xs text-gray-500">
+                                                                    <span>মূল ফি (নোটিশ অনুযায়ী):</span>
+                                                                    <span className="font-bold">৳{mainFee}</span>
+                                                                </div>
+
+                                                                <div className="flex justify-between text-xs text-red-600 bg-red-50 p-2 rounded-lg font-bold">
+                                                                    <span> Porcessing চার্জ (অফিস):</span>
+                                                                    <span>৳{processingFee}</span>
+                                                                </div>
+                                                                <div className="flex justify-between text-xs text-blue-600 bg-blue-50 p-2 rounded-lg font-bold">
+                                                                    <span>সার্ভিস চার্জ:</span>
+                                                                    <span>৳{serviceCharge}</span>
+                                                                </div>
+
+                                                                <div className="flex justify-between text-xs text-amber-600 bg-amber-50 p-2 rounded-lg font-bold">
+                                                                    <span>বিলার চার্জ (রকেট):</span>
+                                                                    <span>৳{billerCharge}</span>
+                                                                </div>
+
+                                                                <div className="border-t-2 border-dashed pt-2 flex justify-between text-sm font-black text-gray-900">
+                                                                    <span>সর্বমোট প্রদেয়:</span>
+                                                                    <span className="text-emerald-600 text-lg">৳{totalAmount}</span>
+                                                                </div>
+
+                                                                {
+                                                                    service.type === "improvement_form_fillup" &&
+                                                                    <p className="text-[9px] text-orange-500 italic text-center bg-orange-50 p-2 rounded-md">
+                                                                        * পরবর্তী প্রতি সাবজেক্ট ৳ {item.subjectFee || 0}  মুল ফী-এর সাথে যুক্ত হবে।
+                                                                    </p>
+                                                                }
+                                                                <p className="text-[9px] text-red-500 italic text-center bg-red-50 p-2 rounded-md">
+                                                                    * রকেট ছাড়া অন্য মেথডে ক্যাশ আউট চার্জ প্রযোজ্য।
+                                                                </p>
+
                                                             </div>
-                                                            <div className="flex justify-between text-xs text-gray-600">
-                                                                <span>সাবজেক্ট ফি:</span>
-                                                                <span className="font-bold font-sans">৳{item.subjectFee || 0}</span>
-                                                            </div>
-                                                            <div className="flex justify-between text-xs text-blue-600 bg-blue-50/50 p-1 rounded">
-                                                                <span className="font-medium">সার্ভিস চার্জ:</span>
-                                                                <span className="font-black font-sans">৳{item.chargeFee || 0}</span>
-                                                            </div>
-                                                            <div className="flex justify-between text-xs text-blue-600 bg-blue-50/50 p-1 rounded">
-                                                                <span className="font-medium">Biller চার্জ (রকেট):</span>
-                                                                <span className="font-black font-sans">৳{rocketBillerChargeCalculate(item.totalFee || 0)}</span>
-                                                            </div>
-                                                            <div className="border-t pt-2 flex justify-between text-sm font-black text-gray-800">
-                                                                <span> সর্বমোট প্রদেয়:</span>
-                                                                <span className="font-sans">৳{item.totalFee + rocketBillerChargeCalculate(item.totalFee || 0)}</span>
-                                                            </div>
-                                                            <p className="text-[9px] text-gray-400 italic mt-2 text-center leading-tight">
-                                                                * রকেট ছাড়া অন্য কোন মেথড ব্যবহার করে টাকা পাঠালে ক্যাশ আউট চার্জ অতিরিক্ত দিতে হবে।
-                                                            </p>
-                                                        </div>
-                                                    </TooltipContent>
-                                                </Tooltip>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
+                                                        </PopoverContent>
+                                                    </Popover>
+
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
                                 </TableBody>
                             </Table>
                         </div>
 
-                        {/* 🖇️ Required Documents (ফিরিয়ে আনা হয়েছে) */}
-                        {service.requiredDocuments?.length > 0 && (
-                            <div className="mb-6 px-1">
-                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-1">
-                                    <Paperclip size={12} /> প্রয়োজনীয় ডকুমেন্ট
-                                </p>
-                                <div className="flex flex-wrap gap-2">
-                                    {service.requiredDocuments.map((doc, i) => (
-                                        <span key={i} className="bg-white/60 border border-white text-[10px] font-bold px-3 py-1.5 rounded-xl text-gray-600 shadow-sm italic">
-                                            #{doc}
-                                        </span>
-                                    ))}
+                        {/* Documents & Action Button */}
+                        {
+                            service.requiredDocuments?.length > 0 && (
+                                <div className="mb-6">
+                                    <p className="text-[10px] font-black text-gray-400 uppercase mb-2 flex items-center gap-1">
+                                        <Paperclip size={12} /> প্রয়োজনীয় ডকুমেন্ট
+                                    </p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {service.requiredDocuments.map((doc, i) => (
+                                            <span key={i} className="bg-white/60 border border-white text-[10px] font-bold px-3 py-1.5 rounded-xl text-gray-600 italic">#{doc}</span>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-                        )}
+                            )
+                        }
 
-
-                        {/* Action Button */}
-                        <Button
-                            onClick={() => handleNavigateToOrder(service)}
-                            className={`w-full py-8 rounded-[1.5rem] font-black uppercase tracking-widest text-sm flex items-center justify-center gap-3 transition-all ${color.accent} hover:opacity-90 text-white shadow-xl shadow-gray-200 active:scale-[0.97]`}
-                        >
-                            আবেদন শুরু করুন <ArrowRightCircle size={20} />
-                        </Button>
-                    </div>
+                        <ApplyButton
+                            serviceData={service}
+                            color={color}
+                        />
+                    </div >
                 );
             })}
-        </TooltipProvider>
+        </>
     );
 }

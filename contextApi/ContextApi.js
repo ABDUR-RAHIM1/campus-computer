@@ -13,7 +13,6 @@ export default function ContextApiState({ children }) {
     const [studentInfo, setStudentInfo] = useState(null)
     const [loginSignal, setLoginSignal] = useState(false);
 
-    const [serviceData, setServiceData] = useState(null)
     const [orderDataForPayment, setOrderDataForPayment] = useState(null);
     const [isProfileMatch, setIsProfileMatch] = useState(false)
 
@@ -157,7 +156,6 @@ export default function ContextApiState({ children }) {
         editData, setEditData,
         studentIsLogin, studentInfo,
         isProfileMatch, setIsProfileMatch,
-        serviceData, setServiceData,
         orderDataForPayment, setOrderDataForPayment,
         loginSignal, setLoginSignal,
         imgUrl,

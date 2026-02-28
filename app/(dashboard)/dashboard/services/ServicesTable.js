@@ -1,11 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import DataTable from "react-data-table-component"; 
+import DataTable from "react-data-table-component";
 import ServicesOverview from "@/components/overviewCards/ServicesOverview";
 import DeleteButton from "../components/DeleteButton";
 import { servicesActions } from "@/constans";
 import UpdateButton from "../components/UpdateButton";
 import { CreditCard, Info, Trash2, Edit3, Boxes } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import AddServicePage from "./add/page copy 2";
 
 export default function ServicesTable({ data }) {
   const [servicesData, setServicesData] = useState([]);
@@ -14,6 +16,13 @@ export default function ServicesTable({ data }) {
     setServicesData(data);
   }, [data]);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedData, setSelectedData] = useState(null);
+
+  const handleEdit = (row) => {
+    setSelectedData(row);
+    setIsModalOpen(true);
+  };
   const columns = [
     {
       name: "#",
@@ -23,15 +32,14 @@ export default function ServicesTable({ data }) {
     {
       name: "Type",
       cell: (row) => (
-        <div className={`py-1 px-3 rounded-full text-[10px] font-black uppercase tracking-widest border ${
-          row.type === "নিয়মিত" 
-          ? "bg-blue-50 text-blue-600 border-blue-100" 
+        <div className={`py-1 px-3 rounded-full text-[10px] font-black uppercase tracking-widest border ${row.type === "নিয়মিত"
+          ? "bg-blue-50 text-blue-600 border-blue-100"
           : "bg-amber-50 text-amber-600 border-amber-100"
-        }`}>
+          }`}>
           {row.type}
         </div>
       ),
-      width: "120px",
+      width: "200px",
     },
     {
       name: "Title",
@@ -61,7 +69,7 @@ export default function ServicesTable({ data }) {
       name: "Actions",
       cell: (row) => (
         <div className="flex items-center gap-2">
-          <UpdateButton id={row._id} /> 
+          <Button onClick={() => handleEdit(row)} />
           <DeleteButton deleteApi={servicesActions + row._id} />
         </div>
       ),
@@ -87,6 +95,8 @@ export default function ServicesTable({ data }) {
                   <th className="px-5 py-3">Department</th>
                   <th className="px-5 py-3 text-center">College Fee</th>
                   <th className="px-5 py-3 text-center">Subject Fee</th>
+                  <th className="px-5 py-3 text-center">Processing Fee(office)</th>
+                  <th className="px-5 py-3 text-center">Biller Charge</th>
                   <th className="px-5 py-3 text-center">Charge</th>
                   <th className="px-5 py-3 text-right">Total Fee</th>
                 </tr>
@@ -97,7 +107,10 @@ export default function ServicesTable({ data }) {
                     <td className="px-5 py-3 text-xs font-bold text-gray-700">{item.department}</td>
                     <td className="px-5 py-3 text-xs text-center font-medium text-gray-500">৳{item.collegeFee}</td>
                     <td className="px-5 py-3 text-xs text-center font-medium text-gray-500">৳{item.subjectFee}</td>
+                    <td className="px-5 py-3 text-xs text-center font-medium text-gray-500">৳{item.processingFee}</td>
+
                     <td className="px-5 py-3 text-xs text-center font-medium text-gray-500">৳{item.chargeFee}</td>
+                    <td className="px-5 py-3 text-xs text-center font-medium text-gray-500">৳{item.rocketBillerCharge || 0}</td>
                     <td className="px-5 py-3 text-xs text-right font-black text-gray-900 underline decoration-blue-200">৳{item.totalFee}</td>
                   </tr>
                 ))}
@@ -111,8 +124,13 @@ export default function ServicesTable({ data }) {
 
   return (
     <div className="w-full space-y-4">
+      <AddServicePage
+        open={isModalOpen}
+        setOpen={setIsModalOpen}
+        initialData={selectedData}
+      />
       <ServicesOverview />
-      
+
       <div className="bg-white rounded-[2rem] shadow-xl shadow-blue-50/50 border border-gray-100 overflow-hidden">
         <DataTable
           columns={columns}

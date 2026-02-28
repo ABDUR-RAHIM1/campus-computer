@@ -1,14 +1,17 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Bell, UserCircle } from 'lucide-react';
+import { Menu, X, Bell, Info } from 'lucide-react';
 import Logo from '@/utilities/Logo';
+import { logoutStudent } from '@/getToken';
+import { globalContext } from '@/contextApi/ContextApi';
 
 export default function ProfileNavbar() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { showToast } = useContext(globalContext);
 
   const navItems = [
     { name: 'ওভারভিউ', href: '/profile' },
@@ -17,6 +20,17 @@ export default function ProfileNavbar() {
     { name: "🔥 চাকরি বিজ্ঞপ্তি", href: "/profile/jobs" },
     { name: 'মেসেজ', href: '/profile/messages' },
   ];
+
+
+  const handleLogOut = async () => {
+    const permission = confirm("আপনি লি লগ আউট করতে চান?");
+
+    if (permission) {
+      await logoutStudent();
+      showToast(200, "লগ আউট করা হয়েছে? ")
+    }
+
+  }
 
   return (
     <header className="w-full bg-white/80 backdrop-blur-md sticky top-0 z-[100] border-b border-gray-100">
@@ -37,8 +51,8 @@ export default function ProfileNavbar() {
                   key={item.href}
                   href={item.href}
                   className={`relative px-5 py-2.5 text-xs font-black uppercase tracking-widest transition-all duration-300 rounded-[1.2rem] ${isActive
-                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-200'
-                      : 'text-gray-500 hover:text-blue-600 hover:bg-white'
+                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-200'
+                    : 'text-gray-500 hover:text-blue-600 hover:bg-white'
                     }`}
                 >
                   {item.name}
@@ -67,9 +81,9 @@ export default function ProfileNavbar() {
             </div>
 
             {/* User Profile Avatar (Desktop) */}
-            <div className="hidden md:block w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-100 border border-blue-200 p-0.5 overflow-hidden">
-              <div className="w-full h-full bg-white rounded-[0.8rem] flex items-center justify-center text-blue-600">
-                <UserCircle size={24} />
+            <div onClick={handleLogOut} className="hidden md:block w-10 h-10 rounded-2xl bg-red-100 border border-red-600 p-0.5 overflow-hidden cursor-pointer">
+              <div className="w-full h-full  rounded-full flex items-center justify-center text-red-600">
+                <Info size={24} />
               </div>
             </div>
           </div>
@@ -88,8 +102,8 @@ export default function ProfileNavbar() {
                 href={item.href}
                 onClick={() => setMenuOpen(false)}
                 className={`flex items-center justify-between w-full px-5 py-4 rounded-2xl text-sm font-black uppercase tracking-widest transition-all ${isActive
-                    ? 'bg-blue-50 text-blue-700'
-                    : 'text-gray-500 bg-gray-50/50 hover:bg-gray-100'
+                  ? 'bg-blue-50 text-blue-700'
+                  : 'text-gray-500 bg-gray-50/50 hover:bg-gray-100'
                   }`}
               >
                 {item.name}

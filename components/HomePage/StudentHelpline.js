@@ -34,7 +34,7 @@ export default function StudentHelpline() {
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+                        <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
                             {/* Call Button */}
                             <a
                                 href="tel:+8801611530939"

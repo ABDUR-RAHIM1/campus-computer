@@ -14,9 +14,12 @@ import {
 import { getMyAllProfile } from "@/handlers/profile";
 import { ArrowDown, AlertCircle, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
+import Cookies from "js-cookie";
+import { rocketBillerChargeCalculate } from "./CashoutChargeCalculator";
 
 export default function SelectedSection() {
-    const { setIsProfileMatch, serviceData, setOrderDataForPayment, showToast } = useContext(globalContext);
+    const { setIsProfileMatch, setOrderDataForPayment, showToast } = useContext(globalContext);
+    const [serviceData, setServiceData] = useState([])
 
     const [profileList, setProfileList] = useState([]);
     const [formData, setFormData] = useState({ profile: null });
@@ -28,11 +31,18 @@ export default function SelectedSection() {
     const isImprovementService = serviceData?.type === "improvement_form_fillup" || serviceData?.type === "অনিয়মিত";
 
 
-
-
-
-    // প্রোফাইল লিস্ট লোড করা
+    // প্রোফাইল লিস্ট লোড করা & get Cookies Data 
     useEffect(() => {
+
+        const getData = Cookies.get("pending_order")
+
+        if (getData) {
+            const decodedData = decodeURIComponent(escape(atob(getData)));
+            const data = JSON.parse(decodedData)?.serviceData || [];
+
+            setServiceData(data)
+        }
+
         const getMyProfileList = async () => {
             try {
                 const { status, data } = await getMyAllProfile();
@@ -62,9 +72,6 @@ export default function SelectedSection() {
         }
 
 
-        // const improvementCount = (formData.profile.improvementSubjects?.length || 0) || formData.profile?.hasImprovement;  
-
-
         const hasImp = formData.profile?.hasImprovement === true;
         const subLength = formData.profile?.improvementSubjects?.length || 0;
         const improvementCount = (hasImp && subLength > 0) ? subLength : 0;
@@ -83,23 +90,18 @@ export default function SelectedSection() {
         // --- ক্যালকুলেশন সংশোধন ---
         let totalFee = 0;
         const subFee = Number(dept.subjectFee || 0);
-        const collegeBaseFee = Number(dept.collegeFee || 0); // আপনার লজিক অনুযায়ী এটি ১৪০০
+        const collegeBaseFee = Number(dept.collegeFee || 0);
         const charge = Number(dept.chargeFee || 0);
         if (isImprovementService) {
-            // ইম্প্রুভমেন্টের ক্ষেত্রে: (১৪০০ + (৩ * ৩০০) + ২০) = ২৩২০
             totalFee = collegeBaseFee + (improvementCount * subFee) + charge;
         } else {
-            // রেগুলারের ক্ষেত্রে: (১৪০০ + (১ * ৩০০) + ২০) = ১৭২০
             totalFee = collegeBaseFee + subFee + charge;
         }
 
         setFinalTotalFee(totalFee);
     };
 
-    // ভ্যালিডেশন চেক (বিভাগ মিলছে কি না এবং টাইপ ঠিক আছে কি না)
-    // const isDeptMatch = selectedDepartment && formData.profile && selectedDepartment.department === formData.profile.department;
-    // const isEligible = isImprovementService ? (formData.profile?.improvementSubjects?.length > 0) : true;
-    // const canProceed = isDeptMatch && isEligible;
+
 
     // ১. বিভাগ মিলছে কি না চেক (এটি সবার জন্য বাধ্যতামূলক)
     const isDeptMatch = selectedDepartment &&
@@ -118,6 +120,8 @@ export default function SelectedSection() {
     useEffect(() => {
         setIsProfileMatch(canProceed);
     }, [canProceed, setIsProfileMatch]);
+
+
 
     // পেমেন্ট ডাটা আপডেট
     useEffect(() => {
@@ -221,8 +225,12 @@ export default function SelectedSection() {
                                     <h3 className="font-bold text-lg text-gray-800">{dept.department}</h3>
                                     <div className="text-xs text-gray-500 mt-1 space-y-0.5">
                                         <p>কলেজ ফি: {dept.collegeFee}৳</p>
-                                        <p>সাবজেক্ট ফি: {dept.subjectFee}৳ (প্রতিটি)</p>
+                                        {
+                                            serviceData.type === "improvement_form_fillup" &&
+                                            <p> সাবজেক্ট ফি: {dept.subjectFee}৳ (প্রতিটি)</p>
+                                        }
                                         <p>সার্ভিস চার্জ: {dept.chargeFee}৳</p>
+                                        <p>Biller চার্জ (Rocket) : {rocketBillerChargeCalculate(dept.totalFee || 0)}৳</p>
                                     </div>
                                 </div>
                                 {isDeptMatchLocal && (
@@ -231,35 +239,39 @@ export default function SelectedSection() {
                                     </span>
                                 )}
                             </div>
-                            {isSelected && (
-                                <div className="mt-3 pt-3 border-t border-green-200 flex justify-between items-center">
-                                    <p className="font-bold text-green-700">মোট ফি: {finalTotalFee}৳</p>
-                                    {!isDeptMatchLocal && (
-                                        <p className="text-[10px] text-red-500 font-bold underline">⚠ এটি আপনার প্রোফাইলের বিভাগ নয়</p>
-                                    )}
-                                </div>
-                            )}
+                            {
+                                isSelected && (
+                                    <div className="mt-3 pt-3 border-t border-green-200 flex justify-between items-center">
+                                        <p className="font-bold text-green-700">মোট ফি: {finalTotalFee}৳</p>
+                                        {!isDeptMatchLocal && (
+                                            <p className="text-[10px] text-red-500 font-bold underline">⚠ এটি আপনার প্রোফাইলের বিভাগ নয়</p>
+                                        )}
+                                    </div>
+                                )
+                            }
                         </div>
                     );
                 })}
             </div>
 
             {/* কনফার্মেশন বাটন */}
-            {canProceed ? (
-                <div className="mt-8 animate-bounce">
-                    <div className="py-4 px-6 rounded-xl bg-green-600 text-white text-center font-bold shadow-lg flex items-center justify-center gap-2">
-                        <ArrowDown size={20} /> <span className="block md:hidden">নিচের</span>
-                        <span className="hideen md:block">ডাদ দিকের</span>
-                        ফরমে পেমেন্ট সম্পন্ন করুন 
+            {
+                canProceed ? (
+                    <div className="mt-8 animate-bounce">
+                        <div className="py-4 px-6 rounded-xl bg-green-600 text-white text-center font-bold shadow-lg flex items-center justify-center gap-2">
+                            <ArrowDown size={20} /> <span className="block md:hidden">নিচের</span>
+                            <span className="hidden md:block">ডাদ দিকের</span>
+                            ফরমে পেমেন্ট সম্পন্ন করুন
+                        </div>
                     </div>
-                </div>
-            ) : (
-                formData.profile && (
-                    <div className="mt-8 py-4 px-6 rounded-xl bg-gray-100 text-gray-400 text-center border-2 border-dashed border-gray-300">
-                        সঠিক বিভাগ নির্বাচন করুন
-                    </div>
+                ) : (
+                    formData.profile && (
+                        <div className="mt-8 py-4 px-6 rounded-xl bg-gray-100 text-gray-400 text-center border-2 border-dashed border-gray-300">
+                            সঠিক বিভাগ নির্বাচন করুন
+                        </div>
+                    )
                 )
-            )}
-        </div>
+            }
+        </div >
     );
 }

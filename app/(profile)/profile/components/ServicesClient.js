@@ -39,7 +39,7 @@ export default function ServicesClient({ data, admissionData, colsStyle }) {
     return (
         <div className="space-y-8 w-full">
             {/* Filter Section (আগের মতোই) */}
-            <div className="w-full bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-2xl p-6 shadow-sm">
+            <div className="w-full bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-2xl p-3 md:p-6 shadow-sm">
                 <div className="flex items-center gap-3 mb-4">
                     <div className="h-10 w-10 flex items-center justify-center rounded-full bg-blue-600 text-white shadow-md">
                         <GraduationCap size={24} />

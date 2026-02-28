@@ -1,28 +1,20 @@
-import FAQSection from '@/components/Faq'; 
-import AutomationOverview from '@/components/Overview';
-import HomeMarquee from '@/components/Marque';
-import Hero from '@/components/HomePage/Hero';
+ import Hero from '@/components/HomePage/Hero';
 import SmartQuickLinks from '@/components/HomePage/SmartQuickLink';
-import StepGuideline from '@/components/HomePage/Guidline';
-import SpecialtyServices from '@/components/CollegeServices';
+import StepGuideline from '@/components/HomePage/Guidline'; 
 import ServiceBenefits from '@/components/HomePage/ServicesBenifit';
 import Testimonials from '@/components/HomePage/Testimonial';
 import StudentHelpline from '@/components/HomePage/StudentHelpline';
+import HomeMarquee from '@/components/HomePage/Marque';
+import AutomationOverview from '@/components/HomePage/Overview';
+import FAQSection from '@/components/HomePage/Faq';
+import SpecialtyServices from '@/components/HomePage/CollegeServices';
 
 const CampusComputerPage = async () => {
 
     return (
         <div>
 
-            <main>
-                {/* Hero Section */}
-                {/* <Hero /> */}
-                {/* <HeroSlider /> */}
-                {/* <OthersServices />
-                {/* <ServiceBenefits /> */}
-                {/* <AutomationOverview /> */}
-                {/* <FaqSection />  */}
-
+            <main> 
                 <HomeMarquee />
                 <Hero />
                 <SmartQuickLinks />
