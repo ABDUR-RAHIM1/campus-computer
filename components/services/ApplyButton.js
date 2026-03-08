@@ -1,24 +1,40 @@
 "use client"
-import React from 'react' 
+import React from 'react'
 import { Button } from '../ui/button';
-import { useRouter } from 'next/navigation'; 
+import { useRouter } from 'next/navigation';
 import { ArrowRightCircle } from 'lucide-react';
 import Cookies from 'js-cookie';
 
 export default function ApplyButton({ serviceData, color }) {
     const router = useRouter();
 
+    // const handleApply = () => {
+    //     // ১. ডেটা প্রিপারেশন
+    //     const expiry = new Date().getTime() + 5 * 60 * 1000;
+    //     const rawData = JSON.stringify({ serviceData, expiry });
+    //     const encodedData = btoa(unescape(encodeURIComponent(rawData)));
+
+    //     Cookies.set('pending_order', encodedData, { expires: 10 / (24 * 60) });
+
+    //     router.push("/profile/create-order")
+
+    // }
+
     const handleApply = () => {
-        // ১. ডেটা প্রিপারেশন
-        const expiry = new Date().getTime() + 5 * 60 * 1000;
-        const rawData = JSON.stringify({ serviceData, expiry });
-        const encodedData = btoa(unescape(encodeURIComponent(rawData)));
+        try {
+            console.log("Preparing data...");
 
-        Cookies.set('pending_order', encodedData, { expires: 10 / (24 * 60) });
+            const expiry = new Date().getTime() + 5 * 60 * 1000;
+            const rawData = JSON.stringify({ serviceData, expiry });
+            const encodedData = btoa(unescape(encodeURIComponent(rawData)));
 
-        router.push("/profile/create-order")
+            localStorage.setItem('pending_order', encodedData);
+            router.push("/profile/create-order")
 
-    }
+        } catch (error) {
+            console.error("Storage error:", error);
+        }
+    };
 
     return (
         <Button

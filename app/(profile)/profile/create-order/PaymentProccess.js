@@ -5,7 +5,7 @@ import { orderPostGetall } from '@/constans';
 import { globalContext } from '@/contextApi/ContextApi';
 import Spinner from '@/utilities/Spinner';
 import React, { useContext, useEffect, useState } from 'react';
-import { CashoutChargeCalculator, rocketBillerChargeCalculate } from './CashoutChargeCalculator';
+import { CashoutChargeCalculator } from './CashoutChargeCalculator';
 import { CheckCircle2, Info, Copy, Wallet } from 'lucide-react';
 
 const RECEIVING_NUMBER = "01321040273";
@@ -34,10 +34,10 @@ const CopyableNumberDisplay = ({ number }) => {
         </div>
     );
 };
-
 export default function PaymentProccess() {
     const { showToast, isProfileMatch, orderDataForPayment } = useContext(globalContext);
 
+    console.log(orderDataForPayment)
     const [formData, setFormData] = useState({
         method: '',
         amount: '',
@@ -51,18 +51,15 @@ export default function PaymentProccess() {
     // --- 📌 স্মার্ট ক্যালকুলেশন লজিক ---
     const baseAmount = orderDataForPayment?.totalFee || 0;
 
-    // ১. আপনার খরচ: রকেট বিলার চার্জ (হাজারে ১৩ টাকা) যা সবার থেকে নেওয়া হবে
-    // const rocketBillerCharge = Math.ceil((baseAmount / 1000) * 13);
-    const rocketBillerCharge = rocketBillerChargeCalculate(baseAmount)
-    const netServiceFee = baseAmount + rocketBillerCharge;
+    // ১. রকেট খরচ: রকেট বিলার চার্জ (হাজারে ১৩ টাকা) যা সবার থেকে নেওয়া হবে
 
     // ২. ইউজারের খরচ: বিকাশ/নগদ হলে ক্যাশআউট চার্জ যোগ হবে (হাজারে ১৮.৫০ টাকা)
-    const cashoutExtra = CashoutChargeCalculator(netServiceFee);
+    const cashoutExtra = CashoutChargeCalculator(baseAmount);
 
     // ৩. ফাইনাল প্রদেয় টাকা
     const totalPayable = (formData.method === 'Bkash' || formData.method === 'Nagad')
-        ? (netServiceFee + cashoutExtra)
-        : netServiceFee;
+        ? (baseAmount + cashoutExtra)
+        : baseAmount;
 
     // ৪. সাশ্রয় (বিকাশ/নগদ বনাম রকেট)
     const userSavings = (formData.method === 'Rocket') ? cashoutExtra : 0;
@@ -80,15 +77,47 @@ export default function PaymentProccess() {
     };
 
     const handlePaymentDetails = () => {
+        // ১. ডাটা থেকে বেসিক ভ্যালুগুলো নেওয়া
+        const collegeFee = Number(orderDataForPayment.collegeFee) || 0;
+        const subjectFee = Number(orderDataForPayment.subjectFee) || 0;
+        const officialFee = Number(orderDataForPayment.processingFee) || 0;
+        const serviceCharge = Number(orderDataForPayment.chargeFee) || 0;
+        const billerCharge = Number(orderDataForPayment.billerCharge) || 0;
+
+        // ২. সার্ভিস থেকে আসা নিট ফি (বিলার চার্জ সহ কিন্তু ক্যাশআউট চার্জ ছাড়া)
+        const serviceTotal = Number(orderDataForPayment.totalFee) || 0;
+
+        // ৩. ক্যাশআউট চার্জ ক্যালকুলেশন (শুধুমাত্র রকেট বাদে অন্য মেথডের জন্য)
+        const isRocket = formData.method === "Rocket";
+        const cashOutCharge = !isRocket ? CashoutChargeCalculator(serviceTotal) : 0;
+
+        // ৪. ফাইনাল অ্যামাউন্ট (যেটা ইউজারকে পাঠাতে হবে)
+        const finalTotalPayable = serviceTotal + cashOutCharge;
+
+        // ৫. সাবজেক্ট সংখ্যা বের করা (সঠিক ব্রেকডাউন দেখানোর জন্য)
+        const fixedFees = collegeFee + officialFee + serviceCharge + billerCharge;
+        const subjectsAmount = serviceTotal - fixedFees;
+        const estimatedSubCount = subjectFee > 0 ? Math.round(subjectsAmount / subjectFee) : 0;
+
         alert(`
-            আবেদন ফি: ${baseAmount}৳
-            পেমেন্ট প্রসেসিং ফি: ${rocketBillerCharge}৳
-            --------------------------
-            নিট ফি: ${netServiceFee}৳
-            ${formData.method === 'Rocket' ? 'ক্যাশআউট চার্জ: ০৳ (রকেট স্পেশাল)' : `ক্যাশআউট চার্জ: ${cashoutExtra}৳`}
-            --------------------------
-            সর্বমোট প্রদেয়: ${totalPayable}৳
-        `);
+        --- পেমেন্ট ব্রেকডাউন ---
+        
+        কলেজ মূল ফি: ${collegeFee}৳
+        অফিস প্রসেসিং ফি: ${officialFee}৳
+        ${estimatedSubCount > 0 ? `সাবজেক্ট ফি: ${subjectFee}৳ × ${estimatedSubCount}টি = ${subjectsAmount}৳` : `সাবজেক্ট ফি: ${subjectsAmount}৳`}
+        আমাদের সার্ভিস চার্জ: ${serviceCharge}৳
+        রকেট বিলার চার্জ: ${billerCharge}৳ 
+        -----------------------------------
+        নিট সার্ভিস ফি: ${serviceTotal}৳
+        ক্যাশআউট চার্জ: ${isRocket ? "০৳ (রকেট স্পেশাল)" : `${cashOutCharge}৳ (${formData.method})`} 
+        -----------------------------------
+        সর্বমোট প্রদেয়: ${finalTotalPayable}৳
+        
+        ${isRocket
+                ? "বিঃদ্রঃ রকেট পে-বিলের মাধ্যমে পেমেন্ট করলে আলাদা কোনো ক্যাশআউট খরচ লাগে না।"
+                : `বিঃদ্রঃ ${formData.method} এ পেমেন্ট করলে ক্যাশআউট চার্জসহ টাকা পাঠাতে হয়।`
+            }
+    `);
     };
 
     const handleSubmit = async (e) => {
@@ -107,8 +136,10 @@ export default function PaymentProccess() {
             const body = {
                 ...orderDataForPayment,
                 payment: formData,
+                cashOutCharge: cashoutExtra,
                 calculatedTotal: totalPayable
             };
+
             const payload = { method: "POST", endpoint: orderPostGetall, body: body };
             const { status, data } = await PostAction(payload);
             showToast(status, data.message || "পেমেন্ট সফলভাবে জমা হয়েছে");

@@ -7,7 +7,7 @@ import { servicesActions } from "@/constans";
 import UpdateButton from "../components/UpdateButton";
 import { CreditCard, Info, Trash2, Edit3, Boxes } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import AddServicePage from "./add/page copy 2";
+import AddServicePage from "./add/page";
 
 export default function ServicesTable({ data }) {
   const [servicesData, setServicesData] = useState([]);
@@ -69,7 +69,11 @@ export default function ServicesTable({ data }) {
       name: "Actions",
       cell: (row) => (
         <div className="flex items-center gap-2">
-          <Button onClick={() => handleEdit(row)} />
+          {/* <Button onClick={() => handleEdit(row)} /> */}
+          <AddServicePage
+            mood={"update"}
+            initialData={row}
+          />
           <DeleteButton deleteApi={servicesActions + row._id} />
         </div>
       ),
@@ -124,11 +128,11 @@ export default function ServicesTable({ data }) {
 
   return (
     <div className="w-full space-y-4">
-      <AddServicePage
+      {/* <AddServicePage
         open={isModalOpen}
         setOpen={setIsModalOpen}
         initialData={selectedData}
-      />
+      /> */}
       <ServicesOverview />
 
       <div className="bg-white rounded-[2rem] shadow-xl shadow-blue-50/50 border border-gray-100 overflow-hidden">

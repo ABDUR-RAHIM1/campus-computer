@@ -9,23 +9,23 @@ import { PostAction } from "@/actions/students/PostAction";
 import { globalContext } from "@/contextApi/ContextApi";
 import { getStatusColor } from "@/utilities/getStatusColor";
 import { studentProfileUpdateDelete } from "@/constans";
-import { studentProfileFormState } from "@/formStats/StudentProfileState";
 import { Checkbox } from "@/components/ui/checkbox";
 import { sessionList } from "@/LocalDatabase/seasion";
 
 
-import { formatDateToInput } from "@/utilities/formatDateToInput";
 import Spinner from "@/utilities/Spinner";
 import { getAllSubAdmins } from "@/handlers/subAdmins";
 import { getDepartmentsByProgram } from "@/LocalDatabase/departments";
 import SelectField from "@/utilities/SelectField";
+import { ParseCommaInputToArray } from "@/utilities/ParseCommaInputToArray";
+import Image from "next/image";
 
 export default function EditProfile() {
     const {
         showToast,
         imgUrl,
         uploadResponse,
-        uploader,
+        uploadImage,
         editData,
         studentInfo,
     } = useContext(globalContext);
@@ -76,49 +76,20 @@ export default function EditProfile() {
     }, [editData, isEditable]);
 
 
-    // const handleChange = (e) => {
-    //     const { type, name, value, files } = e.target;
-
-    //     if (type === "file") {
-    //         uploader(files);
-    //     } else {
-    //         setFormData((prev) => ({
-    //             ...prev,
-    //             [name]: value,
-    //             ...(name === "improvementSubjects" && {
-    //                 improvementSubjects: value
-    //                     .split(",")
-    //                     .map((subject) => subject.trim())
-    //                 // .filter((subject) => subject !== ""),
-    //             }),
-    //         }));
-    //     }
-    // };
-
-
-    const handleChange = (e) => {
+    const handleChange = async (e) => {
         const { type, name, value, files } = e.target;
 
         if (type === "file") {
-            uploader(files);
+            const urls = await uploadImage(files);
+            if (urls && urls.length > 0) {
+                setFormData((prev) => ({
+                    ...prev,
+                    [name]: urls[0],
+                }));
+            }
+
         } else {
-            setFormData((prev) => {
-                const newState = { ...prev, [name]: value };
-
-                if (name === "improvementSubjects") {
-
-                    if (!value.trim()) {
-                        newState.improvementSubjects = [];
-                    } else {
-
-                        newState.improvementSubjects = value
-                            .split(",")
-                            .map((subject) => subject.trim())
-                            .filter((subject) => subject !== "");
-                    }
-                }
-                return newState;
-            });
+            setFormData((prev) => ({ ...prev, [name]: value }));
         }
     };
 
@@ -166,11 +137,17 @@ export default function EditProfile() {
         setSubmitting(true);
         try {
 
+            const formattedSubjects = formData.hasImprovement && ParseCommaInputToArray(formData.improvementSubjects);
+
             const payload = {
                 method: "PUT",
                 endpoint: studentProfileUpdateDelete + formData?._id,
-                body: formData,
+                body: {
+                    ...formData,
+                    improvementSubjects: formattedSubjects
+                },
             };
+
             const { status, data } = await PostAction(payload);
             showToast(status, data);
         } catch (error) {
@@ -180,7 +157,6 @@ export default function EditProfile() {
         }
     };
 
-    console.log(formData)
 
     return (
         <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow my-20 border">
@@ -358,6 +334,7 @@ export default function EditProfile() {
                             >
                                 ✍️ যেসব বিষয়ের কোডে পুনঃপরীক্ষা দিতে চাচ্ছেন (কমা দিয়ে লিখুন):
                             </label>
+
                             <input
                                 type="text"
                                 name="improvementSubjects"
@@ -375,25 +352,50 @@ export default function EditProfile() {
                 </div>
 
                 {/* Profile Photo Upload */}
-                <div className="col-span-full mb-4">
-                    <Label
-                        htmlFor="profilePicture"
-                        className="font-medium mb-1 block"
-                    >
-                        📸 পাসপোর্ট সাইজ ছবি <span className="text-red-500">*</span>
-                    </Label>
-                    <p className="text-sm text-gray-500 mb-2">
-                        এই ছবিটি কলেজে ব্যবহার করা হবে। তাই স্পষ্ট, পরিষ্কার এবং
-                        পাসপোর্ট সাইজ ছবি আপলোড করুন।
-                    </p>
-                    <Input
-                        type="file"
-                        name="profilePicture"
-                        id="profilePicture"
-                        accept="image/*"
-                        onChange={handleChange}
-                    />
-                    <p className={getStatusColor(status)}>{message}</p>
+                {/* Profile Photo Upload */}
+                <div className="col-span-full mb-4 flex flex-col md:flex-row items-start justify-between gap-6 p-4 border rounded-xl bg-gray-50/50">
+
+                    {/* Left Side: Input and Labels */}
+                    <div className="flex-1 w-full">
+                        <Label
+                            htmlFor="profilePicture"
+                            className="font-bold mb-2 flex items-center gap-2 text-gray-700"
+                        >
+                            📸 পাসপোর্ট সাইজ ছবি <span className="text-red-500">*</span>
+                        </Label>
+                        <p className="text-xs text-gray-500 mb-3 leading-relaxed">
+                            এই ছবিটি কলেজে ব্যবহার করা হবে। তাই স্পষ্ট, পরিষ্কার এবং
+                            পাসপোর্ট সাইজ ছবি আপলোড করুন।
+                        </p>
+                        <Input
+                            type="file"
+                            name="profilePicture"
+                            id="profilePicture"
+                            accept="image/*"
+                            onChange={handleChange}
+                            className="bg-white"
+                        />
+                        {message && (
+                            <p className={`text-xs mt-2 font-medium ${getStatusColor(status)}`}>
+                                {message}
+                            </p>
+                        )}
+                    </div>
+
+                    {/* Right Side: Preview Container (ছবি আপলোড হলে এখানে দেখাবে) */}
+                    <div className="flex-shrink-0">
+                        <div className="w-24 h-32 md:w-28 md:h-36 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-white overflow-hidden shadow-inner">
+                            {formData.profilePicture ? (
+                                <img
+                                    src={formData.profilePicture}
+                                    alt="Profile"
+                                    className="w-full h-full object-cover"
+                                />
+                            ) : (
+                                <span className="text-[10px] text-gray-400 text-center px-2">ছবি নেই</span>
+                            )}
+                        </div>
+                    </div>
                 </div>
 
                 <div className="col-span-full mt-4">

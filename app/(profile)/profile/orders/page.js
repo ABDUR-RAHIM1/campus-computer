@@ -1,7 +1,7 @@
 import DataNotFound from '@/components/DataNotFound';
+import OrderTable from '@/components/orderTable/OrderTable';
 import { GetMyOrders } from '@/handlers/order'
 import React from 'react'
-import OrderTable from './OrderTable';
 
 
 //   specefic students Order
@@ -13,5 +13,7 @@ export default async function OrderList() {
         return <DataNotFound text={"আপনার কোন অর্ডার নেই!"} />
     }
 
-    return <OrderTable orders={data} />
+    return <OrderTable orders={data}
+        isAdmin={false}
+    />
 }

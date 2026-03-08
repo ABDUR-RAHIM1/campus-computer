@@ -34,18 +34,43 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
+    processingFee: {
+        type: Number,
+        default: 0,
+    }, // new 
     chargeFee: {
         type: Number,
         default: 0,
     },
+    subTotal: {
+        type: Number,
+        required: true
+    }, // new 
+    billerCharge: {
+        type: Number,
+        required: true
+    }, // new 
     totalFee: {
         type: Number,
         default: 0,
     },
+    cashOutCharge: {
+        type: Number,
+        default: 0,
+    },
+    calculatedTotal: {
+        type: Number,
+        required: true
+    }, // new 
     status: {
         type: String,
         enum: ["pending", "active", "success", "cancel"],
         default: "pending"
+    },
+    orderType: {
+        type: String,
+        enum: ["full_service", "office_copy"],
+        required: true
     },
     paymentStatus: {
         type: String,

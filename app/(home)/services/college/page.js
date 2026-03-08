@@ -27,7 +27,7 @@ export default async function CollageServices() {
             <ServicesClient
                 data={data}
                 admissionData={safeAdmissionData}
-                colsStyle={"grid-cols-1 md:grid-cols-3"}
+                colsStyle={"grid-cols-1 md:grid-cols-3 items-start"}
             />
         </div>
     )

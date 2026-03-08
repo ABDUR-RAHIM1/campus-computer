@@ -1,7 +1,7 @@
 import { Noto_Sans_Bengali } from "next/font/google";
 import "../../globals.css";
-import ProfileNavbar from "./components/ProfileNavbar"; 
-import { Toaster } from "sonner"; 
+import ProfileNavbar from "./components/ProfileNavbar";
+import { Toaster } from "sonner";
 import ContextApiState from "@/contextApi/ContextApi";
 import { campusComputerMetadata } from "@/seo/metadata";
 
@@ -22,7 +22,7 @@ export default function ProfileLayout({ children }) {
         className={`${bengaliFont.className} font-sans antialiased`}
       >
         <ContextApiState>
-        <Toaster position="middle" />
+          <Toaster position="top-center" />
           <ProfileNavbar />
           {children}
 

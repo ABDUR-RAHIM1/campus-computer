@@ -24,7 +24,7 @@ export default async function Services() {
         <ServicesClient
             data={data}
             admissionData={safeAdmissionData}
-            colsStyle={"grid-cols-1 md:grid-cols-2"}
+            colsStyle={"grid-cols-1 md:grid-cols-2 items-start"}
         />
     );
 }

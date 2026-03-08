@@ -22,12 +22,18 @@ export async function POST(req) {
         const { id } = auth.student;
         const {
             profileId,
+            orderType,
             serviceId,
             department,
             collegeFee,
             subjectFee,
+            processingFee,
             chargeFee,
+            subTotal,
+            billerCharge,
             totalFee,
+            cashOutCharge,
+            calculatedTotal,
             payment, // 🧾 payment data আসবে body.payment এর মাধ্যমে
         } = body;
 
@@ -39,7 +45,10 @@ export async function POST(req) {
         }
 
         // 🔍 Check if order already exists for this student & service
-        const isExistOrder = await Order.findOne({ reference: id, serviceId });
+        const isExistOrder = await Order.findOne({
+            reference: id, serviceId,
+            status: { $ne: "cancel" }
+        });
         if (isExistOrder) {
             return NextResponse.json(
                 { message: "আপনি অর্ডারটি আগেই কনফার্ম করেছেন।" },
@@ -50,13 +59,19 @@ export async function POST(req) {
         // 🧾 Step 1️⃣ — Create new order (initially pending)
         const newOrder = await Order.create({
             profileId,
+            orderType,
             reference: id,
             serviceId,
             department,
             collegeFee,
             subjectFee,
+            processingFee,
             chargeFee,
+            subTotal,
+            billerCharge,
             totalFee,
+            cashOutCharge,
+            calculatedTotal,
             status: "pending",
             paymentStatus: "pending",
         });

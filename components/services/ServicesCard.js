@@ -15,6 +15,7 @@ import {
 import { GraduationCap, Building2, FileText, Info, Paperclip } from "lucide-react";
 import ApplyButton from "./ApplyButton";
 import { rocketBillerChargeCalculate } from "@/app/(profile)/profile/create-order/CashoutChargeCalculator";
+import { feeCalculation } from "@/utilities/FeeCalculation";
 
 export default function ServicesCard({ servicesData }) {
 
@@ -32,7 +33,6 @@ export default function ServicesCard({ servicesData }) {
         { bg: "from-amber-50 to-amber-100", border: "border-amber-200", text: "text-amber-700", accent: "bg-amber-600" },
     ];
 
-    console.log(servicesData)
 
     return (
         <>
@@ -81,10 +81,8 @@ export default function ServicesCard({ servicesData }) {
                                         const mainFee = (item.collegeFee || 0) + (item.subjectFee || 0);
                                         const processingFee = item.processingFee || 0;
                                         const serviceCharge = item.chargeFee || 0;
-                                        // const billerCharge = rocketBillerChargeCalculate(mainFee || 0);
-                                        const billerCharge = item.rocketBillerCharge || 0;
-                                        // const totalAmount = mainFee + serviceCharge + billerCharge;
-                                        const totalAmount = item.totalFee || 0;
+
+                                        const { subTotal, rocketBillerCharge, totalFee } = feeCalculation(mainFee, processingFee, serviceCharge);
 
                                         return (
                                             <TableRow key={i} className="border-gray-50">
@@ -118,12 +116,16 @@ export default function ServicesCard({ servicesData }) {
 
                                                                 <div className="flex justify-between text-xs text-amber-600 bg-amber-50 p-2 rounded-lg font-bold">
                                                                     <span>বিলার চার্জ (রকেট):</span>
-                                                                    <span>৳{billerCharge}</span>
+                                                                    <span>৳{rocketBillerCharge}</span>
+                                                                </div>
+                                                                <div className="flex justify-between text-xs text-green-600 bg-green-50 p-2 rounded-lg font-bold">
+                                                                    <span> সাব টোটাল:</span>
+                                                                    <span>৳{subTotal}</span>
                                                                 </div>
 
                                                                 <div className="border-t-2 border-dashed pt-2 flex justify-between text-sm font-black text-gray-900">
                                                                     <span>সর্বমোট প্রদেয়:</span>
-                                                                    <span className="text-emerald-600 text-lg">৳{totalAmount}</span>
+                                                                    <span className="text-emerald-600 text-lg">৳{totalFee}</span>
                                                                 </div>
 
                                                                 {

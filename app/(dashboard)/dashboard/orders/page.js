@@ -1,6 +1,6 @@
+import OrderTable from '@/components/orderTable/OrderTable';
 import { GetAllOrders } from '@/handlers/order'
-import React from 'react'
-import OrderTable from './OrderTable';
+import React from 'react' 
 
 export default async function OrderPage() {
     const { status, data } = await GetAllOrders();
@@ -9,5 +9,5 @@ export default async function OrderPage() {
         return <DataNotFound text={" কোন অর্ডার নেই!"} />
     }
 
-    return <OrderTable orders={data} />
+    return <OrderTable orders={data} isAdmin={true} />
 }

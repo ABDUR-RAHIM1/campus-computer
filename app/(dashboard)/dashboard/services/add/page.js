@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { globalContext } from "@/contextApi/ContextApi";
 import { getDepartmentsByProgram } from "@/LocalDatabase/departments";
 import { getYearsByProgram } from "@/LocalDatabase/year";
-import { servicesPostGetAll } from "@/constans";
+import { servicesActions, servicesPostGetAll } from "@/constans";
 import { PostActionAdmin } from "@/actions/admins/PostAction";
 import { getAllSubAdmins } from "@/handlers/subAdmins";
 
@@ -22,17 +22,28 @@ import InputField from "@/utilities/InputField";
 import TextareaField from "@/utilities/TextareaField";
 import SelectField from "@/utilities/SelectField";
 import Spinner from "@/utilities/Spinner";
-import { Plus, Trash2, Save, GraduationCap, Archive } from "lucide-react";
-import { rocketBillerChargeCalculate } from "@/app/(profile)/profile/create-order/CashoutChargeCalculator";
+import { Plus, Trash2, Save, GraduationCap, Archive, Edit2, Info } from "lucide-react";
+import { feeCalculation } from "@/utilities/FeeCalculation";
+
+import {
+    Popover,
+    PopoverContent,
+    PopoverDescription,
+    PopoverHeader,
+    PopoverTitle,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+
 
 // যদি এডিট করতে চান তবে initialData প্রপস হিসেবে পাঠাতে পারেন
-export default function AddServicePage({ initialData = null }) {
+export default function AddServicePage({ mood = "add", initialData = null }) {
     const { showToast } = useContext(globalContext);
     const [departments, setDepartments] = useState([]);
     const [year, setYear] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [institutes, setInstitutes] = useState([]);
     const [open, setOpen] = useState(false);
+    const [editIndex, setEditIndex] = useState(null);
 
     const [deparmentData, setDepartmentData] = useState({
         department: "",
@@ -40,10 +51,10 @@ export default function AddServicePage({ initialData = null }) {
         subjectFee: 0,
         chargeFee: 0,
         processingFee: 0,
-        rocketBillerCharge: 0,
-        totalFee: 0,
+        // rocketBillerCharge: 0,
+        // totalFee: 0,
     });
-    console.log(deparmentData)
+
     const [formData, setFormData] = useState({
         type: "",
         institute: "",
@@ -90,24 +101,25 @@ export default function AddServicePage({ initialData = null }) {
         getData();
     }, []);
 
-   
+
     const handleDepartmentChange = (e) => {
         const { name, value } = e.target;
         const newData = { ...deparmentData, [name]: value };
 
         // ১. সব ফি গুলোর সাব-টোটাল (বিলার চার্জ ছাড়া)
-        const subTotal = Number(newData.collegeFee || 0) +
-            Number(newData.subjectFee || 0) +
-            Number(newData.processingFee || 0) +
-            Number(newData.chargeFee || 0);
+        // const subTotal = Number(newData.collegeFee || 0) +
+        //     Number(newData.subjectFee || 0) +
+        //     Number(newData.processingFee || 0) +
+        //     Number(newData.chargeFee || 0);
 
-        const billerCharge = rocketBillerChargeCalculate(subTotal);
-        newData.rocketBillerCharge = billerCharge;
+        // const billerCharge = rocketBillerChargeCalculate(subTotal);
+        // newData.rocketBillerCharge = billerCharge;
 
-        newData.totalFee = subTotal + billerCharge;
+        // newData.totalFee = subTotal + billerCharge;
 
         setDepartmentData(newData);
     };
+    console.log(deparmentData)
 
     useEffect(() => {
         if (formData.program) {
@@ -118,14 +130,37 @@ export default function AddServicePage({ initialData = null }) {
         }
     }, [formData.program]);
 
+
     const handleAddMultipleDepartmentDataInformState = () => {
         if (!deparmentData.department) return alert("বিভাগ সিলেক্ট করুন");
-        setFormData((prev) => ({
-            ...prev,
-            departmentFees: [...prev.departmentFees, deparmentData]
-        }));
-        // setDepartmentData({ department: "", collegeFee: 0, subjectFee: 0, chargeFee: 0, totalFee: 0 });
+        setFormData((prev) => {
+            // ১. আগের সব ডাটা কপি করে নিন
+            let updatedFees = [...prev.departmentFees];
+
+            if (editIndex !== null) {
+                // ২. যদি এডিট মোড হয়, তবে নির্দিষ্ট ইনডেক্সে নতুন ডাটা বসিয়ে দিন
+                updatedFees[editIndex] = deparmentData;
+                setEditIndex(null); // কাজ শেষ হলে ইনডেক্স রিসেট করুন
+            } else {
+                // ৩. যদি নতুন ডাটা হয়, তবে আগের মতোই শেষে যোগ করুন
+                updatedFees.push(deparmentData);
+            }
+
+            return {
+                ...prev,
+                departmentFees: updatedFees
+            };
+        });
+
     };
+
+    // =======  Depertment & fee Update ======= 
+
+    const handleEditClick = (index, data) => {
+        setDepartmentData(data);
+        setEditIndex(index)
+    };
+
 
     const handleRemoveFeeClick = (indexToRemove) => {
         const updatedFees = formData.departmentFees.filter((_, index) => index !== indexToRemove);
@@ -140,12 +175,16 @@ export default function AddServicePage({ initialData = null }) {
             requiredDocuments: formData.requiredDocuments.split(",").map((doc) => doc.trim()),
         };
 
+        const isEditMood = initialData && mood === "update"
+
         try {
+
             const payload = {
-                method: initialData ? "PUT" : "POST", // যদি আগে ডাটা থাকে তবে PUT হবে
-                endpoint: initialData ? `${servicesPostGetAll}/${initialData._id}` : servicesPostGetAll,
+                method: isEditMood ? "PUT" : "POST",
+                endpoint: isEditMood ? servicesActions + initialData._id : servicesPostGetAll,
                 body: finalData
             };
+
             const { status, data } = await PostActionAdmin(payload);
             showToast(status, data);
             if (status === 200) setOpen(false);
@@ -161,7 +200,8 @@ export default function AddServicePage({ initialData = null }) {
             <DialogTrigger asChild>
                 <Button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-5 px-6 rounded-2xl flex items-center gap-2 shadow-lg shadow-blue-100 transition-all active:scale-95">
                     {initialData ? <Archive size={20} /> : <Plus size={20} />}
-                    {initialData ? "সার্ভিস আপডেট করুন" : "সার্ভিস যুক্ত করুন"}
+                    {mood === "update" ? "সার্ভিস আপডেট করুন" : "সার্ভিস যুক্ত করুন"}
+
                 </Button>
             </DialogTrigger>
 
@@ -199,6 +239,7 @@ export default function AddServicePage({ initialData = null }) {
                                 { label: "Year Change Admission", value: "year_change_admission" },
                                 { label: "Regular Form Fillup", value: "regular_form_fillup" },
                                 { label: "Improvement Form Fillup", value: "improvement_form_fillup" },
+                                { label: "Irregular Form Fillup", value: "irregular_form_fillup" },
                             ]}
                             required
                         />
@@ -268,8 +309,8 @@ export default function AddServicePage({ initialData = null }) {
                             <InputField label="চার্জ ফি" name="chargeFee" type="number" value={deparmentData.chargeFee} onChange={handleDepartmentChange} />
                         </div>
 
-                        <Button type="button" onClick={handleAddMultipleDepartmentDataInformState} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl py-6 shadow-lg shadow-blue-100 transition-transform active:scale-[0.98]">
-                            তালিকায় ডাটা যুক্ত করুন
+                        <Button type="button" onClick={handleAddMultipleDepartmentDataInformState} className={`w-full ${editIndex !== null ? "bg-yellow-600 hover:bg-yellow-700" : "bg-blue-600 hover:bg-blue-700"} text-white font-bold rounded-xl py-6 shadow-lg shadow-blue-100 transition-transform active:scale-[0.98]`}>
+                            {editIndex !== null ? "তালিকায় ডাটা আপডেট করুন" : "তালিকায় ডাটা যুক্ত করুন"}
                         </Button>
 
                         {formData.departmentFees.length > 0 && (
@@ -278,22 +319,74 @@ export default function AddServicePage({ initialData = null }) {
                                     <TableHeader className="bg-blue-50">
                                         <TableRow>
                                             <TableHead className="font-black text-blue-800 text-xs">DEPARTMENT</TableHead>
-                                            <TableHead className="font-black text-blue-800 text-xs text-center">FEE (SUM)</TableHead>
+                                            <TableHead className="font-black text-blue-800 text-xs text-center">SubTotal</TableHead>
                                             <TableHead className="text-right font-black text-blue-800 text-xs px-6">REMOVE</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {formData.departmentFees.map((d, i) => (
-                                            <TableRow key={i} className="hover:bg-gray-50 transition-colors">
-                                                <TableCell className="font-bold text-gray-700 uppercase text-xs">{d.department}</TableCell>
-                                                <TableCell className="font-black text-center text-blue-600">৳ {d.totalFee}</TableCell>
-                                                <TableCell className="text-right px-6">
-                                                    <button onClick={() => handleRemoveFeeClick(i)} className="bg-red-50 text-red-500 hover:bg-red-500 hover:text-white p-2 rounded-lg transition-all">
-                                                        <Trash2 size={16} />
-                                                    </button>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
+                                        {formData.departmentFees.map((d, i) => {
+                                            const { collegeFee, subjectFee, processingFee, chargeFee } = d;
+                                            const { subTotal, rocketBillerCharge, totalFee } = feeCalculation(collegeFee, subjectFee, processingFee, chargeFee);
+
+                                            return (
+                                                <TableRow key={i} className="hover:bg-gray-50 transition-colors">
+                                                    <TableCell className="font-bold text-gray-700 uppercase text-xs">{d.department}</TableCell>
+                                                    <TableCell className="font-black text-center text-blue-600">
+
+                                                        <Popover>
+                                                            <PopoverTrigger asChild>
+                                                                <button className="text-blue-700 outline-none flex items-center gap-1 ml-auto active:scale-95 transition-transform border-b border-dashed border-blue-400 cursor-help">
+                                                                    ৳{subTotal} <Info size={14} className="text-blue-300" />
+                                                                </button>
+                                                            </PopoverTrigger>
+                                                            <PopoverContent align="end" className="w-72 p-4 rounded-2xl shadow-2xl border-2 z-50">
+                                                                <div className="space-y-3">
+                                                                    <p className="text-xs font-black text-gray-800 border-b pb-2 text-center uppercase tracking-widest">পেমেন্ট ব্রেকডাউন</p>
+
+                                                                    <div className="flex justify-between text-xs text-gray-500">
+                                                                        <span>মূল ফি (নোটিশ অনুযায়ী):</span>
+                                                                        <span className="font-bold">৳{subTotal}</span>
+                                                                    </div>
+
+                                                                    <div className="flex justify-between text-xs text-red-600 bg-red-50 p-2 rounded-lg font-bold">
+                                                                        <span> Porcessing চার্জ (অফিস):</span>
+                                                                        <span>৳{processingFee}</span>
+                                                                    </div>
+                                                                    <div className="flex justify-between text-xs text-blue-600 bg-blue-50 p-2 rounded-lg font-bold">
+                                                                        <span>সার্ভিস চার্জ:</span>
+                                                                        <span>৳{chargeFee}</span>
+                                                                    </div>
+
+                                                                    <div className="flex justify-between text-xs text-amber-600 bg-amber-50 p-2 rounded-lg font-bold">
+                                                                        <span>বিলার চার্জ (রকেট):</span>
+                                                                        <span>৳{rocketBillerCharge}</span>
+                                                                    </div>
+
+                                                                    <div className="border-t-2 border-dashed pt-2 flex justify-between text-sm font-black text-gray-900">
+                                                                        <span>সর্বমোট প্রদেয়:</span>
+                                                                        <span className="text-emerald-600 text-lg">৳{totalFee}</span>
+                                                                    </div>
+
+                                                                  
+                                                                </div>
+                                                            </PopoverContent>
+                                                        </Popover>
+                                                    </TableCell>
+
+
+                                                    <TableCell className="text-right px-6">
+                                                        <button onClick={() => handleRemoveFeeClick(i)} className="bg-red-50 text-red-500 hover:bg-red-500 hover:text-white p-2 rounded-lg transition-all">
+                                                            <Trash2 size={16} />
+                                                        </button>
+                                                    </TableCell>
+                                                    <TableCell className="text-right px-6">
+                                                        <button onClick={() => handleEditClick(i, d)} className={`${editIndex === i ? "bg-yellow-500 text-white" : ""} bg-red-50 text-yellow-800 hover:bg-yellow-500 hover:text-white p-2 rounded-lg transition-all`}>
+                                                            <Edit2 size={16} />
+                                                        </button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            )
+                                        })}
                                     </TableBody>
                                 </Table>
                             </div>
@@ -321,3 +414,4 @@ export default function AddServicePage({ initialData = null }) {
         </Dialog>
     );
 }
+

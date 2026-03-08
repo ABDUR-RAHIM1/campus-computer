@@ -147,7 +147,54 @@ export default function ContextApiState({ children }) {
         }
     };
 
+    // Context-এ uploader ফাংশন
+    const uploadImage = async (files) => {
+        if (!files || files.length === 0) {
+            setUploadResponse({ message: "❌ কোনো ফাইল পাওয়া যায়নি", status: 400 });
+            return null;
+        }
 
+        setUploadResponse({ message: "📤 আপলোড হচ্ছে...", status: 102 });
+
+        const uploadedUrls = [];
+        for (const file of files) {
+            const form = new FormData();
+            form.append("image", file);
+            try {
+                const response = await fetch(
+                    "https://api.imgbb.com/1/upload?key=862850e874b9b92bba3bbba84383b4dd",
+                    {
+                        method: "POST",
+                        body: form,
+                    }
+                );
+                const data = await response.json();
+                if (data.success) uploadedUrls.push(data.data.url);
+            } catch (error) {
+                console.error("🚫 আপলোড ত্রুটি:", error);
+            }
+        }
+
+        if (uploadedUrls.length > 0) {
+            setUploadResponse({ message: "✅ সফলভাবে আপলোড হয়েছে", status: 200 });
+
+            // 🔥 ৫ সেকেন্ড পর মেসেজটি অটো ক্লিয়ার হয়ে যাবে
+            setTimeout(() => {
+                setUploadResponse({ message: "", status: null });
+            }, 5000);
+
+            return uploadedUrls; // কম্পোনেন্টে ডাটা পাঠানোর জন্য রিটার্ন করুন
+        } else {
+            setUploadResponse({ message: "❌ আপলোড ব্যর্থ হয়েছে", status: 500 });
+
+            // এরর হলেও ৫ সেকেন্ড পর ক্লিন হবে
+            setTimeout(() => {
+                setUploadResponse({ message: "", status: null });
+            }, 5000);
+
+            return null;
+        }
+    };
 
 
 
@@ -159,7 +206,7 @@ export default function ContextApiState({ children }) {
         orderDataForPayment, setOrderDataForPayment,
         loginSignal, setLoginSignal,
         imgUrl,
-        imgUrl, uploadResponse, uploader,
+        imgUrl, uploadResponse, uploader, uploadImage,
         showToast,
     };
 

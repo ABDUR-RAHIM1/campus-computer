@@ -55,16 +55,16 @@ const ServiceSchema = new mongoose.Schema(
                     required: true,
                     min: 0,
                 },
-                rocketBillerCharge: {
-                    type: Number, // Rocket biller Charge #new#
-                    required: true,
-                    min: 0,
-                },
-                totalFee: {
-                    type: Number, // সিস্টেম জেনারেটেড মোট ফি (সিঙ্গেল সাবজেক্টের জন্য)
-                    required: true,
-                    min: 0,
-                },
+                // rocketBillerCharge: {
+                //     type: Number, // Rocket biller Charge #new#
+                //     required: true,
+                //     min: 0,
+                // },
+                // totalFee: {
+                //     type: Number, // সিস্টেম জেনারেটেড মোট ফি (সিঙ্গেল সাবজেক্টের জন্য)
+                //     required: true,
+                //     min: 0,
+                // },
             },
         ],
 
@@ -82,6 +82,7 @@ const ServiceSchema = new mongoose.Schema(
                 "year_change_admission",
                 "regular_form_fillup",
                 "improvement_form_fillup",
+                "irregular_form_fillup",
             ],
             trim: true,
         },

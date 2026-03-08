@@ -118,8 +118,8 @@ export function FileUploaderModal({ showModal, setShowModal, profileId }) {
                     <DialogFooter className="sm:justify-start">
                         <Button disabled={uploadResponse.status === 102} type="submit" className="text-sm bg-blue-600 text-white">
                             {
-                                isLoading ? <Spinner/> : "📤 আপলোড করুন"
-                            }
+                                isLoading ? <Spinner/> : "📤 সংরক্ষণ করুন"
+                            } 
                         </Button>
                     </DialogFooter>
                 </form>
