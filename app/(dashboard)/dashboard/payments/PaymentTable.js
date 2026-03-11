@@ -56,8 +56,11 @@ export default function PaymentTable({ paymentData = [] }) {
                             <TableHead>Method</TableHead>
                             <TableHead>Status</TableHead>
                             <TableHead>Date</TableHead>
-                            <TableHead>Account Name</TableHead>
-                            <TableHead>Profile Name</TableHead>
+                            <TableHead className={" space-y-1 text-center"}>
+                                <p>Account</p>
+                                <p>&</p>
+                                <p>Profile</p>
+                            </TableHead> 
                         </TableRow>
                     </TableHeader>
 
@@ -118,8 +121,11 @@ export default function PaymentTable({ paymentData = [] }) {
                                             })()
                                             : "N/A"}
                                     </TableCell>
-                                    <TableCell>{row?.userId?.username || "N/A"}</TableCell>
-                                    <TableCell>{row?.profileId?.studentName || "N/A"}</TableCell>
+                                    <TableCell className={" space-y-1.5"}>
+                                        <p className="p-1 text-yellow-500 bg-yellow-50 rounded-full text-center">{row?.userId?.username || "removed"}</p>
+                                        <p className="p-1 text-red-500 bg-red-50 rounded-full text-center">{row?.profileId?.studentName || "removed"}</p>
+                                    </TableCell>
+                                    <TableCell></TableCell>
                                 </TableRow>
                             ))
                         ) : (

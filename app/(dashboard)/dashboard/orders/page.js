@@ -1,6 +1,6 @@
 import OrderTable from '@/components/orderTable/OrderTable';
 import { GetAllOrders } from '@/handlers/order'
-import React from 'react' 
+import React from 'react'
 
 export default async function OrderPage() {
     const { status, data } = await GetAllOrders();

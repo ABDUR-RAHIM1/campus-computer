@@ -31,7 +31,7 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "হোম", href: "/" },
-    { name: "চাকরি", href: "/jobs", icon: "🔥" },
+    // { name: "চাকরি", href: "/jobs", icon: "🔥" },
   ];
 
   return (

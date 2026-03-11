@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 
 const studentProfileSchema = mongoose.Schema({
+    isOtherStudent: {
+        type: Boolean,
+        default: false
+    }, 
     studentId: {
         type: mongoose.Schema.ObjectId,
         ref: "studentAuth",
@@ -59,10 +63,7 @@ const studentProfileSchema = mongoose.Schema({
         type: [String],
         default: [],
     },
-    isOtherStudent: {
-        type: Boolean,
-        default: false
-    }
+
 }, { timestamps: true });
 
 const StudentProfileModel = mongoose.models.studentProfile || mongoose.model("studentProfile", studentProfileSchema);

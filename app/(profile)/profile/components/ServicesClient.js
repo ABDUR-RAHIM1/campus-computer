@@ -69,9 +69,9 @@ export default function ServicesClient({ data, admissionData, colsStyle }) {
                     <TabsTrigger value="services" className="flex items-center gap-2 text-[15px]">
                         <LayoutGrid size={18} /> সাধারণ সার্ভিস
                     </TabsTrigger>
-                    <TabsTrigger value="admissions" className="flex items-center gap-2 text-[15px]">
+                    {/* <TabsTrigger value="admissions" className="flex items-center gap-2 text-[15px]">
                         <GraduationCap size={18} /> নতুন ভর্তি কার্যক্রম 
-                    </TabsTrigger>
+                    </TabsTrigger> */}
                 </TabsList>
 
                 {/* সাধারণ সার্ভিস কন্টেন্ট */}

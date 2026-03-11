@@ -1,0 +1,28 @@
+ Requirement:[
+     studentAccount{
+        userName,
+        phoneNumber,
+        password
+     },
+     // multiple student Profile - nijer jonno akta , friend cirlce er jonno multiple 
+     studentProfile{
+        isOtherStudent:{nijer jonno na kar jonno},
+        studentId:{ studentAccount(populate)-  je account theke profile create kora hobe tar _id - populate},
+        studentName:{isOtherStudent = nijer hole filed disabled , nahole editable},
+        institute:{fetch institute - je college a porteche},
+        program:{honors/deegre, intermidiate},
+        depertment:{kon depertment a porasuna korteche (joma dewar jonno)},
+        classYear:{},
+        seassion:{},
+        registrationNumber:{most improtent, applicant hole applicantRoll-pin},
+        classRoll:{optional},
+        electiveSubject:{most improtent - form filup a kaje lagbe},
+        contactNumber:{optional},
+        hasImprovement:{improvment ace kina},
+        improvementSubjects:{array of subject code},
+        profilePicture:{ata passport size er photo korte kaje lagbe},
+        documents:{array of documents - reg , admit etc},
+     },
+     
+
+ ]

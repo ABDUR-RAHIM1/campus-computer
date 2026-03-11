@@ -37,7 +37,6 @@ const CopyableNumberDisplay = ({ number }) => {
 export default function PaymentProccess() {
     const { showToast, isProfileMatch, orderDataForPayment } = useContext(globalContext);
 
-    console.log(orderDataForPayment)
     const [formData, setFormData] = useState({
         method: '',
         amount: '',
@@ -160,7 +159,20 @@ export default function PaymentProccess() {
             <h2 className="text-2xl font-extrabold mb-8 text-blue-800 flex items-center gap-2">
                 <CheckCircle2 className="text-green-500" /> পেমেন্ট প্রক্রিয়া
             </h2>
-
+            {/* Method Selector */}
+            <div className="grid grid-cols-1 gap-4 my-3">
+                <label className="text-xs font-bold text-gray-500 ml-1 uppercase">পেমেন্ট মাধ্যম নির্বাচন করুন</label>
+                <select
+                    name="method"
+                    value={formData.method}
+                    onChange={handleChange}
+                    required
+                    className="w-full p-4 border-2 border-gray-100 rounded-xl focus:border-blue-500 outline-none transition-all appearance-none bg-gray-50 font-medium"
+                >
+                    <option value="">-- মেথড সিলেক্ট করুন --</option>
+                    {paymentMethods.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
+                </select>
+            </div>
             {/* Total Amount Card */}
             <div className="mb-8 p-4 bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 rounded-2xl text-white shadow-xl">
                 <div className="flex justify-between items-start">
@@ -196,20 +208,7 @@ export default function PaymentProccess() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
-                {/* Method Selector */}
-                <div className="grid grid-cols-1 gap-4">
-                    <label className="text-xs font-bold text-gray-500 ml-1 uppercase">পেমেন্ট মাধ্যম নির্বাচন করুন</label>
-                    <select
-                        name="method"
-                        value={formData.method}
-                        onChange={handleChange}
-                        required
-                        className="w-full p-4 border-2 border-gray-100 rounded-xl focus:border-blue-500 outline-none transition-all appearance-none bg-gray-50 font-medium"
-                    >
-                        <option value="">-- মেথড সিলেক্ট করুন --</option>
-                        {paymentMethods.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
-                    </select>
-                </div>
+
 
                 {/* Amount Input */}
                 <div>

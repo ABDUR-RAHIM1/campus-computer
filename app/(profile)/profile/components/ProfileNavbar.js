@@ -15,7 +15,7 @@ export default function ProfileNavbar() {
 
   const navItems = [
     { name: 'ওভারভিউ', href: '/profile' },
-    { name: 'অর্ডারসমূহ', href: '/profile/orders' },
+    { name: 'আবেদন সমূহ', href: '/profile/orders' },
     { name: 'পেমেন্ট', href: '/profile/payments' },
     { name: "🔥 চাকরি বিজ্ঞপ্তি", href: "/profile/jobs" },
   ];

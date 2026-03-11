@@ -276,7 +276,7 @@ export default function OrderTable({ orders, isAdmin = false }) {
     <div className="min-h-screen bg-gray-50 py-10 px-4">
       <div className="max-w-7xl mx-auto bg-white shadow-xl rounded-2xl overflow-hidden p-4 md:p-8">
         <header className="mb-8">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-blue-950 mb-2">📋 অর্ডার ড্যাশবোর্ড {isAdmin ? "admin" : "user"}</h2>
+          <h2 className="text-2xl md:text-3xl font-extrabold text-blue-950 mb-2">📋 অর্ডার ড্যাশবোর্ড</h2> 
           <p className="text-gray-500 text-sm md:text-base">
             Campus Computer এর মাধ্যমে করা সকল অর্ডারের বর্তমান অবস্থা এবং পেমেন্ট ডিটেইলস এখানে ট্র্যাক করুন।
           </p>

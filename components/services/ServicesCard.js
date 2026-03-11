@@ -130,11 +130,11 @@ export default function ServicesCard({ servicesData }) {
 
                                                                 {
                                                                     service.type === "improvement_form_fillup" &&
-                                                                    <p className="text-[9px] text-orange-500 italic text-center bg-orange-50 p-2 rounded-md">
+                                                                    <p className="text-[10px] text-orange-500 italic text-center bg-orange-50 p-2 rounded-md">
                                                                         * পরবর্তী প্রতি সাবজেক্ট ৳ {item.subjectFee || 0}  মুল ফী-এর সাথে যুক্ত হবে।
                                                                     </p>
                                                                 }
-                                                                <p className="text-[9px] text-red-500 italic text-center bg-red-50 p-2 rounded-md">
+                                                                <p className="text-[10px] text-red-500 italic text-center bg-red-50 p-2 rounded-md">
                                                                     * রকেট ছাড়া অন্য মেথডে ক্যাশ আউট চার্জ প্রযোজ্য।
                                                                 </p>
 

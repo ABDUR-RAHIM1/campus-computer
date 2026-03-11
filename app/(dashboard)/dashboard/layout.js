@@ -5,7 +5,7 @@ import ContextApiState from "@/contextApi/ContextApi";
 import DashboardNavbar from "./components/DashboardNavbar";
 import DashboardSidebar from "./components/DashboardSidebar";
 
- 
+
 const notoSansBengali = Noto_Sans_Bengali({
   weight: ["400", "500", "700"],
   subsets: ["bengali"],
@@ -29,11 +29,11 @@ export default function RootLayout({ children }) {
           {/* <DashboardNavbar /> */}
 
           <div className=" w-full flex">
-            <aside >
-              <DashboardSidebar />
-            </aside>
 
-            <main className=" flex-1 h-screen overflow-y-auto">
+            <DashboardSidebar />
+
+
+            <main className=" py-10 md:py-0 flex-1 h-screen overflow-y-auto">
               {children}
             </main>
           </div>

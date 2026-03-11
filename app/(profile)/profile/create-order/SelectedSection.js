@@ -78,7 +78,7 @@ export default function SelectedSection() {
             subTotal: result.subTotal, // new 
             billerCharge: result.rocketBillerCharge,
             totalFee: result.totalFee,
-            profileId: currentProfile._id, 
+            profileId: currentProfile._id,
             orderType: currentScope
         });
     }, [isImprovementService, serviceData, setOrderDataForPayment]);
@@ -157,9 +157,16 @@ export default function SelectedSection() {
                     onChange={handleScopeChange}
                     className="w-full p-2.5 bg-white border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                 >
-                    <option value="office_copy">📦 শুধু সার্ভিস (Self Submission)</option>
-                    <option value="full_service">🏛️ ফুল সার্ভিস (Direct Submission)</option>
+                    <option value="office_copy"> কলেজ কপি</option>
+                    <option value="full_service"> সম্পূর্ণ আবেদন </option>
                 </select>
+                <p className={` ${orderScope === "full_service" ? "bg-green-50 text-green-500" : "bg-red-100 text-red-500"} my-2 text-sm  w-full p-2 rounded-md`}>
+                    {
+                        orderScope === "full_service"
+                            ? "আপনার আবেদন সম্পন্ন হওয়ার পর আমাদের প্রতিনিধি আপনার পক্ষ থেকে প্রয়োজনীয় কাগজপত্র কলেজে জমা দিয়ে আসবে।"
+                            : "আমরা আপনার আবেদন সম্পন্ন করে রাখব। পরে আমাদের কাছ থেকে কাগজপত্র সংগ্রহ করে আপনাকে নিজে কলেজে জমা দিতে হবে।"
+                    }
+                </p>
             </div>
 
             {errorMsg && (
@@ -265,7 +272,7 @@ export default function SelectedSection() {
             {canProceed && (
                 <div className="mt-8 p-5 rounded-2xl bg-green-600 text-white text-center font-bold shadow-xl animate-bounce flex flex-col items-center">
                     <p className="flex items-center gap-2 text-sm"> <ArrowDown size={18} /> পেমেন্ট সম্পন্ন করুন </p>
-                    <p className="text-[10px] font-normal opacity-90">ডান পাশের পেমেন্ট গেটওয়ে ব্যবহার করুন</p>
+                    <p className="text-[10px] font-normal opacity-90 flex items-center gap-2"> <span className="hidden md:block">ডান পাশের</span> <span className="block md:hidden">নিচের</span>   পেমেন্ট গেটওয়ে ব্যবহার করুন</p>
                 </div>
             )}
         </div>
