@@ -3,9 +3,10 @@ import { getAllServices } from '@/handlers/services';
 import { Plus, Wrench, Layers } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
-import ServicesTable from './ServicesTable'; 
-import AddServicePage from './add/page';
+import ServicesTable from './ServicesTable';  
+import AddServicePage from './add/AddService';
 
+ 
 export default async function Services() {
     const { status, data } = await getAllServices();
 
@@ -28,14 +29,7 @@ export default async function Services() {
                         <p className="text-xs font-bold text-gray-400 tracking-widest uppercase">মোট সার্ভিস: {data?.length || 0}</p>
                     </div>
                 </div>
-
-                {/* <Link
-                    href="/dashboard/services/add"
-                    className="flex items-center gap-2 font-black text-[11px] uppercase tracking-widest py-3 px-6 bg-blue-600 text-white rounded-2xl shadow-lg shadow-blue-200 transition-all hover:bg-blue-700 hover:-translate-y-0.5 active:translate-y-0"
-                >
-                    সার্ভিস যুক্ত করুন
-                    <Plus size={18} strokeWidth={3} />
-                </Link> */}
+ 
                 <AddServicePage/>
             </div>
 

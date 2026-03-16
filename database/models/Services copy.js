@@ -51,16 +51,20 @@ const ServiceSchema = new mongoose.Schema(
                     min: 0,
                 },
                 processingFee: {
-                    type: Number, // office Stuff Charge (extra)
+                    type: Number, // office Stuff Charge (extra) #new#
                     required: true,
                     min: 0,
                 },
-                testExamFeePerSub: {
-                    type: Number, // test exam jorimana (per subject) #new#
-                    required: true,
-                    min: 0,
-                },
-               
+                // rocketBillerCharge: {
+                //     type: Number, // Rocket biller Charge #new#
+                //     required: true,
+                //     min: 0,
+                // },
+                // totalFee: {
+                //     type: Number, // সিস্টেম জেনারেটেড মোট ফি (সিঙ্গেল সাবজেক্টের জন্য)
+                //     required: true,
+                //     min: 0,
+                // },
             },
         ],
 

@@ -13,7 +13,6 @@ import { getMyAllProfile } from "@/handlers/profile";
 import { Label } from "@/components/ui/label";
 import { feeCalculation } from "@/utilities/FeeCalculation";
 import { ArrowDown, AlertCircle, CheckCircle2, School, BookOpen, Settings, BadgeDollarSign, XCircle } from "lucide-react";
-import InputField from "@/utilities/InputField";
 
 export default function SelectedSection() {
     const { setIsProfileMatch, setOrderDataForPayment, showToast } = useContext(globalContext);
@@ -23,20 +22,9 @@ export default function SelectedSection() {
     const [orderScope, setOrderScope] = useState("office_copy");
     const [selectedDepartment, setSelectedDepartment] = useState(null);
     const [errorMsg, setErrorMsg] = useState("");
-    const [missTestSubjectCount, setMissSubjectCount] = useState(0) // new 
-
-    const [fee, setFee] = useState({
-        subTotal: 0,
-        rocketBillerCharge: 0,
-        totalFee: 0,
-        testFeeTotal: 0,
-        chargeFee: 0
-    });
-
+    const [fee, setFee] = useState({ subTotal: 0, rocketBillerCharge: 0, totalFee: 0, chargeFee: 0 });
 
     const isImprovementService = serviceData?.type === "improvement_form_fillup" || serviceData?.type === "অনিয়মিত";
-
-
 
     useEffect(() => {
         const getData = localStorage.getItem("pending_order");
@@ -63,14 +51,6 @@ export default function SelectedSection() {
         getMyProfileList();
     }, []);
 
-    // new 
-    const handleMisSubjectChange = (event) => {
-        setMissSubjectCount(Number(event.target.value))
-        // calculateAndSetFee(dept, formData.profile, orderScope);
-        calculateAndSetFee(selectedDepartment, formData.profile, orderScope);
-    };
-
-
     const calculateAndSetFee = useCallback((dept, currentProfile, currentScope) => {
         if (!dept || !currentProfile) return;
 
@@ -78,19 +58,14 @@ export default function SelectedSection() {
         const baseCollegeFee = Number(dept.collegeFee || 0);
         const baseSubjectFee = Number(dept.subjectFee || 0);
         const baseProcessingFee = Number(dept.processingFee || 0);
-
-        const totalMissTestExamFee = Number(dept.testExamFeePerSub || 0) * Number(missTestSubjectCount); // new  
-
         let baseChargeFee = Number(dept.chargeFee || 0);
-
 
         if (currentScope === "full_service") baseChargeFee *= 2;
 
         const finalSubjectFee = isImprovementService ? baseSubjectFee * improvementCount : baseSubjectFee;
+        const result = feeCalculation(baseCollegeFee, finalSubjectFee, baseProcessingFee, baseChargeFee);
 
-        const result = feeCalculation(baseCollegeFee, finalSubjectFee, baseProcessingFee, totalMissTestExamFee, baseChargeFee);
-
-        setFee({ ...result, testFeeTotal: totalMissTestExamFee, chargeFee: baseChargeFee });
+        setFee({ ...result, chargeFee: baseChargeFee });
 
         setOrderDataForPayment({
             serviceId: serviceData?._id,
@@ -100,15 +75,13 @@ export default function SelectedSection() {
             subjectFee: finalSubjectFee,
             processingFee: baseProcessingFee,
             chargeFee: baseChargeFee,
-            subTotal: result.subTotal,
+            subTotal: result.subTotal, // new 
             billerCharge: result.rocketBillerCharge,
             totalFee: result.totalFee,
             profileId: currentProfile._id,
             orderType: currentScope
         });
-    }, [isImprovementService, serviceData, setOrderDataForPayment, missTestSubjectCount]);
-
-    console.log(fee)
+    }, [isImprovementService, serviceData, setOrderDataForPayment]);
 
     const handleProfileChange = (profile) => {
         setFormData({ profile });
@@ -151,18 +124,6 @@ export default function SelectedSection() {
         setIsProfileMatch(canProceed);
     }, [canProceed, setIsProfileMatch]);
 
-    // ১. আপনার আগের useEffect টি ঠিকই থাকবে
-    useEffect(() => {
-        setIsProfileMatch(canProceed);
-    }, [canProceed, setIsProfileMatch]);
-
-    // ২. নতুন useEffect টি যোগ করুন (এটি শুধুমাত্র ফি ক্যালকুলেশনের জন্য)
-    useEffect(() => {
-        if (selectedDepartment && formData.profile) {
-            calculateAndSetFee(selectedDepartment, formData.profile, orderScope);
-        }
-    }, [missTestSubjectCount, selectedDepartment, formData.profile, orderScope, calculateAndSetFee]);
-
     if (!serviceData) return <div className="text-center p-10">লোড হচ্ছে...</div>;
 
     return (
@@ -189,53 +150,23 @@ export default function SelectedSection() {
             </div>
 
             {/* সার্ভিস ডেলিভারি অপশন */}
-            <div className="mb-6 p-4 bg-white border border-blue-100 rounded-2xl shadow-sm space-y-4">
-                <div>
-                    <Label className="font-black text-gray-700 mb-2 block text-xs uppercase tracking-widest">
-                        আবেদন প্রক্রিয়া পদ্ধতি 
-                    </Label>
-                    <select
-                        value={orderScope}
-                        onChange={handleScopeChange}
-                        className="w-full p-3 bg-gray-50 border border-gray-400 rounded-xl font-bold text-gray-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                    >
-                        <option value="office_copy">কলেজ কপি (নিজে জমা দিবেন)</option>
-                        <option value="full_service">সম্পূর্ণ আবেদন (আমরা জমা দিব)</option>
-                    </select>
-                </div>
-
-                {/* কন্ডিশনাল বক্স - প্যারাগ্রাফের ঝামেলা এড়িয়ে সরাসরি ডাইভ ব্যবহার করেছি */}
-                <div className={`p-4 rounded-2xl border transition-all duration-300 ${orderScope === "full_service"
-                        ? "bg-green-50 border-green-100 text-green-800"
-                        : "bg-red-50 border-red-100 text-red-800"
-                    }`}>
-                    {orderScope === "full_service" ? (
-                        <div className="space-y-4">
-                            <p className="text-sm font-bold leading-relaxed">
-                                আপনার আবেদন সম্পন্ন হওয়ার পর আমাদের প্রতিনিধি আপনার পক্ষ থেকে প্রয়োজনীয় কাগজপত্র কলেজে জমা দিয়ে আসবে।
-                            </p>
-                            <div className="bg-white p-3 rounded-xl border border-green-100">
-                                <InputField
-                                    type="number"
-                                    min="0"
-                                    name="missTestSubjectCount"
-                                    label="কতটি টেস্ট পরীক্ষা দেননি?"
-                                    placeholder="সংখ্যাত লিখুন (যেমন: ২)"
-                                    value={missTestSubjectCount}
-                                    onChange={handleMisSubjectChange}
-                                />
-                                <p className="text-[10px] text-amber-600 mt-2 font-medium bg-amber-50 p-2 rounded-lg border border-amber-100 flex items-start gap-2">
-                                    <span>⚠️</span>
-                                    সতর্কতা: সব পরীক্ষা দিয়ে থাকলে ০ লিখুন। ভুল তথ্য দিলে পরবর্তীতে অতিরিক্ত চার্জ প্রযোজ্য হতে পারে অথবা আপনার আবেদন বাতিল হতে পারে। দয়া করে সঠিক সংখ্যাটি লিখুন।
-                                </p>
-                            </div>
-                        </div>
-                    ) : (
-                        <p className="text-sm font-bold leading-relaxed">
-                            আমরা আপনার আবেদন সম্পন্ন করে রাখব। পরে আমাদের কাছ থেকে কাগজপত্র সংগ্রহ করে আপনাকে নিজে কলেজে জমা দিতে হবে।
-                        </p>
-                    )}
-                </div>
+            <div className="mb-6 p-2 bg-blue-50 border border-blue-100 rounded-xl shadow-sm">
+                <Label className="font-bold text-blue-800 mb-2 block">সার্ভিস ডেলিভারি মেথড</Label>
+                <select
+                    value={orderScope}
+                    onChange={handleScopeChange}
+                    className="w-full p-2.5 bg-white border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                >
+                    <option value="office_copy"> কলেজ কপি</option>
+                    <option value="full_service"> সম্পূর্ণ আবেদন </option>
+                </select>
+                <p className={` ${orderScope === "full_service" ? "bg-green-50 text-green-500" : "bg-red-100 text-red-500"} my-2 text-sm  w-full p-2 rounded-md`}>
+                    {
+                        orderScope === "full_service"
+                            ? "আপনার আবেদন সম্পন্ন হওয়ার পর আমাদের প্রতিনিধি আপনার পক্ষ থেকে প্রয়োজনীয় কাগজপত্র কলেজে জমা দিয়ে আসবে।"
+                            : "আমরা আপনার আবেদন সম্পন্ন করে রাখব। পরে আমাদের কাছ থেকে কাগজপত্র সংগ্রহ করে আপনাকে নিজে কলেজে জমা দিতে হবে।"
+                    }
+                </p>
             </div>
 
             {errorMsg && (
@@ -299,15 +230,6 @@ export default function SelectedSection() {
                                     <Settings size={14} className="text-emerald-500" />
                                     <span>প্রসেসিং: <b>{dept.processingFee}৳</b></span>
                                 </div>
-                                {/*  new - Below */}
-                                {missTestSubjectCount > 0 && orderScope === "full_service" && (
-                                    <div className="flex items-center gap-2 text-red-600 font-bold">
-                                        <AlertCircle size={14} />
-                                        <span>টেস্ট জরিমানা: <b>
-                                            {fee?.testFeeTotal || 0}৳</b>
-                                        </span>
-                                    </div>
-                                )}
                                 <div className="flex items-center gap-2">
                                     <BadgeDollarSign size={14} className="text-orange-500" />
                                     <span>চার্জ: <b>{isSelected ? fee.chargeFee : (orderScope === "full_service" ? dept.chargeFee * 2 : dept.chargeFee)}৳</b></span>
