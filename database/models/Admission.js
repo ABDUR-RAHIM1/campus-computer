@@ -8,7 +8,11 @@ const AdmissionSchema = new mongoose.Schema({
     },
     serviceName: { type: String, required: true },
     deadline: { type: Date, required: true },
+    collegeFee: { type: Number, required: true },
+    processingFee: { type: Number, required: true },
     serviceCharge: { type: Number, required: true },
+    reletedFile: { type: String },
+    reletedFileText: {type: String},
     type: { type: String, enum: ["new_admission"], default: "new_admission" },
     formFields: [{
         id: { type: String },

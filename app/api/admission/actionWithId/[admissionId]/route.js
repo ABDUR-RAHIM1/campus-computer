@@ -1,6 +1,8 @@
 import { connectDb } from "@/database/connectDb";
 import AdmissionModel from "@/database/models/Admission";
+import SubAdminModel from "@/database/models/SubAdmin";
 import { NextResponse } from "next/server"
+
 
 
 //  get by id admission 
@@ -9,7 +11,8 @@ export const GET = async (request, { params }) => {
 
         const { admissionId } = await params;
         await connectDb();
-        const admissionService = await AdmissionModel.findById(admissionId);
+        const admissionService = await AdmissionModel.findById(admissionId)
+            .populate("institute", "username")
 
         if (!admissionService) {
             return NextResponse.json({
@@ -32,7 +35,7 @@ export const GET = async (request, { params }) => {
 export const DELETE = async (request, { params }) => {
     try {
 
-        const { admissionId } = params
+        const { admissionId } = await params;
         await connectDb();
         const isDeleted = await AdmissionModel.findByIdAndDelete(admissionId);
 

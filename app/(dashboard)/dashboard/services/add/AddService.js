@@ -50,7 +50,8 @@ export default function AddServicePage({ mood = "add", initialData = null }) {
         processingFee: 0,
         testExamFeePerSub: 0,
     });
-    console.log(deparmentData)
+
+
     const [formData, setFormData] = useState({
         type: "",
         institute: "",
@@ -115,7 +116,6 @@ export default function AddServicePage({ mood = "add", initialData = null }) {
 
         setDepartmentData(newData);
     };
-    console.log(deparmentData)
 
     useEffect(() => {
         if (formData.program) {

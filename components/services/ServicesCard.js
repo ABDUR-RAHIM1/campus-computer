@@ -14,17 +14,9 @@ import {
 } from "@/components/ui/popover";
 import { GraduationCap, Building2, FileText, Info, Paperclip } from "lucide-react";
 import ApplyButton from "./ApplyButton";
-import { rocketBillerChargeCalculate } from "@/app/(profile)/profile/create-order/CashoutChargeCalculator";
 import { feeCalculation } from "@/utilities/FeeCalculation";
 
 export default function ServicesCard({ servicesData }) {
-
-    // রকেট বিলার চার্জ ক্যালকুলেশন (আপনার লজিক অনুযায়ী)
-    // const rocketBillerChargeCalculate = (amount) => {
-    //     if (!amount) return 0;
-    //     // উদাহরণ: প্রতি হাজারে ১০ টাকা বা ১% (আপনার ফাংশনটি এখানে রিপ্লেস করুন)
-    //     return Math.ceil(amount * 0.01);
-    // };
 
     const colors = [
         { bg: "from-blue-50 to-blue-100", border: "border-blue-200", text: "text-blue-700", accent: "bg-blue-600" },

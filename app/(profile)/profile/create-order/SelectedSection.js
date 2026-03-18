@@ -37,7 +37,6 @@ export default function SelectedSection() {
     const isImprovementService = serviceData?.type === "improvement_form_fillup" || serviceData?.type === "অনিয়মিত";
 
 
-
     useEffect(() => {
         const getData = localStorage.getItem("pending_order");
         if (getData) {
@@ -71,6 +70,7 @@ export default function SelectedSection() {
     };
 
 
+
     const calculateAndSetFee = useCallback((dept, currentProfile, currentScope) => {
         if (!dept || !currentProfile) return;
 
@@ -80,6 +80,8 @@ export default function SelectedSection() {
         const baseProcessingFee = Number(dept.processingFee || 0);
 
         const totalMissTestExamFee = Number(dept.testExamFeePerSub || 0) * Number(missTestSubjectCount); // new  
+
+
 
         let baseChargeFee = Number(dept.chargeFee || 0);
 
@@ -108,7 +110,6 @@ export default function SelectedSection() {
         });
     }, [isImprovementService, serviceData, setOrderDataForPayment, missTestSubjectCount]);
 
-    console.log(fee)
 
     const handleProfileChange = (profile) => {
         setFormData({ profile });
@@ -117,6 +118,7 @@ export default function SelectedSection() {
     };
 
     const handleSelectDepartment = (dept) => {
+
         if (!formData.profile) {
             setErrorMsg("আগে একটি প্রোফাইল নির্বাচন করুন");
             showToast(500, "আগে একটি প্রোফাইল নির্বাচন করুন");
@@ -192,7 +194,7 @@ export default function SelectedSection() {
             <div className="mb-6 p-4 bg-white border border-blue-100 rounded-2xl shadow-sm space-y-4">
                 <div>
                     <Label className="font-black text-gray-700 mb-2 block text-xs uppercase tracking-widest">
-                        আবেদন প্রক্রিয়া পদ্ধতি 
+                        আবেদন প্রক্রিয়া পদ্ধতি
                     </Label>
                     <select
                         value={orderScope}
@@ -206,8 +208,8 @@ export default function SelectedSection() {
 
                 {/* কন্ডিশনাল বক্স - প্যারাগ্রাফের ঝামেলা এড়িয়ে সরাসরি ডাইভ ব্যবহার করেছি */}
                 <div className={`p-4 rounded-2xl border transition-all duration-300 ${orderScope === "full_service"
-                        ? "bg-green-50 border-green-100 text-green-800"
-                        : "bg-red-50 border-red-100 text-red-800"
+                    ? "bg-green-50 border-green-100 text-green-800"
+                    : "bg-red-50 border-red-100 text-red-800"
                     }`}>
                     {orderScope === "full_service" ? (
                         <div className="space-y-4">
@@ -264,6 +266,7 @@ export default function SelectedSection() {
                     const isDeptMatchLocal = formData.profile?.department === dept.department;
                     const isSelected = selectedDepartment?.department === dept.department;
                     const improvementCount = formData.profile?.improvementSubjects?.length || 0;
+                 
 
                     // লজিক: যদি সঠিক ডিপার্টমেন্ট সিলেক্ট হয়, তবে অন্যগুলো হাইড হবে
                     if (canProceed && !isSelected) return null;

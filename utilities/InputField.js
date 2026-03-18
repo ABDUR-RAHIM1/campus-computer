@@ -19,7 +19,7 @@ export default function InputField({ label, name, type = "text", placeholder, va
                 onChange={onChange}
                 required={required}
                 disabled={disabled}
-                multiple={multiple}
+                multiple={multiple} 
                 className={error ? " border-red-500" : ""}
             />
             {error && <p className="mt-1 text-sm text-red-600">{error}</p>}

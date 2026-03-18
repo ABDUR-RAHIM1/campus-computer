@@ -18,21 +18,42 @@ import { globalContext } from "@/contextApi/ContextApi"
 import { createGetAdmissionService } from "@/constans"
 import { PostActionAdmin } from "@/actions/admins/PostAction"
 import { getAllSubAdmins } from "@/handlers/subAdmins"
- 
+
 import SelectField from "@/utilities/SelectField"
+import Image from "next/image"
+import { getStatusColor } from "@/utilities/getStatusColor"
+import { feeCalculation } from "@/utilities/FeeCalculation"
 
 export default function AdmissionAdd() {
-  const { showToast } = useContext(globalContext);
-  const [loading, setLoading] = useState(false); 
+  const { showToast, uploadImage, uploadResponse } = useContext(globalContext);
+  const [loading, setLoading] = useState(false);
   const [institutes, setInstitutes] = useState([]);
+  const { status, message } = uploadResponse;
+  const [fee, setFee] = useState({ subTotal: 0, rocketBillerCharge: 0, totalFee: 0 })
   const [formData, setFormData] = useState({
     institute: "",
     serviceName: "",
     deadline: "",
+    collegeFee: 0,
+    processingFee: 0,
     serviceCharge: 0,
+    reletedFile: "", // optional
+    reletedFileText: "", // apply er somoy use hobe 
     formFields: []
   })
- 
+
+
+  // ========  fee Calculation & set the fee, setFee state\ =========
+  useEffect(() => {
+    const { subTotal, rocketBillerCharge, totalFee } = feeCalculation(formData.collegeFee, formData.processingFee, formData.serviceCharge, 0);
+    setFee({ subTotal, rocketBillerCharge, totalFee });
+
+  }, [formData.collegeFee, formData.processingFee, formData.serviceCharge])
+
+
+
+
+  //  fetch all subAdmin/ institute 
   useEffect(() => {
     const getData = async () => {
       const { status, data } = await getAllSubAdmins();
@@ -47,10 +68,26 @@ export default function AdmissionAdd() {
     getData();
   }, []);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+  const handleChange = async (e) => {
+    const { type, name, value, files } = e.target;
+
+    if (type === "file") {
+
+      const urls = await uploadImage(files);
+      if (urls && urls.length > 0) {
+        setFormData((prev) => ({
+          ...prev,
+          [name]: urls[0],
+        }));
+      }
+
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
+
   }
+
+  
 
   const addFormField = () => {
     const newField = {
@@ -103,6 +140,9 @@ export default function AdmissionAdd() {
     }
   };
 
+
+
+
   return (
     <Dialog className={"my-5"}>
       <DialogTrigger asChild>
@@ -134,7 +174,7 @@ export default function AdmissionAdd() {
             {/* মেইন সার্ভিস ডিটেইলস */}
             <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
               <Label className="block mb-4 text-blue-700 font-bold uppercase tracking-wider text-xs">Basic Information</Label>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <InputField
                   label="Service Name"
                   name="serviceName"
@@ -150,15 +190,72 @@ export default function AdmissionAdd() {
                   required
                 />
                 <InputField
-                  label="Charge (Tk)"
-                  name="serviceCharge"
+                  label="College Fee"
+                  name="collegeFee"
                   type="number"
-                  placeholder="0.00"
+                  placeholder="0"
                   onChange={handleChange}
                   required
                 />
+                <InputField
+                  label="Processing Fee (Stuff)"
+                  name="processing"
+                  type="number"
+                  placeholder="0"
+                  onChange={handleChange}
+                  required
+                />
+                <InputField
+                  label=" Service Charge"
+                  name="serviceCharge"
+                  type="number"
+                  placeholder="0"
+                  onChange={handleChange}
+                  required
+                />
+                <div className=" space-y-1">
+                  <p className=" px-2 py-1 rounded-md text-sm font-bold bg-yellow-100 text-yellow-500">Sub Total: {fee.subTotal}</p>
+                  <p className=" px-2 py-1 rounded-md text-sm font-bold bg-violet-100 text-violet-600">Biller Charge: {fee.rocketBillerCharge}</p>
+                  <p className=" px-2 py-1 rounded-md text-sm font-bold bg-red-50 text-red-500"> Total Fee: {fee.totalFee}</p>
+                </div>
               </div>
             </div>
+
+            {/* অপশনাল সার্ভিস ইনফো */}
+            <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+              <Label className="block mb-4 text-blue-700 font-bold uppercase tracking-wider text-xs">Optional Information</Label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <InputField
+                    type={"file"}
+                    label="Releted File"
+                    name="reletedFile"
+                    onChange={handleChange}
+                    required={false}
+                  />
+                  {message && (
+                    <p className={`text-xs mt-2 font-medium ${getStatusColor(status)}`}>
+                      {message}
+                    </p>
+                  )}
+                </div>
+                <div className="flex-shrink-0">
+                  <div className="w-full h-[300px] border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-white overflow-hidden shadow-inner">
+                    {formData.reletedFile ? (
+                      <img
+                        src={formData.reletedFile}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-[10px] text-gray-400 text-center px-2">ফাইল নেই</span>
+                    )}
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
 
             {/* ডায়নামিক ফর্ম ফিল্ডস সেকশন */}
             <div className="space-y-4">
