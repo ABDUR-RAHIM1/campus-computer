@@ -2,11 +2,11 @@ import { connectDb } from "@/database/connectDb";
 import { Order } from "@/database/models/Order";
 import { studentAuthGuard } from "@/middlewere/studentAuthGuard";
 import { NextResponse } from "next/server";
+import PaymentInfoModel from "@/database/models/PaymentInfo";
 
 import ServiceModel from "@/database/models/Services";
 import StudentAuthModel from "@/database/models/StudentAuth";
 import StudentProfileModel from "@/database/models/Profile";
-import PaymentInfoModel from "@/database/models/PaymentInfo";
 
 //  Create Order by Student
 // api => /api/order/postGet  (create , getAll)
@@ -24,10 +24,12 @@ export async function POST(req) {
             profileId,
             orderType,
             serviceId,
+            institute,
             department,
             collegeFee,
             subjectFee,
             processingFee,
+            testFeeTotal,
             chargeFee,
             subTotal,
             billerCharge,
@@ -46,7 +48,7 @@ export async function POST(req) {
 
         // 🔍 Check if order already exists for this student & service
         const isExistOrder = await Order.findOne({
-            reference: id, serviceId,
+            profileId, serviceId,
             status: { $ne: "cancel" }
         });
         if (isExistOrder) {
@@ -62,9 +64,11 @@ export async function POST(req) {
             orderType,
             reference: id,
             serviceId,
+            institute,
             department,
             collegeFee,
             subjectFee,
+            testFeeTotal,
             processingFee,
             chargeFee,
             subTotal,
@@ -114,7 +118,7 @@ export async function GET(req) {
             .sort({ "createdAt": -1 })
             .populate("reference", "username")
             .populate("serviceId", "title")
-            .populate("profileId", "studentName")
+            .populate("profileId", "studentName institute")
             .lean();
 
         return NextResponse.json(

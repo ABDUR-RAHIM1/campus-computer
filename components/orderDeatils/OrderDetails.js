@@ -7,7 +7,6 @@ import DownloadButton from '@/utilities/DownloadButton'
 import {
     User, Phone, BookOpen, GraduationCap, Calendar,
     Hash, CreditCard, ShieldCheck, FileText, LayoutDashboard,
-    CheckCircle2, Clock, MapPin
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
@@ -19,10 +18,15 @@ export default async function OrderDetails({ data }) {
         reference,     // main account info : populated 
         orderType,
         paymentStatus,
-        totalFee,
+        processingFee,
         collegeFee,
         subjectFee,
+        testFeeTotal,
         chargeFee,
+        billerCharge,
+        cashOutCharge,
+        subTotal,
+        calculatedTotal,
         status: orderStatus
     } = data;
 
@@ -78,27 +82,24 @@ export default async function OrderDetails({ data }) {
                             </h3>
                         </div>
                         <CardContent className="p-6 space-y-4">
-                            <div className="flex justify-between items-center text-xs">
-                                <span className="font-bold text-gray-400 uppercase">কলেজ ফি</span>
-                                <span className="font-bold text-gray-700">৳ {collegeFee || 0}</span>
-                            </div>
-                            <div className="flex justify-between items-center text-xs">
-                                <span className="font-bold text-gray-400 uppercase">প্রতি সাবজেক্ট ফি</span>
-                                <span className="font-bold text-gray-700">৳
-                                    {subjectFee || 0}</span>
-                            </div>
-                            <div className="flex justify-between items-center text-xs">
-                                <span className="font-bold text-gray-400 uppercase">Biller চার্জ: </span>
-                                <span className="font-bold text-gray-700">৳ {"Calculate kora hoyni"}</span>
-                            </div>
-                            <div className="flex justify-between items-center text-xs">
-                                <span className="font-bold text-gray-400 uppercase">চার্জ</span>
-                                <span className="font-bold text-gray-700">৳ {chargeFee || 0}</span>
-                            </div>
-                            <div className="h-[1px] bg-gray-100 my-1" />
-                            <div className="flex justify-between items-center">
-                                <span className="text-xs font-black text-blue-600 uppercase">মোট ফি</span>
-                                <span className="text-xl font-black text-gray-900 tracking-tighter">৳ {totalFee || 0}</span>
+                           
+                            <div className="space-y-1 text-sm border-r pr-4">
+                                <div className="flex justify-between"><span>কলেজ ফি:</span> <span>{collegeFee}৳</span></div>
+                                <div className="flex justify-between"><span>সাবজেক্ট ফি:</span> <span>{subjectFee}৳</span></div>
+                                <div className="flex justify-between"><span>প্রসেসিং ফি (Office):</span> <span>{processingFee}৳</span></div>
+
+                                {
+                                    data?.orderType === "full_service" &&
+                                    <div className="flex justify-between"><span> টেস্ট জরিমানা:</span> <span>{testFeeTotal || 0}৳</span></div>
+                                }
+
+                                <div className="flex justify-between"><span>সার্ভিস চার্জ:</span> <span>{chargeFee}৳</span></div>
+                                <div className="flex justify-between text-[10px] text-gray-500 italic"><span>সাব-টোটাল:</span> <span>{subTotal}৳</span></div>
+                                <div className="flex justify-between text-[10px] text-gray-500 italic"><span>রকেট বিলার চার্জ:</span> <span>{billerCharge}৳</span></div>
+                                <div className="flex justify-between text-[10px] text-gray-500 italic"><span> ক্যাশআউট চার্জ:</span> <span>{cashOutCharge}৳</span></div>
+
+                                <div className="flex justify-between font-bold border-t pt-1 mt-1"><span>মোট পেমেন্ট:</span> <span>{calculatedTotal}৳</span>
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
@@ -140,7 +141,7 @@ export default async function OrderDetails({ data }) {
                                 <div className="md:col-span-2 p-5 bg-blue-50/50 border border-blue-100 rounded-[2rem] mb-2">
                                     <p className="text-[9px] text-blue-500 font-black uppercase mb-1">আবেদনকৃত সেবা</p>
                                     <h4 className="text-lg font-black text-blue-900 tracking-tight leading-tight uppercase">
-                                        {serviceId?.title}
+                                        {serviceId?.type}
                                     </h4>
                                 </div>
 

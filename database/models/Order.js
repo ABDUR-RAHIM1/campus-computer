@@ -2,10 +2,6 @@
 import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema({
-    // isOthersStudent: {
-    //     type: Boolean,
-    //     required: true
-    // },
 
     profileId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -20,6 +16,10 @@ const orderSchema = new mongoose.Schema({
     serviceId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Service",
+        required: true,
+    },
+    institute: { // new 
+        type: Object,
         required: true,
     },
     department: {
@@ -37,7 +37,11 @@ const orderSchema = new mongoose.Schema({
     processingFee: {
         type: Number,
         default: 0,
-    }, // new 
+    },
+    testFeeTotal: {
+        type: Number,
+        default: 0,
+    },
     chargeFee: {
         type: Number,
         default: 0,
@@ -45,11 +49,11 @@ const orderSchema = new mongoose.Schema({
     subTotal: {
         type: Number,
         required: true
-    }, // new 
+    },
     billerCharge: {
         type: Number,
         required: true
-    }, // new 
+    },
     totalFee: {
         type: Number,
         default: 0,
@@ -61,7 +65,7 @@ const orderSchema = new mongoose.Schema({
     calculatedTotal: {
         type: Number,
         required: true
-    }, // new 
+    },
     status: {
         type: String,
         enum: ["pending", "active", "success", "cancel"],

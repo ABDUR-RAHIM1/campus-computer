@@ -16,7 +16,7 @@ import { ArrowDown, AlertCircle, CheckCircle2, School, BookOpen, Settings, Badge
 import InputField from "@/utilities/InputField";
 
 export default function SelectedSection() {
-    const { setIsProfileMatch, setOrderDataForPayment, showToast } = useContext(globalContext);
+    const { setIsProfileMatch, orderDataForPayment, setOrderDataForPayment, showToast } = useContext(globalContext);
     const [serviceData, setServiceData] = useState(null);
     const [profileList, setProfileList] = useState([]);
     const [formData, setFormData] = useState({ profile: null });
@@ -33,42 +33,46 @@ export default function SelectedSection() {
         chargeFee: 0
     });
 
-
     const isImprovementService = serviceData?.type === "improvement_form_fillup" || serviceData?.type === "অনিয়মিত";
 
 
+    // ১. লোকাল ডাটা লোড করার ইফেক্ট 
     useEffect(() => {
         const getData = localStorage.getItem("pending_order");
-        if (getData) {
-            try {
-                const decodedData = decodeURIComponent(escape(atob(getData)));
-                const data = JSON.parse(decodedData)?.serviceData || null;
-                setServiceData(data);
+        if (!getData) return;
 
-                // ডাটা লোড হওয়ার সাথে সাথে পেমেন্ট স্টেট রিসেট করুন
-                setOrderDataForPayment(null);
-                setFee({ subTotal: 0, rocketBillerCharge: 0, totalFee: 0, chargeFee: 0 });
-            } catch (e) {
-                console.error("Data Parse Error", e);
-            }
+        try {
+            const decodedData = decodeURIComponent(escape(atob(getData)));
+            const data = JSON.parse(decodedData)?.serviceData || null;
+            setServiceData(data);
+
+            // স্টেট রিসেট
+            setOrderDataForPayment(null);
+            setFee({ subTotal: 0, rocketBillerCharge: 0, totalFee: 0, chargeFee: 0 });
+        } catch (e) {
+            console.error("Data Parse Error", e);
         }
+    }, [setOrderDataForPayment]);
 
+    // ২. প্রোফাইল লিস্ট এপিআই কল করার ইফেক্ট
+    useEffect(() => {
         const getMyProfileList = async () => {
             try {
                 const { status, data } = await getMyAllProfile();
                 if (status === 200) setProfileList(data);
-            } catch (error) { console.log("Profile Load Error:", error); }
+            } catch (error) {
+                console.log("Profile Load Error:", error);
+            }
         };
         getMyProfileList();
     }, []);
 
-    // new 
-    const handleMisSubjectChange = (event) => {
-        setMissSubjectCount(Number(event.target.value))
-        // calculateAndSetFee(dept, formData.profile, orderScope);
-        calculateAndSetFee(selectedDepartment, formData.profile, orderScope);
-    };
 
+    const handleMisSubjectChange = (event) => {
+        const value = Number(event.target.value);
+        setMissSubjectCount(value >= 0 ? value : 0); // নেগেটিভ ভ্যালু ঠেকানোর জন্য
+        // এখানে calculateAndSetFee কল করার দরকার নেই, useEffect সামলে নিবে।
+    };
 
 
     const calculateAndSetFee = useCallback((dept, currentProfile, currentScope) => {
@@ -80,7 +84,6 @@ export default function SelectedSection() {
         const baseProcessingFee = Number(dept.processingFee || 0);
 
         const totalMissTestExamFee = Number(dept.testExamFeePerSub || 0) * Number(missTestSubjectCount); // new  
-
 
 
         let baseChargeFee = Number(dept.chargeFee || 0);
@@ -97,10 +100,12 @@ export default function SelectedSection() {
         setOrderDataForPayment({
             serviceId: serviceData?._id,
             serviceType: serviceData?.type,
+            institute: formData?.profile?.institute,
             department: dept.department,
             collegeFee: baseCollegeFee,
             subjectFee: finalSubjectFee,
             processingFee: baseProcessingFee,
+            testFeeTotal: totalMissTestExamFee,
             chargeFee: baseChargeFee,
             subTotal: result.subTotal,
             billerCharge: result.rocketBillerCharge,
@@ -113,9 +118,11 @@ export default function SelectedSection() {
 
     const handleProfileChange = (profile) => {
         setFormData({ profile });
+        console.log(profile)
         setSelectedDepartment(null);
         setErrorMsg("");
     };
+ 
 
     const handleSelectDepartment = (dept) => {
 
@@ -266,7 +273,7 @@ export default function SelectedSection() {
                     const isDeptMatchLocal = formData.profile?.department === dept.department;
                     const isSelected = selectedDepartment?.department === dept.department;
                     const improvementCount = formData.profile?.improvementSubjects?.length || 0;
-                 
+
 
                     // লজিক: যদি সঠিক ডিপার্টমেন্ট সিলেক্ট হয়, তবে অন্যগুলো হাইড হবে
                     if (canProceed && !isSelected) return null;
@@ -302,13 +309,10 @@ export default function SelectedSection() {
                                     <Settings size={14} className="text-emerald-500" />
                                     <span>প্রসেসিং: <b>{dept.processingFee}৳</b></span>
                                 </div>
-                                {/*  new - Below */}
-                                {missTestSubjectCount > 0 && orderScope === "full_service" && (
-                                    <div className="flex items-center gap-2 text-red-600 font-bold">
+                                {orderScope === "full_service" && isSelected && Number(missTestSubjectCount) > 0 && (
+                                    <div className="flex items-center gap-2 text-red-600 font-bold animate-pulse">
                                         <AlertCircle size={14} />
-                                        <span>টেস্ট জরিমানা: <b>
-                                            {fee?.testFeeTotal || 0}৳</b>
-                                        </span>
+                                        <span>টেস্ট জরিমানা ({missTestSubjectCount}টি): <b>{fee?.testFeeTotal || 0}৳</b></span>
                                     </div>
                                 )}
                                 <div className="flex items-center gap-2">

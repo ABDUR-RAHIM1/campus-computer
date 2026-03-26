@@ -1,11 +1,12 @@
 "use client"
 import { Button } from '@/components/ui/button'
 import React from 'react'
-import { downloadAsTxt } from './DownloadAsTxt'
+import { downloadAsPDF } from './downloadAsPDF'
 
 export default function DownloadButton({ data }) {
+
     return (
-        <Button onClick={() => downloadAsTxt(data)}>
+        <Button onClick={() => downloadAsPDF(data)}>
             ডাউনলোড
         </Button>
     )

@@ -11,19 +11,10 @@ import { globalContext } from "@/contextApi/ContextApi";
 import { getAllSubAdmins } from "@/handlers/subAdmins";
 
 export default function OrderTable({ orders, isAdmin = false }) {
-  const { showToast } = useContext(globalContext);
+  const { showToast } = useContext(globalContext)
   const [orderList, setOrderList] = useState([]);
   const [collegeList, setCollegeList] = useState([]);
-  const [selectedCollegeId, setSelectedCollegeId] = useState("");
-
-  useEffect(() => {
-    if (isAdmin) {
-      const savedCollege = localStorage.getItem("dashboard_filter_college_id");
-      if (savedCollege) {
-        setSelectedCollegeId(savedCollege);
-      }
-    }
-  }, [isAdmin]);
+//  ei college list onujai niche akta filter option thakbe, jekahen college er _id diye match korbe. jodi isAdmin hoy tobei seta dekhabe
 
   useEffect(() => {
     if (orders) {
@@ -31,46 +22,31 @@ export default function OrderTable({ orders, isAdmin = false }) {
     }
   }, [orders]);
 
-  // ২. সাব-অ্যাডমিন/কলেজ লিস্ট ফেচ করা (শুধু অ্যাডমিনদের জন্য)
+  //  fetch all sub Admin/ college Name
   useEffect(() => {
-    const fetchColleges = async () => {
+
+    const fetchCollges = async () => {
       try {
+
         const { status, data } = await getAllSubAdmins();
         if (status === 200 || status === 201) {
-          setCollegeList(data);
+          setCollegeList(data); 
         }
       } catch (error) {
-        console.log("College Load Error:", error);
+        console.log(error)
       }
     };
 
-    if (isAdmin) {
-      fetchColleges();
-    }
-  }, [isAdmin]);
-
-  // ৩. ডাটা ফিল্টার লজিক
-  const filteredOrders = orderList?.filter((order) => {
-    if (!isAdmin || !selectedCollegeId || selectedCollegeId === "all") return true;
-    // এখানে reference._id অথবা reference (পপুলেটেড থাকলে) চেক করা হচ্ছে
-    const refId = order.institute?._id
-    return refId === selectedCollegeId;
-  });
+    fetchCollges();
 
 
-  // ফিল্টার চেঞ্জ হ্যান্ডলার
-  const handleFilterChange = (e) => {
-    const val = e.target.value;
-    setSelectedCollegeId(val); 
-    localStorage.setItem("dashboard_filter_college_id", val);
-  };
+  }, [])
 
-  // ৪. ফিল্টার অনুযায়ী কাউন্ট আপডেট করা
-  const activeOrderCount = filteredOrders?.filter(item => item.status === "active")?.length || 0;
-  const successOrderCount = filteredOrders?.filter(item => item.status === "success")?.length || 0;
-  const cancelOrderCount = filteredOrders?.filter(item => item.status === "cancel")?.length || 0;
+  const activeOrderCount = orderList?.filter(orderItem => orderItem.status === "active")?.length || 0;
+  const successOrderCount = orderList?.filter(orderItem => orderItem.status === "success")?.length || 0;
+  const cancelOrderCount = orderList?.filter(orderItem => orderItem.status === "cancel")?.length || 0;
 
-  // ৫. স্ট্যাটাস আপডেট হ্যান্ডলার
+  //  order stutus update handler
   const handleStatusChange = async (orderId, newStatus) => {
     try {
       const payload = {
@@ -79,9 +55,10 @@ export default function OrderTable({ orders, isAdmin = false }) {
         body: { orderStatus: newStatus },
       };
       const { status, data } = await PostActionAdmin(payload);
-      showToast(status, data);
+      showToast(status, data)
 
       if (status === 200) {
+        // ✅ অর্ডার লিস্ট আপডেট (লোকালি UI তে পরিবর্তন)
         setOrderList((prev) =>
           prev.map((order) =>
             order._id === orderId ? { ...order, status: newStatus } : order
@@ -89,9 +66,12 @@ export default function OrderTable({ orders, isAdmin = false }) {
         );
       }
     } catch (error) {
-      console.log("🛑 Status update failed", error);
+      console.log("🛑 Failed to update order status", error);
     }
   };
+
+
+
 
   const columns = [
     {
@@ -100,8 +80,7 @@ export default function OrderTable({ orders, isAdmin = false }) {
       cell: (row) => (
         <div className="py-3">
           <p className="font-bold text-blue-900">{row.profileId?.studentName || "N/A"}</p>
-          <p className="text-[10px] text-gray-500 uppercase tracking-tighter">{row.institute?.username || "N/A"}</p>
-          <p className="text-[10px] text-gray-500 uppercase tracking-tighter text-center">({row.department || "N/A"})</p> 
+          <p className="text-[10px] text-gray-500 uppercase tracking-tighter">{row.department || "N/A"}</p>
         </div>
       ),
       sortable: true,
@@ -129,6 +108,13 @@ export default function OrderTable({ orders, isAdmin = false }) {
       width: "100px",
     },
     {
+      name: "চার্জ",
+      selector: (row) => row.chargeFee,
+      cell: (row) => <p className="text-gray-600">{row.chargeFee}৳</p>,
+      sortable: true,
+      width: "90px",
+    },
+    {
       name: "তারিখ",
       selector: (row) => row.createdAt,
       cell: (row) => <p className="text-xs">{format(new Date(row.createdAt), "dd/MM/yyyy")}</p>,
@@ -148,34 +134,34 @@ export default function OrderTable({ orders, isAdmin = false }) {
         const current = statusMap[row.status] || { bg: "bg-gray-100", text: "text-gray-700", label: row.status };
 
         return (
-          <div className="w-full">
-            {isAdmin ? (
+          <div className={`text-[11px] px-2 py-1 rounded-full border font-bold ${current.bg} ${current.text}`}>
+
+            {isAdmin ?
+
               <select
                 value={row.status}
                 onChange={(e) => handleStatusChange(row._id, e.target.value)}
-                className={`text-[11px] px-2 py-1 rounded border font-bold outline-none cursor-pointer ${current.bg} ${current.text}`}
+                className={`text-xs px-2 py-1 rounded border font-medium ${current.bg} ${current.text}`}
               >
-                <option value="pending">পেন্ডিং</option>
+                <option value="cancel">বাতিল</option>
                 <option value="active">চলমান</option>
                 <option value="success">সম্পন্ন</option>
-                <option value="cancel">বাতিল</option>
+                <option value="pending">পেন্ডিং</option>
               </select>
-            ) : (
-              <span className={`text-[11px] px-2 py-1 rounded-full border font-bold ${current.bg} ${current.text}`}>
-                {current.label}
-              </span>
-            )}
+
+              : current.label}
+
           </div>
         );
       },
-      width: "120px",
+      width: "100px",
     },
     {
       name: "পেমেন্ট",
       selector: (row) => row.paymentStatus,
       cell: (row) => (
         <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${row.paymentStatus === "paid" ? "bg-green-600 text-white" :
-            row.paymentStatus === "pending" ? "bg-orange-500 text-white" : "bg-red-600 text-white"
+          row.paymentStatus === "pending" ? "bg-orange-500 text-white" : "bg-red-600 text-white"
           }`}>
           {row.paymentStatus}
         </span>
@@ -185,7 +171,7 @@ export default function OrderTable({ orders, isAdmin = false }) {
     {
       name: "অ্যাকশন",
       cell: (row) => {
-        const detailsPath = isAdmin ? "/dashboard/orders" : "/profile/orders";
+        const detailsPath = isAdmin ? "/dashboard/orders" : "/profile/orders"
         return (
           <div className="flex gap-2">
             <Link
@@ -195,13 +181,14 @@ export default function OrderTable({ orders, isAdmin = false }) {
             >
               👁️
             </Link>
-            {isAdmin ? (
-              <button className="p-2 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white rounded-md transition-colors" title="Delete">🗑️</button>
-            ) : (
-              <OrderAction orderId={row._id} />
-            )}
+
+            {
+              isAdmin ? "Delete" :
+                <OrderAction orderId={row._id} />
+
+            }
           </div>
-        );
+        )
       },
       width: "120px",
     }
@@ -319,34 +306,15 @@ export default function OrderTable({ orders, isAdmin = false }) {
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4">
       <div className="max-w-7xl mx-auto bg-white shadow-xl rounded-2xl overflow-hidden p-4 md:p-8">
-        <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-          <div>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-blue-950 mb-2">📋 অর্ডার ড্যাশবোর্ড</h2>
-            <p className="text-gray-500 text-sm">ক্যাম্পাস কম্পিউটার অর্ডার ট্র্যাকিং সিস্টেম</p>
-          </div>
-
-          {/* ফিল্টার সেকশন */}
-          {isAdmin && (
-            <div className="w-full md:w-auto">
-              <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">কলেজ ফিল্টার</label>
-              <select
-                value={selectedCollegeId}
-                onChange={handleFilterChange}
-                className="w-full md:w-64 p-2.5 bg-blue-50 border-2 border-blue-100 rounded-xl text-sm font-bold text-blue-900 outline-none focus:border-blue-400 transition-all cursor-pointer"
-              >
-                <option value="all">সকল কলেজ (All)</option>
-                {collegeList?.map((college) => (
-                  <option key={college._id} value={college._id}>
-                    🏛️ {college.username}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
+        <header className="mb-8">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-blue-950 mb-2">📋 অর্ডার ড্যাশবোর্ড</h2>
+          <p className="text-gray-500 text-sm md:text-base">
+            Campus Computer এর মাধ্যমে করা সকল অর্ডারের বর্তমান অবস্থা এবং পেমেন্ট ডিটেইলস এখানে ট্র্যাক করুন।
+          </p>
         </header>
 
         <OrderOverViewCard
-          total={filteredOrders?.length || 0}
+          total={orderList?.length || 0}
           active={activeOrderCount}
           success={successOrderCount}
           cancel={cancelOrderCount}
@@ -355,7 +323,7 @@ export default function OrderTable({ orders, isAdmin = false }) {
         <div className="mt-8 border rounded-xl overflow-hidden">
           <DataTable
             columns={columns}
-            data={filteredOrders}
+            data={orderList}
             pagination
             highlightOnHover
             responsive
@@ -363,10 +331,25 @@ export default function OrderTable({ orders, isAdmin = false }) {
             expandableRowsComponent={ExpandableComponent}
             customStyles={{
               headCells: {
-                style: { backgroundColor: "#F8FAFC", color: "#1E293B", fontSize: "13px", fontWeight: "800", textTransform: "uppercase", padding: "15px" },
+                style: {
+                  backgroundColor: "#F8FAFC",
+                  color: "#1E293B",
+                  fontSize: "13px",
+                  fontWeight: "800",
+                  textTransform: "uppercase",
+                  paddingTop: "15px",
+                  paddingBottom: "15px",
+                },
               },
               rows: {
-                style: { fontSize: "14px", "&:not(:last-of-type)": { borderBottom: "1px solid #F1F5F9" } },
+                style: {
+                  fontSize: "14px",
+                  "&:not(:last-of-type)": {
+                    borderBottomStyle: "solid",
+                    borderBottomWidth: "1px",
+                    borderBottomColor: "#F1F5F9",
+                  },
+                },
               },
             }}
           />
