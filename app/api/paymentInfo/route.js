@@ -18,12 +18,13 @@ export const GET = async (req) => {
         const payments = await PaymentInfoModel.find()
             .populate("userId", "username")
             .populate("profileId", "studentName")
-            .populate("orderId", "totalFee")
+            .populate("orderId", "calculatedTotal")
+            .sort({ "createdAt": - 1 })
 
         return NextResponse.json(payments, { status: 200 })
 
 
-    } catch (error) { 
+    } catch (error) {
         return NextResponse.json({
             message: "Internal Server Error"
         }, { status: 500 })

@@ -24,6 +24,7 @@ export default async function OrderDetails({ data }) {
         testFeeTotal,
         chargeFee,
         billerCharge,
+        paymentMethod,
         cashOutCharge,
         subTotal,
         calculatedTotal,
@@ -59,8 +60,18 @@ export default async function OrderDetails({ data }) {
                                 {paymentStatus}
                             </Badge>
                         </div>
-                        <div className='my-2 text-sm capitalize'>
-                            Order Type: {orderType}
+                        {/* Order Type Section */}
+                        <div className='mt-3 flex items-center gap-2'>
+                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">সার্ভিস টাইপ:</span>
+                            <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-tight shadow-sm border ${orderType === "full_service"
+                                    ? "bg-indigo-50 text-indigo-700 border-indigo-100"
+                                    : "bg-amber-50 text-amber-700 border-amber-100"
+                                }`}>
+                                <span>
+                                    {orderType === "full_service" ? "🏛️" : "📦"}
+                                </span>
+                                {orderType === "full_service" ? "Full Service" : "Office Copy"}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -82,7 +93,7 @@ export default async function OrderDetails({ data }) {
                             </h3>
                         </div>
                         <CardContent className="p-6 space-y-4">
-                           
+
                             <div className="space-y-1 text-sm border-r pr-4">
                                 <div className="flex justify-between"><span>কলেজ ফি:</span> <span>{collegeFee}৳</span></div>
                                 <div className="flex justify-between"><span>সাবজেক্ট ফি:</span> <span>{subjectFee}৳</span></div>
@@ -96,7 +107,7 @@ export default async function OrderDetails({ data }) {
                                 <div className="flex justify-between"><span>সার্ভিস চার্জ:</span> <span>{chargeFee}৳</span></div>
                                 <div className="flex justify-between text-[10px] text-gray-500 italic"><span>সাব-টোটাল:</span> <span>{subTotal}৳</span></div>
                                 <div className="flex justify-between text-[10px] text-gray-500 italic"><span>রকেট বিলার চার্জ:</span> <span>{billerCharge}৳</span></div>
-                                <div className="flex justify-between text-[10px] text-gray-500 italic"><span> ক্যাশআউট চার্জ:</span> <span>{cashOutCharge}৳</span></div>
+                                <div className="flex justify-between text-[10px] text-gray-500 italic"><span> ক্যাশআউট চার্জ {paymentMethod || "N/A"}:</span> <span>{cashOutCharge}৳</span></div>
 
                                 <div className="flex justify-between font-bold border-t pt-1 mt-1"><span>মোট পেমেন্ট:</span> <span>{calculatedTotal}৳</span>
                                 </div>

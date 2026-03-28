@@ -9,7 +9,7 @@ import StudentAuthModel from "@/database/models/StudentAuth";
 import StudentProfileModel from "@/database/models/Profile";
 
 //  Create Order by Student
-// api => /api/order/postGet  (create , getAll)
+// api => /api/order/postGet  (create , getAll) 
 
 export async function POST(req) {
     try {
@@ -38,6 +38,7 @@ export async function POST(req) {
             calculatedTotal,
             payment, // 🧾 payment data আসবে body.payment এর মাধ্যমে
         } = body;
+
 
         if (!id || !serviceId || !payment) {
             return NextResponse.json(
@@ -76,6 +77,7 @@ export async function POST(req) {
             totalFee,
             cashOutCharge,
             calculatedTotal,
+            paymentMethod: payment.method,
             status: "pending",
             paymentStatus: "pending",
         });

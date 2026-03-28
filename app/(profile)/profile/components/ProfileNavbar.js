@@ -3,7 +3,7 @@
 import React, { useContext, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Bell, LogOut } from 'lucide-react'; // LogOut আইকন ব্যবহার করা হয়েছে
+import { Menu, X, Bell, LogOut } from 'lucide-react'; 
 import Logo from '@/utilities/Logo';
 import { logoutStudent } from '@/getToken';
 import { globalContext } from '@/contextApi/ContextApi';
@@ -16,7 +16,7 @@ export default function ProfileNavbar() {
   const navItems = [
     { name: 'ওভারভিউ', href: '/profile' },
     { name: 'আবেদন সমূহ', href: '/profile/orders' },
-    { name: 'পেমেন্ট', href: '/profile/payments' },
+    { name: 'পেমেন্ট সমূহ', href: '/profile/payments' },
     { name: "🔥 চাকরি বিজ্ঞপ্তি", href: "/profile/jobs" },
   ];
 

@@ -38,7 +38,7 @@ export default function PaymentProccess() {
     const { showToast, isProfileMatch, orderDataForPayment } = useContext(globalContext);
 
     const [formData, setFormData] = useState({
-        method: '',
+        method: 'Rocket',
         amount: '',
         senderNumber: '',
         txnId: '',
@@ -132,17 +132,20 @@ export default function PaymentProccess() {
 
         setWaiting(true);
         try {
+            const finalCashOutCharge = formData.method === "Rocket" ? 0 : cashoutExtra;
             const body = {
                 ...orderDataForPayment,
                 payment: formData,
-                cashOutCharge: cashoutExtra,
+                cashOutCharge: finalCashOutCharge,
                 calculatedTotal: totalPayable
             };
 
             const payload = { method: "POST", endpoint: orderPostGetall, body: body };
             const { status, data } = await PostAction(payload);
+            
             showToast(status, data.message || "পেমেন্ট সফলভাবে জমা হয়েছে");
             setLocalMessage({ text: data.message || "আপনার তথ্য সফলভাবে জমা দেওয়া হয়েছে।", type: status });
+
         } catch (error) {
             showToast("error", "সার্ভারে সমস্যা হচ্ছে।");
         } finally {

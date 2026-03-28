@@ -1,7 +1,7 @@
 import React from 'react'
 import { getMyPaymentInfo } from '@/handlers/paymentInfo';
-import DataNotFound from '@/components/DataNotFound';
-import PaymentTable from './PaymenTable';
+import DataNotFound from '@/components/DataNotFound'; 
+import PaymentTable from '@/components/payments/PaymentTable';
 
 //  for user / student
 export default async function PaymentStatus() {
@@ -13,5 +13,5 @@ export default async function PaymentStatus() {
         return <DataNotFound />
     }
 
-    return <PaymentTable paymentData={data} />
+    return <PaymentTable isAmin={false} paymentData={data} />
 }

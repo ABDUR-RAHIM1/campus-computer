@@ -18,11 +18,15 @@ const orderSchema = new mongoose.Schema({
         ref: "Service",
         required: true,
     },
-    institute: { // new 
+    institute: {
         type: Object,
         required: true,
     },
     department: {
+        type: String,
+        required: true
+    },
+    paymentMethod: {
         type: String,
         required: true
     },
@@ -74,6 +78,10 @@ const orderSchema = new mongoose.Schema({
     orderType: {
         type: String,
         enum: ["full_service", "office_copy"],
+        required: true
+    },
+    paymentMethod: {
+        type: String,
         required: true
     },
     paymentStatus: {

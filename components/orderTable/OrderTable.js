@@ -8,7 +8,8 @@ import OrderOverViewCard from "@/components/overviewCards/OrderOverViewCard";
 import { orderStatusUpdate } from "@/constans";
 import { PostActionAdmin } from "@/actions/admins/PostAction";
 import { globalContext } from "@/contextApi/ContextApi";
-import { getAllSubAdmins } from "@/handlers/subAdmins";
+import { getAllSubAdmins } from "@/handlers/subAdmins"; 
+import { Badge } from "../ui/badge";
 
 export default function OrderTable({ orders, isAdmin = false }) {
   const { showToast } = useContext(globalContext);
@@ -61,7 +62,7 @@ export default function OrderTable({ orders, isAdmin = false }) {
   // ফিল্টার চেঞ্জ হ্যান্ডলার
   const handleFilterChange = (e) => {
     const val = e.target.value;
-    setSelectedCollegeId(val); 
+    setSelectedCollegeId(val);
     localStorage.setItem("dashboard_filter_college_id", val);
   };
 
@@ -101,7 +102,7 @@ export default function OrderTable({ orders, isAdmin = false }) {
         <div className="py-3">
           <p className="font-bold text-blue-900">{row.profileId?.studentName || "N/A"}</p>
           <p className="text-[10px] text-gray-500 uppercase tracking-tighter">{row.institute?.username || "N/A"}</p>
-          <p className="text-[10px] text-gray-500 uppercase tracking-tighter text-center">({row.department || "N/A"})</p> 
+          <p className="text-[10px] text-gray-500 uppercase tracking-tighter text-center">({row.department || "N/A"})</p>
         </div>
       ),
       sortable: true,
@@ -124,7 +125,12 @@ export default function OrderTable({ orders, isAdmin = false }) {
     {
       name: "মোট ফি",
       selector: (row) => row.calculatedTotal,
-      cell: (row) => <p className="font-semibold text-gray-800">{row.calculatedTotal}৳</p>,
+      cell: (row) => <div>
+        <p className="font-semibold text-gray-800">{row.calculatedTotal}৳</p>
+        <Badge className={` ${row?.paymentMethod === "Rocket" ? "bg-green-500" : "bg-red-500 text-white"}`}>
+          {row?.paymentMethod || "N/A"}
+        </Badge>
+      </div>,
       sortable: true,
       width: "100px",
     },
@@ -175,7 +181,7 @@ export default function OrderTable({ orders, isAdmin = false }) {
       selector: (row) => row.paymentStatus,
       cell: (row) => (
         <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${row.paymentStatus === "paid" ? "bg-green-600 text-white" :
-            row.paymentStatus === "pending" ? "bg-orange-500 text-white" : "bg-red-600 text-white"
+          row.paymentStatus === "pending" ? "bg-orange-500 text-white" : "bg-red-600 text-white"
           }`}>
           {row.paymentStatus}
         </span>
@@ -206,115 +212,71 @@ export default function OrderTable({ orders, isAdmin = false }) {
       width: "120px",
     }
   ];
+ 
 
   const ExpandableComponent = ({ data }) => {
-    return (
-      <div className="p-4 bg-gray-50 border-x border-b rounded-b-lg">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* হিসাব নিকাশ */}
-          <div className="space-y-1 text-sm border-r pr-4">
-            <h4 className="font-bold text-gray-700 border-b pb-1 mb-2">💰 ফি ব্রেকডাউন</h4>
-            <div className="flex justify-between"><span>কলেজ ফি:</span> <span>{data.collegeFee}৳</span></div>
-            <div className="flex justify-between"><span>সাবজেক্ট ফি:</span> <span>{data.subjectFee}৳</span></div>
-            <div className="flex justify-between"><span>প্রসেসিং ফি:</span> <span>{data.processingFee}৳</span></div>
-
-            {
-              data?.orderType === "full_service" &&
-              <div className="flex justify-between"><span> টেস্ট জরিমানা:</span> <span>{data.testFeeTotal || 0}৳</span></div>
+  return (
+    <div className="p-4 bg-gray-50 border-x border-b rounded-b-xl shadow-inner">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+        
+        {/* বাম পাশ: স্ট্যাটাস অনুযায়ী ডাইনামিক মেসেজ */}
+        <div className="flex-1 w-full">
+          {(() => {
+            switch (data.status) {
+              case "pending":
+                return (
+                  <div className="p-4 bg-white border-l-4 border-yellow-500 rounded shadow-sm">
+                    <p className="font-bold text-yellow-800 flex items-center gap-2 text-sm">⏳ যাচাইকরণ চলছে</p>
+                    <p className="text-[12px] text-gray-600 mt-1 leading-relaxed">
+                      আপনার প্রদানকৃত তথ্যগুলো আমাদের প্রতিনিধিরা যাচাই করছেন। নির্ভুল থাকলে দ্রুতই কাজ শুরু হবে।
+                    </p>
+                  </div>
+                );
+              case "active":
+                return (
+                  <div className="p-4 bg-white border-l-4 border-blue-500 rounded shadow-sm">
+                    <p className="font-bold text-blue-800 flex items-center gap-2 text-sm">🚀 কাজ চলমান</p>
+                    <p className="text-[12px] text-gray-600 mt-1 leading-relaxed">
+                      অর্ডারটি বর্তমানে প্রসেসিং লিস্টে আছে। কাজ শেষ হওয়া মাত্রই আপনি আপডেট পেয়ে যাবেন।
+                    </p>
+                  </div>
+                );
+              case "cancel":
+                return (
+                  <div className="p-4 bg-white border-l-4 border-red-500 rounded shadow-sm">
+                    <p className="font-bold text-red-800 flex items-center gap-2 text-sm">❌ অর্ডার বাতিল</p>
+                    <div className="text-[12px] text-gray-600 mt-1 space-y-1">
+                      <p><strong>ফেরত নাম্বার:</strong> {data?.cancelOrderInfo?.recivedNumber || "N/A"}</p>
+                      <p className="text-red-600 italic font-medium"><strong>কারণ:</strong> {data?.cancelOrderInfo?.reason || "তথ্যগত ভুল বা পেমেন্ট সমস্যা।"}</p>
+                    </div>
+                  </div>
+                );
+              case "success":
+                return (
+                  <div className="p-4 bg-white border-l-4 border-green-500 rounded shadow-sm">
+                    <p className="font-bold text-green-800 flex items-center gap-2 text-sm">✅ সফলভাবে সম্পন্ন</p>
+                    <p className="text-[12px] text-gray-600 mt-1">
+                      অভিনন্দন! আপনার অর্ডারটির কাজ সফলভাবে শেষ হয়েছে। আমাদের সেবা ব্যবহারের জন্য ধন্যবাদ।
+                    </p>
+                  </div>
+                );
+              default:
+                return (
+                  <div className="p-3 bg-white border border-dashed border-gray-300 rounded text-center">
+                    <p className="text-xs text-gray-500 italic">অর্ডারের আপডেট শীঘ্রই জানানো হবে।</p>
+                  </div>
+                );
             }
-
-            <div className="flex justify-between"><span>সার্ভিস চার্জ:</span> <span>{data.chargeFee}৳</span></div>
-            <div className="flex justify-between text-[10px] text-gray-500 italic"><span>সাব-টোটাল:</span> <span>{data.subTotal}৳</span></div>
-            <div className="flex justify-between text-[10px] text-gray-500 italic"><span>রকেট বিলার চার্জ:</span> <span>{data.billerCharge}৳</span></div>
-            <div className="flex justify-between text-[10px] text-gray-500 italic"><span> ক্যাশআউট চার্জ:</span> <span>{data.cashOutCharge}৳</span></div>
-
-            <div className="flex justify-between font-bold border-t pt-1 mt-1"><span>মোট পেমেন্ট:</span> <span>{data.calculatedTotal}৳</span>
-            </div>
-          </div>
-
-          {/* স্ট্যাটাস কাস্টম মেসেজ */}
-          <div className="flex items-center">
-            {data.status === "cancel" ? (
-              <div className="w-full p-3 bg-red-100 border-l-4 border-red-500 rounded">
-                <p className="font-bold text-red-700">❌ অর্ডার বাতিল তথ্য</p>
-                <p className="text-sm mt-1"><strong>ফেরত নাম্বার:</strong> {data?.cancelOrderInfo?.recivedNumber || "N/A"}</p>
-                <p className="text-sm italic text-red-600"><strong>কারণ:</strong> {data?.cancelOrderInfo?.reason || "N/A"}</p>
-              </div>
-            ) : (
-              <div className="flex items-center w-full">
-                {(() => {
-                  switch (data.status) {
-                    case "pending":
-                      return (
-                        <div className="w-full p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded shadow-sm">
-                          <p className="font-bold text-yellow-800 flex items-center gap-2">
-                            ⏳ আপনার অর্ডারটি যাচাই করা হচ্ছে
-                          </p>
-                          <p className="text-xs text-yellow-700 mt-1">
-                            আপনার দেওয়া তথ্যগুলো আমাদের প্রতিনিধি পরীক্ষা করছেন। যাচাই শেষ হলে দ্রুত কাজ শুরু হবে। আমাদের সাথেই থাকুন।
-                          </p>
-                        </div>
-                      );
-                    case "active":
-                      return (
-                        <div className="w-full p-4 bg-blue-50 border-l-4 border-blue-500 rounded shadow-sm">
-                          <p className="font-bold text-blue-800 flex items-center gap-2">
-                            🚀 কাজ চলমান রয়েছে
-                          </p>
-                          <p className="text-xs text-blue-700 mt-1">
-                            অর্ডারটি বর্তমানে প্রসেসিং করা হচ্ছে। সংশ্লিষ্ট কাজ শেষ হওয়া মাত্রই আপনি আপডেট পেয়ে যাবেন।
-                          </p>
-                        </div>
-                      );
-                    case "cancel":
-                      return (
-                        <div className="w-full p-4 bg-red-50 border-l-4 border-red-500 rounded shadow-sm">
-                          <p className="font-bold text-red-800 flex items-center gap-2">
-                            ❌ অর্ডারটি বাতিল করা হয়েছে
-                          </p>
-                          <p className="text-xs text-red-700 mt-1">
-                            <strong>ফেরত নাম্বার:</strong> {data?.cancelOrderInfo?.recivedNumber || "N/A"} <br />
-                            <strong>কারণ:</strong> {data?.cancelOrderInfo?.reason || "তথ্যগত ত্রুটি বা অন্য কোনো সমস্যা।"}
-                          </p>
-                        </div>
-                      );
-                    case "reject":
-                      return (
-                        <div className="w-full p-4 bg-gray-100 border-l-4 border-gray-600 rounded shadow-sm">
-                          <p className="font-bold text-gray-800 flex items-center gap-2">
-                            🚫 অর্ডারটি প্রত্যাখ্যাত (Rejected)
-                          </p>
-                          <p className="text-xs text-gray-600 mt-1">
-                            দুঃখিত, আপনার পেমেন্ট বা ডকুমেন্টে অসংগতি থাকায় অর্ডারটি গ্রহণ করা সম্ভব হয়নি। বিস্তারিত জানতে সাপোর্টে যোগাযোগ করুন।
-                          </p>
-                        </div>
-                      );
-                    case "success":
-                      return (
-                        <div className="w-full p-4 bg-green-50 border-l-4 border-green-500 rounded shadow-sm">
-                          <p className="font-bold text-green-800 flex items-center gap-2">
-                            ✅ সফলভাবে সম্পন্ন
-                          </p>
-                          <p className="text-xs text-green-700 mt-1">
-                            আপনার অর্ডারটির কাজ সফলভাবে শেষ হয়েছে। আমাদের সেবা ব্যবহারের জন্য ধন্যবাদ।
-                          </p>
-                        </div>
-                      );
-                    default:
-                      return (
-                        <div className="w-full p-3 bg-gray-50 border border-dashed border-gray-300 rounded text-center">
-                          <p className="text-sm text-gray-500 italic font-medium">অর্ডারের রেফারেন্স আইডি: {data.reference}</p>
-                        </div>
-                      );
-                  }
-                })()}
-              </div>
-            )}
-          </div>
+          })()}
         </div>
+
+      
+
       </div>
-    );
-  };
+    </div>
+  );
+};
+
 
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4">

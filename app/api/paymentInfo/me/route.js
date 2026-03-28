@@ -18,12 +18,12 @@ export const GET = async (req) => {
 
         await connectDb();
         const payments = await PaymentInfoModel.find({
-            userId: auth.student.id 
+            userId: auth.student.id
         })
             .populate("userId", "username")
             .populate("profileId", "studentName")
-            .populate("orderId", "totalFee")
-
+            .populate("orderId", "calculatedTotal")
+            .sort({ "createdAt": - 1 })
         return NextResponse.json(payments, { status: 200 })
 
 

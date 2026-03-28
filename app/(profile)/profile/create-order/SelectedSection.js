@@ -35,7 +35,6 @@ export default function SelectedSection() {
 
     const isImprovementService = serviceData?.type === "improvement_form_fillup" || serviceData?.type === "অনিয়মিত";
 
-
     // ১. লোকাল ডাটা লোড করার ইফেক্ট 
     useEffect(() => {
         const getData = localStorage.getItem("pending_order");
@@ -100,7 +99,8 @@ export default function SelectedSection() {
         setOrderDataForPayment({
             serviceId: serviceData?._id,
             serviceType: serviceData?.type,
-            institute: formData?.profile?.institute,
+            // institute: formData?.profile?.institute,
+            institute: currentProfile?.institute,
             department: dept.department,
             collegeFee: baseCollegeFee,
             subjectFee: finalSubjectFee,
@@ -118,11 +118,10 @@ export default function SelectedSection() {
 
     const handleProfileChange = (profile) => {
         setFormData({ profile });
-        console.log(profile)
         setSelectedDepartment(null);
         setErrorMsg("");
     };
- 
+
 
     const handleSelectDepartment = (dept) => {
 
